@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "slurp": {
+      "command": "C:/Users/corps/AppData/Roaming/uv/tools/slurp-graph/Scripts/slurp.exe",
+      "args": ["serve", "--graph", "C:/git_root/clinical-agent/graphify-out/graph.json"]
+    }
+  }
+}
