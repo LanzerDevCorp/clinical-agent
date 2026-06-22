@@ -15,7 +15,11 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
-    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
+    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
+    "db:list": "tsx --env-file=.env src/scripts/list-db-tables.ts",
+    "db:drop": "tsx --env-file=.env src/scripts/drop-payload-tables.ts",
+    "db:migrate:create": "tsx --env-file=.env src/scripts/run-migrate-create.ts",
+    "db:migrate": "tsx --env-file=.env src/scripts/run-migrate.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.85.1",
