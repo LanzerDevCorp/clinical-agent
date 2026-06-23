@@ -30,41 +30,31 @@ Migrar el agente clínico de `faq-agent` a un repo limpio `clinical-agent` con *
 
 ---
 
-## Estado actual de SDD-1 (`clinical-platform-scaffold`)
+## Estado actual
 
-| Sub-fase | Estado | Notas |
-|----------|--------|-------|
-| **1A Template** | ✅ Hecho | Payload blank + Postgres, `(frontend)` + `(payload)` |
-| **1B Upgrade** | 🟡 Parcial | Versiones OK (Next 16.2.6, Payload 3.85.1). Falta: codemod async APIs, `serverExternalPackages: ['sharp']` en `next.config.ts` |
-| **1C Skills/docs** | 🟡 Parcial | Skills en repo. **Falta:** `AGENTS.md`, `openspec/`, copiar `docs/erd_dominio_clinico.mmd`, `CONTEXT.md` |
-| **1D Infra/BD** | 🟡 Casi listo | Ver abajo |
-| **1E Prisma** | ❌ Pendiente | Sin `prisma/`; tablas chat fueron eliminadas en el drop |
+| SDD | Estado | Notas |
+|-----|--------|-------|
+| **SDD-1** scaffold (1A–1D) | ✅ Cerrado | Build verde, MCP plugin, serverExternalPackages, docs copiados |
+| **SDD-1E** Prisma chat | ⏸ Diferido | Sin `prisma/`; tablas chat pendientes para después de SDD-3 |
+| **SDD-2** payload-clinical-schema | ✅ Cerrado | 9 colecciones + products, migración corrida manualmente |
+| **SDD-3** taxonomy-seed | ❌ Pendiente | **← SIGUIENTE** |
+| **SDD-4** product-extractor-local | ❌ Pendiente | |
+| **SDD-5** payload-loader-mcp | ❌ Pendiente | |
+| **SDD-6** agent-payload-tools | ❌ Pendiente | |
 
-### Limpieza BD (completada en sesión)
+### SDD-2 — Colecciones implementadas
 
-Agente Sonnet 4.6 ejecutó reset total del schema `public` en Neon:
+**Maestras:** `laboratories`, `active-ingredients`, `application-zones`, `administration-routes`, `application-techniques`, `contraindications`, `adverse-effects`, `clinical-notes`, `protocols`
 
-- **Antes:** 24 tablas (legacy faq-agent/cms: `categories`, `products`, `payload_users`, + chat `sessions`/`messages`/`feedbacks`)
-- **Después:** 9 tablas template (`users`, `users_sessions`, `media` + internals Payload)
-- **Migración:** `src/migrations/20260622_234535_init_payload.ts`
-- **Scripts:** `pnpm db:list`, `db:drop`, `db:migrate:create`, `db:migrate`
-- **`.env.example`:** corregido a Postgres
-- **`payload.config.ts`:** `push: false`
-- **`pnpm build`:** pasó
+**Principal:** `products` con `presentaciones[]` embebido, `validationStatus (PENDING|NEEDS_CLINICAL_REVIEW|APPROVED)`, aliases, relationships a todas las colecciones maestras.
 
-### Pendiente en 1D
-
-- Cablear `@payloadcms/plugin-mcp` en `payload.config.ts` (dep ya instalada, `plugins: []` vacío)
-- `setup-mcp-api-key.ts` + documentar `PAYLOAD_MCP_API_KEY` en `.env.example`
-- Verificar `pnpm dev` → `/admin` con usuario admin
-
----
+Migración corrida. `/admin` funcional contra Neon.
 
 ## SDD globales (6 flujos)
 
-1. **SDD-1** scaffold (1A–1E) — **en curso**
-2. **SDD-2** `payload-clinical-schema` — colecciones desde ERD ← **siguiente bloque principal**
-3. **SDD-3** taxonomy-seed
+1. **SDD-1** scaffold (1A–1E) — ✅ (1E diferido)
+2. **SDD-2** `payload-clinical-schema` — ✅
+3. **SDD-3** taxonomy-seed ← **SIGUIENTE**
 4. **SDD-4** product-extractor-local
 5. **SDD-5** payload-loader-mcp
 6. **SDD-6** agent-payload-tools (Local API, reemplazar `registry.json`)
@@ -114,10 +104,13 @@ pnpm build
 
 ## Siguiente sesión — orden sugerido
 
-1. Cerrar restos SDD-1: MCP plugin, codemod async (1B), copiar docs (1C), Prisma (1E) — o saltar Prisma si el foco es solo schema.
-2. `/sdd-init payload-clinical-schema` + `/grill-me` SDD-2 contra ERD.
-3. Implementar colecciones maestras + `products` con `validationStatus`, `presentaciones[]` híbrido.
-4. `pnpm db:migrate:create` + `pnpm db:migrate` + `pnpm generate:types`.
+1. `/sdd-init taxonomy-seed` — scripts seed para `application-zones`, `administration-routes`, `application-techniques`, `laboratories` con datos reales de la Dra. Sara.
+2. Definir valores reales de `tipo_producto` (select en `Products.ts`) con la doctora.
+3. SDD-1E Prisma chat (opcional — diferir si el foco es catálogo).
+
+## Nota BD
+
+El usuario prefiere correr migraciones manualmente. No ejecutar `pnpm db:migrate:create` ni `pnpm db:migrate` desde el agente.
 
 ---
 
