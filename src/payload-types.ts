@@ -64,11 +64,23 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    'payload-mcp-api-keys': PayloadMcpApiKeyAuthOperations;
   };
   blocks: {};
   collections: {
     users: User;
     media: Media;
+    laboratories: Laboratory;
+    'active-ingredients': ActiveIngredient;
+    'application-zones': ApplicationZone;
+    'administration-routes': AdministrationRoute;
+    'application-techniques': ApplicationTechnique;
+    contraindications: Contraindication;
+    'adverse-effects': AdverseEffect;
+    'clinical-notes': ClinicalNote;
+    protocols: Protocol;
+    products: Product;
+    'payload-mcp-api-keys': PayloadMcpApiKey;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +90,17 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    laboratories: LaboratoriesSelect<false> | LaboratoriesSelect<true>;
+    'active-ingredients': ActiveIngredientsSelect<false> | ActiveIngredientsSelect<true>;
+    'application-zones': ApplicationZonesSelect<false> | ApplicationZonesSelect<true>;
+    'administration-routes': AdministrationRoutesSelect<false> | AdministrationRoutesSelect<true>;
+    'application-techniques': ApplicationTechniquesSelect<false> | ApplicationTechniquesSelect<true>;
+    contraindications: ContraindicationsSelect<false> | ContraindicationsSelect<true>;
+    'adverse-effects': AdverseEffectsSelect<false> | AdverseEffectsSelect<true>;
+    'clinical-notes': ClinicalNotesSelect<false> | ClinicalNotesSelect<true>;
+    protocols: ProtocolsSelect<false> | ProtocolsSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    'payload-mcp-api-keys': PayloadMcpApiKeysSelect<false> | PayloadMcpApiKeysSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -93,13 +116,31 @@ export interface Config {
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: User | PayloadMcpApiKey;
   jobs: {
     tasks: unknown;
     workflows: unknown;
   };
 }
 export interface UserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface PayloadMcpApiKeyAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -163,6 +204,330 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "laboratories".
+ */
+export interface Laboratory {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "active-ingredients".
+ */
+export interface ActiveIngredient {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "application-zones".
+ */
+export interface ApplicationZone {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "administration-routes".
+ */
+export interface AdministrationRoute {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "application-techniques".
+ */
+export interface ApplicationTechnique {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contraindications".
+ */
+export interface Contraindication {
+  id: number;
+  description: string;
+  type: 'absoluta' | 'relativa';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "adverse-effects".
+ */
+export interface AdverseEffect {
+  id: number;
+  description: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clinical-notes".
+ */
+export interface ClinicalNote {
+  id: number;
+  type: 'indicacion_clinica' | 'cuidado_post_aplicacion' | 'advertencia_seguridad';
+  description: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "protocols".
+ */
+export interface Protocol {
+  id: number;
+  name: string;
+  zone: number | ApplicationZone;
+  route: number | AdministrationRoute;
+  technique: number | ApplicationTechnique;
+  sessionsMin?: number | null;
+  sessionsMax?: number | null;
+  frequency?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  canonicalName: string;
+  productType?: 'otro' | null;
+  laboratory: number | Laboratory;
+  activeIngredients?: (number | ActiveIngredient)[] | null;
+  contraindications?: (number | Contraindication)[] | null;
+  adverseEffects?: (number | AdverseEffect)[] | null;
+  aliases?:
+    | {
+        term: string;
+        id?: string | null;
+      }[]
+    | null;
+  validationStatus: 'PENDING' | 'NEEDS_CLINICAL_REVIEW' | 'APPROVED';
+  validationNotes?: string | null;
+  presentations?:
+    | {
+        canonicalName: string;
+        status?: ('activa' | 'descontinuada') | null;
+        aliases?:
+          | {
+              term: string;
+              id?: string | null;
+            }[]
+          | null;
+        clinicalNotes?: (number | ClinicalNote)[] | null;
+        protocols?: (number | Protocol)[] | null;
+        reconstitution?: {
+          diluentType?: string | null;
+          volumeMl?: number | null;
+          instructions?: string | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * API keys control which collections, resources, tools, and prompts MCP clients can access
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-mcp-api-keys".
+ */
+export interface PayloadMcpApiKey {
+  id: number;
+  /**
+   * The user that the API key is associated with.
+   */
+  user: number | User;
+  /**
+   * A useful label for the API key.
+   */
+  label?: string | null;
+  /**
+   * The purpose of the API key.
+   */
+  description?: string | null;
+  users?: {
+    /**
+     * Allow clients to find users.
+     */
+    find?: boolean | null;
+  };
+  media?: {
+    /**
+     * Allow clients to find media.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create media.
+     */
+    create?: boolean | null;
+  };
+  laboratories?: {
+    /**
+     * Allow clients to find laboratories.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create laboratories.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update laboratories.
+     */
+    update?: boolean | null;
+  };
+  activeIngredients?: {
+    /**
+     * Allow clients to find active-ingredients.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create active-ingredients.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update active-ingredients.
+     */
+    update?: boolean | null;
+  };
+  applicationZones?: {
+    /**
+     * Allow clients to find application-zones.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create application-zones.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update application-zones.
+     */
+    update?: boolean | null;
+  };
+  administrationRoutes?: {
+    /**
+     * Allow clients to find administration-routes.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create administration-routes.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update administration-routes.
+     */
+    update?: boolean | null;
+  };
+  applicationTechniques?: {
+    /**
+     * Allow clients to find application-techniques.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create application-techniques.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update application-techniques.
+     */
+    update?: boolean | null;
+  };
+  contraindications?: {
+    /**
+     * Allow clients to find contraindications.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create contraindications.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update contraindications.
+     */
+    update?: boolean | null;
+  };
+  adverseEffects?: {
+    /**
+     * Allow clients to find adverse-effects.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create adverse-effects.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update adverse-effects.
+     */
+    update?: boolean | null;
+  };
+  clinicalNotes?: {
+    /**
+     * Allow clients to find clinical-notes.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create clinical-notes.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update clinical-notes.
+     */
+    update?: boolean | null;
+  };
+  protocols?: {
+    /**
+     * Allow clients to find protocols.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create protocols.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update protocols.
+     */
+    update?: boolean | null;
+  };
+  products?: {
+    /**
+     * Allow clients to find products.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create products.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update products.
+     */
+    update?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
+  collection: 'payload-mcp-api-keys';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -192,12 +557,61 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'laboratories';
+        value: number | Laboratory;
+      } | null)
+    | ({
+        relationTo: 'active-ingredients';
+        value: number | ActiveIngredient;
+      } | null)
+    | ({
+        relationTo: 'application-zones';
+        value: number | ApplicationZone;
+      } | null)
+    | ({
+        relationTo: 'administration-routes';
+        value: number | AdministrationRoute;
+      } | null)
+    | ({
+        relationTo: 'application-techniques';
+        value: number | ApplicationTechnique;
+      } | null)
+    | ({
+        relationTo: 'contraindications';
+        value: number | Contraindication;
+      } | null)
+    | ({
+        relationTo: 'adverse-effects';
+        value: number | AdverseEffect;
+      } | null)
+    | ({
+        relationTo: 'clinical-notes';
+        value: number | ClinicalNote;
+      } | null)
+    | ({
+        relationTo: 'protocols';
+        value: number | Protocol;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'payload-mcp-api-keys';
+        value: number | PayloadMcpApiKey;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'payload-mcp-api-keys';
+        value: number | PayloadMcpApiKey;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -207,10 +621,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'payload-mcp-api-keys';
+        value: number | PayloadMcpApiKey;
+      };
   key?: string | null;
   value?:
     | {
@@ -274,6 +693,234 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "laboratories_select".
+ */
+export interface LaboratoriesSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "active-ingredients_select".
+ */
+export interface ActiveIngredientsSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "application-zones_select".
+ */
+export interface ApplicationZonesSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "administration-routes_select".
+ */
+export interface AdministrationRoutesSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "application-techniques_select".
+ */
+export interface ApplicationTechniquesSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contraindications_select".
+ */
+export interface ContraindicationsSelect<T extends boolean = true> {
+  description?: T;
+  type?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "adverse-effects_select".
+ */
+export interface AdverseEffectsSelect<T extends boolean = true> {
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clinical-notes_select".
+ */
+export interface ClinicalNotesSelect<T extends boolean = true> {
+  type?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "protocols_select".
+ */
+export interface ProtocolsSelect<T extends boolean = true> {
+  name?: T;
+  zone?: T;
+  route?: T;
+  technique?: T;
+  sessionsMin?: T;
+  sessionsMax?: T;
+  frequency?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  canonicalName?: T;
+  productType?: T;
+  laboratory?: T;
+  activeIngredients?: T;
+  contraindications?: T;
+  adverseEffects?: T;
+  aliases?:
+    | T
+    | {
+        term?: T;
+        id?: T;
+      };
+  validationStatus?: T;
+  validationNotes?: T;
+  presentations?:
+    | T
+    | {
+        canonicalName?: T;
+        status?: T;
+        aliases?:
+          | T
+          | {
+              term?: T;
+              id?: T;
+            };
+        clinicalNotes?: T;
+        protocols?: T;
+        reconstitution?:
+          | T
+          | {
+              diluentType?: T;
+              volumeMl?: T;
+              instructions?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-mcp-api-keys_select".
+ */
+export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
+  user?: T;
+  label?: T;
+  description?: T;
+  users?:
+    | T
+    | {
+        find?: T;
+      };
+  media?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+      };
+  laboratories?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  activeIngredients?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  applicationZones?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  administrationRoutes?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  applicationTechniques?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  contraindications?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  adverseEffects?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  clinicalNotes?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  protocols?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  products?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

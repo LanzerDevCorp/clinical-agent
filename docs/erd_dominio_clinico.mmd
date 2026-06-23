@@ -1,0 +1,116 @@
+erDiagram
+    producto {
+        int id PK
+        string nombre_canonico
+        string tipo_producto
+        int laboratorio_id FK
+    }
+    laboratorio {
+        int id PK
+        string nombre
+    }
+    ingrediente_activo {
+        int id PK
+        string nombre
+    }
+    producto_ingrediente_activo {
+        int producto_id FK
+        int ingrediente_activo_id FK
+    }
+    contraindicacion {
+        int id PK
+        int producto_id FK
+        string descripcion
+        string tipo
+    }
+    efecto_adverso {
+        int id PK
+        int producto_id FK
+        string descripcion
+    }
+    presentacion_comercial {
+        int id PK
+        int producto_id FK
+        string nombre_canonico
+        string estado_presentacion
+    }
+    indicacion_clinica {
+        int id PK
+        int presentacion_id FK
+        string descripcion
+    }
+    cuidados_post_aplicacion {
+        int id PK
+        int presentacion_id FK
+        string descripcion
+    }
+    advertencia_seguridad {
+        int id PK
+        int presentacion_id FK
+        string descripcion
+    }
+    reconstitucion_dilucion {
+        int id PK
+        int presentacion_id FK
+        string tipo_diluyente
+        float volumen_ml
+        string instrucciones
+    }
+    protocolo_aplicacion {
+        int id PK
+        int presentacion_id FK
+        int zona_id FK
+        int via_id FK
+        int tecnica_id FK
+        int sesiones_min
+        int sesiones_max
+        string frecuencia
+    }
+    zona_aplicacion {
+        int id PK
+        string nombre
+    }
+    via_administracion {
+        int id PK
+        string nombre
+    }
+    tecnica_aplicacion {
+        int id PK
+        string nombre
+    }
+    combinacion_efectiva {
+        int id PK
+        string nombre
+        string notas
+    }
+    combinacion_efectiva_producto {
+        int combinacion_id FK
+        int producto_id FK
+        string rol
+        string proporcion
+    }
+    sinonimo {
+        int id PK
+        int producto_id FK
+        int presentacion_id FK
+        string termino
+    }
+
+    laboratorio ||--o{ producto : "fabrica"
+    producto ||--o{ producto_ingrediente_activo : ""
+    ingrediente_activo ||--o{ producto_ingrediente_activo : ""
+    producto ||--o{ contraindicacion : "tiene"
+    producto ||--o{ efecto_adverso : "tiene"
+    producto ||--o{ presentacion_comercial : "tiene"
+    producto ||--o{ combinacion_efectiva_producto : "participa"
+    combinacion_efectiva ||--o{ combinacion_efectiva_producto : "incluye"
+    presentacion_comercial ||--o{ indicacion_clinica : "tiene"
+    presentacion_comercial ||--o{ cuidados_post_aplicacion : "tiene"
+    presentacion_comercial ||--o{ advertencia_seguridad : "tiene"
+    presentacion_comercial ||--o| reconstitucion_dilucion : "requiere"
+    presentacion_comercial ||--o{ protocolo_aplicacion : "tiene"
+    zona_aplicacion ||--o{ protocolo_aplicacion : "en"
+    via_administracion ||--o{ protocolo_aplicacion : "via"
+    tecnica_aplicacion ||--o{ protocolo_aplicacion : "usa"
+    producto ||--o{ sinonimo : "alias"
+    presentacion_comercial ||--o{ sinonimo : "alias"
