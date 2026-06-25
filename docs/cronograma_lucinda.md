@@ -17,14 +17,17 @@ Para garantizar la estabilidad y la calidad de la información, el desarrollo se
 
 ## Fases y Actividades del Cronograma
 
-### Semana 1: Configuración de la Plataforma y Estructura de Datos (Entorno Dev)
-* **Objetivo:** Preparar la base de datos y diseñar el panel de control del sistema de contenidos (CMS) para que coincida con los requerimientos clínicos.
+### Semana 1: Estructuración y Carga Inicial de Catálogos (Entorno Dev)
+* **Objetivo:** Definir la tipología estática de productos con la dirección clínica y poblar las tablas maestras (catálogos) en Neon DB usando extracción asistida por IA para garantizar la integridad referencial antes de la ingesta masiva.
 * **Actividades de Lucinda:**
-  - Configurar la base de datos relacional y el entorno inicial del CMS en el servidor de desarrollo.
-  - Crear los formularios y estructuras para los componentes del catálogo (laboratorios, principios activos, zonas de aplicación, vías de administración y productos).
-  - Diseñar el flujo de validación en el formulario de productos, incluyendo campos específicos para notas de revisión clínica.
-* **Puerta de Calidad (Validación Técnica - Lanzer):**
-  - Auditoría y aprobación del diseño de la estructura de base de datos antes de iniciar cualquier carga de información.
+  - **Definición de Tipos de Producto:** Colaborar con la Dra. Sara para definir la lista cerrada y estática de `productType` (ej. liofilizados, líquidos, hilos PDO, insumos, etc.) y actualizar la colección `Products.ts` en el código de Payload.
+  - **Diseño del Prompt de Extracción:** Crear el archivo `src/scripts/seed/prompt_extraccion.txt` con las instrucciones del prompt one-shot.
+  - **Extracción de Catálogos:** Ejecutar el prompt contra la base de conocimientos legacy (`faq-agent/apps/agent/lib/data/catalogs` y `/real-products`) para extraer todos los valores únicos de laboratorios, ingredientes activos, zonas de aplicación, vías de administración, técnicas de aplicación, contraindicaciones y efectos adversos.
+  - **Consolidación de Datos Semilla:** Guardar el resultado extraído en formato JSON consolidado dentro de `src/scripts/seed/` para su revisión.
+  - **Desarrollo del Script de Carga:** Crear y ejecutar `src/scripts/seed/run-seed.ts` para insertar los catálogos aprobados en la base de datos relacional Postgres usando la API local de Payload.
+* **Puertas de Calidad (Validación Técnica e Integridad):**
+  - **Puerta 1.1 (Validación del JSON de Catálogos - Dra. Sara & Lanzer):** Revisión y aprobación humana de los listados únicos extraídos en los JSON intermedios para asegurar que no haya omisiones ni nombres duplicados antes de la carga física.
+  - **Puerta 1.2 (Auditoría de Base de Datos y UX - Lanzer):** Verificación técnica de la correcta persistencia de las colecciones maestras en Neon DB y auditoría visual en el panel `/admin` de Payload para garantizar que las relaciones de los productos se rendericen correctamente.
 
 ---
 
@@ -74,9 +77,10 @@ gantt
     todayMarker on
 
     section Semana 1 · DEV
-    Configuración Base de Datos y CMS         :w1,        2026-06-24, 7d
-    Revisión de Formularios — Dra. Sara       :milestone, sara_val1, after w1, 0d
-    Validación de Estructura — Lanzer         :crit, milestone, val1, after sara_val1, 0d
+    Extracción y Consolidación de Catálogos   :w1_ext,    2026-06-24, 3d
+    Aprobación del JSON de Catálogos          :milestone, sara_val1, after w1_ext, 0d
+    Script run-seed y Carga en Neon DB        :w1_load,   after sara_val1, 3d
+    Auditoría de Consistencia y UX — Lanzer   :crit, milestone, val1, after w1_load, 1d
 
     section Semana 2 · DEV
     Script Extractor y Limpieza de Datos      :w2,       after val1, 7d
