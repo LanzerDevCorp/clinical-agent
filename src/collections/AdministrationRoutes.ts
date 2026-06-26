@@ -4,7 +4,7 @@ export const AdministrationRoutes: CollectionConfig = {
   slug: 'administration-routes',
   admin: {
     useAsTitle: 'name',
-    group: 'Taxonomías',
+    group: 'Catálogos',
   },
   fields: [
     {

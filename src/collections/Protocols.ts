@@ -4,7 +4,8 @@ export const Protocols: CollectionConfig = {
   slug: 'protocols',
   admin: {
     useAsTitle: 'name',
-    group: 'Contenido Clínico',
+    group: 'Catálogo Clínico',
+    defaultColumns: ['name', 'zone', 'route', 'technique', 'frequency'],
   },
   fields: [
     {

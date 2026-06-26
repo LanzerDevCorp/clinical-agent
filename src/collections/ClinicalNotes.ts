@@ -4,7 +4,7 @@ export const ClinicalNotes: CollectionConfig = {
   slug: 'clinical-notes',
   admin: {
     useAsTitle: 'description',
-    group: 'Contenido Clínico',
+    group: 'Catálogo Clínico',
   },
   fields: [
     {

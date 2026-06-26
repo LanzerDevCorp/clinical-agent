@@ -4,7 +4,7 @@ export const ActiveIngredients: CollectionConfig = {
   slug: 'active-ingredients',
   admin: {
     useAsTitle: 'name',
-    group: 'Catálogo',
+    group: 'Catálogos',
   },
   fields: [
     {

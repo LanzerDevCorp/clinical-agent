@@ -4,7 +4,7 @@ export const ApplicationTechniques: CollectionConfig = {
   slug: 'application-techniques',
   admin: {
     useAsTitle: 'name',
-    group: 'Taxonomías',
+    group: 'Catálogos',
   },
   fields: [
     {

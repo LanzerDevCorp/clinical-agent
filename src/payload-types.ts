@@ -306,20 +306,20 @@ export interface Protocol {
  */
 export interface Product {
   id: number;
+  validationStatus: 'PENDING' | 'APPROVED';
+  validationNotes?: string | null;
   canonicalName: string;
   productType?: 'otro' | null;
   laboratory: number | Laboratory;
   activeIngredients?: (number | ActiveIngredient)[] | null;
-  contraindications?: (number | Contraindication)[] | null;
-  adverseEffects?: (number | AdverseEffect)[] | null;
   aliases?:
     | {
         term: string;
         id?: string | null;
       }[]
     | null;
-  validationStatus: 'PENDING' | 'NEEDS_CLINICAL_REVIEW' | 'APPROVED';
-  validationNotes?: string | null;
+  contraindications?: (number | Contraindication)[] | null;
+  adverseEffects?: (number | AdverseEffect)[] | null;
   presentations?:
     | {
         canonicalName: string;
@@ -788,20 +788,20 @@ export interface ProtocolsSelect<T extends boolean = true> {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
+  validationStatus?: T;
+  validationNotes?: T;
   canonicalName?: T;
   productType?: T;
   laboratory?: T;
   activeIngredients?: T;
-  contraindications?: T;
-  adverseEffects?: T;
   aliases?:
     | T
     | {
         term?: T;
         id?: T;
       };
-  validationStatus?: T;
-  validationNotes?: T;
+  contraindications?: T;
+  adverseEffects?: T;
   presentations?:
     | T
     | {

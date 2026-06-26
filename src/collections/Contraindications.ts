@@ -4,7 +4,7 @@ export const Contraindications: CollectionConfig = {
   slug: 'contraindications',
   admin: {
     useAsTitle: 'description',
-    group: 'Contenido Clínico',
+    group: 'Catálogo Clínico',
   },
   fields: [
     {

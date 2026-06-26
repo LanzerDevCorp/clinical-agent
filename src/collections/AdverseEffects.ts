@@ -4,7 +4,7 @@ export const AdverseEffects: CollectionConfig = {
   slug: 'adverse-effects',
   admin: {
     useAsTitle: 'description',
-    group: 'Contenido Clínico',
+    group: 'Catálogo Clínico',
   },
   fields: [
     {

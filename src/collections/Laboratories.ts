@@ -4,7 +4,7 @@ export const Laboratories: CollectionConfig = {
   slug: 'laboratories',
   admin: {
     useAsTitle: 'name',
-    group: 'Catálogo',
+    group: 'Catálogos',
   },
   fields: [
     {

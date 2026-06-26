@@ -4,7 +4,7 @@ export const ApplicationZones: CollectionConfig = {
   slug: 'application-zones',
   admin: {
     useAsTitle: 'name',
-    group: 'Taxonomías',
+    group: 'Catálogos',
   },
   fields: [
     {
