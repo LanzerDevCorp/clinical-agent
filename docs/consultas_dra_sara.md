@@ -17,3 +17,25 @@ Para organizar el catálogo en el CMS y optimizar las búsquedas del agente de c
 | **Insumo de Aplicación** | Consumibles estériles desechables de aplicación. | Agujas (30G, 32G), Cánulas | |
 
 ---
+
+## 2. Traducción de Colecciones en Payload (Sidebar/Nombres)
+
+Para que el panel de administración sea completamente amigable para la Dra. Sara, se propone traducir las etiquetas de visualización de todas las colecciones en el menú lateral:
+
+| Colección (Slug) | Nombre Singular (Propuesto) | Nombre Plural (Propuesto) |
+| :--- | :--- | :--- |
+| `users` | Usuario | Usuarios |
+| `media` | Archivo Multimedia | Multimedia |
+| `laboratories` | Laboratorio | Laboratorios |
+| `active-ingredients` | Ingrediente Activo | Ingredientes Activos |
+| `application-zones` | Zona de Aplicación | Zonas de Aplicación |
+| `administration-routes` | Vía de Administración | Vías de Administración |
+| `application-techniques` | Técnica de Aplicación | Técnicas de Aplicación |
+| `contraindications` | Contraindicación | Contraindicaciones |
+| `adverse-effects` | Efecto Adverso | Efectos Adversos |
+| `clinical-notes` | Nota Clínica | Notas Clínicas |
+| `protocols` | Protocolo de Aplicación | Protocolos de Aplicación |
+| `products` | Producto | Productos |
+
+---
+
