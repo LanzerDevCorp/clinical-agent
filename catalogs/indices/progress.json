@@ -1,0 +1,19 @@
+{
+  "total": 13,
+  "processed": 13,
+  "queue": [
+    { "file": "Bioestimuladores, biorevitalizador, exosomas.md", "status": "completed", "warningsCount": 3 },
+    { "file": "capilar.md", "status": "completed", "warningsCount": 3 },
+    { "file": "Dermapen, agujas, aditamentos.md", "status": "completed", "warningsCount": 2 },
+    { "file": "despigmentantes.md", "status": "completed", "warningsCount": 2 },
+    { "file": "enzimas.md", "status": "completed", "warningsCount": 3 },
+    { "file": "hidratantes.md", "status": "completed", "warningsCount": 2 },
+    { "file": "Hilos PDO.md", "status": "completed", "warningsCount": 1 },
+    { "file": "Lipolíticos.md", "status": "completed", "warningsCount": 2 },
+    { "file": "Otros productos.md", "status": "completed", "warningsCount": 3 },
+    { "file": "regenerativos.md", "status": "completed", "warningsCount": 3 },
+    { "file": "rellenos.md", "status": "completed", "warningsCount": 6 },
+    { "file": "Skin boosters.md", "status": "completed", "warningsCount": 2 },
+    { "file": "toxinas.md", "status": "completed", "warningsCount": 3 }
+  ]
+}
