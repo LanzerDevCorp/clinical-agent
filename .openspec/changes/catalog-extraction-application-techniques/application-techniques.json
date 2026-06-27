@@ -1,0 +1,25 @@
+{
+  "slug": "application-techniques",
+  "data": [
+    { "name": "Técnica de Vectores" },
+    { "name": "Técnica de Abanico" },
+    { "name": "Técnica de Micro-punciones" },
+    { "name": "Técnica de Bolos" },
+    { "name": "Técnica de Barrido Lineal" },
+    { "name": "Técnica de Retroinyección" },
+    { "name": "Técnica de Multipunción" },
+    { "name": "Técnica de Cruz" },
+    { "name": "Técnica de Pápula" },
+    { "name": "Técnica de Ápice" },
+    { "name": "Técnica de Sándwich" },
+    { "name": "Técnica de Túnel Subcutáneo" },
+    { "name": "Técnica de Pinzamiento" },
+    { "name": "Técnica de Ectoplasma" },
+    { "name": "Técnica de Piling Profundo" },
+    { "name": "Técnica de Dérmica" },
+    { "name": "Técnica de Intradérmica" },
+    { "name": "Técnica de Hilos Tensores" },
+    { "name": "Técnica de Hilos PDO" },
+    { "name": "Técnica de Multipunción Profunda" }
+  ]
+}

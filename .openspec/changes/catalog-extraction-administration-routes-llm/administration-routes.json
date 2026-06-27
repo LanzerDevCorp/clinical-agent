@@ -1,0 +1,19 @@
+{
+  "slug": "administration-routes",
+  "data": [
+    { "name": "Dermis" },
+    { "name": "Dermis media" },
+    { "name": "Dermis profunda" },
+    { "name": "Dermis superficial" },
+    { "name": "Intradérmico" },
+    { "name": "Intramuscular" },
+    { "name": "Intravenosa" },
+    { "name": "Periostio" },
+    { "name": "Subcutáneo profundo" },
+    { "name": "Subdérmico" },
+    { "name": "Tejido adiposo" },
+    { "name": "Tejido celular subcutáneo" },
+    { "name": "Tejido celular subcutáneo superficial" },
+    { "name": "Tópico" }
+  ]
+}

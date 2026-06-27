@@ -1,0 +1,16 @@
+{
+  "slug": "laboratories",
+  "data": [
+    { "name": "Cosmoderma" },
+    { "name": "ExoCoBio" },
+    { "name": "Hugelpharma" },
+    { "name": "Maypharm" },
+    { "name": "MCCM" },
+    { "name": "Metabiomed" },
+    { "name": "PROMOITALIA" },
+    { "name": "Protox" },
+    { "name": "SOONSU" },
+    { "name": "Techderm" },
+    { "name": "WIZMEDI" }
+  ]
+}
