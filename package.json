@@ -19,7 +19,8 @@
     "db:list": "tsx --env-file=.env src/scripts/list-db-tables.ts",
     "db:drop": "tsx --env-file=.env src/scripts/drop-payload-tables.ts",
     "db:migrate:create": "tsx --env-file=.env src/scripts/run-migrate-create.ts",
-    "db:migrate": "tsx --env-file=.env src/scripts/run-migrate.ts"
+    "db:migrate": "tsx --env-file=.env src/scripts/run-migrate.ts",
+    "db:seed": "tsx --env-file=.env src/scripts/seed-catalogs.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.85.1",
