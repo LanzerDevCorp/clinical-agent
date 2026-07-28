@@ -6,3 +6,5 @@ export const PresentationRowLabel = () => {
   const index = typeof rowNumber === 'number' ? rowNumber + 1 : ''
   return data?.canonicalName || `Presentación ${index}`
 }
+
+export default PresentationRowLabel

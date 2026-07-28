@@ -1,0 +1,41 @@
+{
+  "canonicalName": "BELLATOXEL",
+  "productType": "liofilizado",
+  "laboratory": "Laboratorio sin especificar (Toxina Botulínica)",
+  "activeIngredients": [
+    "Clostridium Botulinum Tipo A 100 UI",
+    "Albúmina Sérica Humana 0.5 mg",
+    "Cloruro de Sodio 0.9 mg"
+  ],
+  "aliases": [
+    { "term": "Bellatoxel 100 UI" }
+  ],
+  "validationStatus": "PENDING",
+  "validationNotes": "ALERTA CLÍNICA: BELLATOXEL no figura en la lista principal del índice de toxinas (catalogs/indices/toxinas.md). Requiere confirmación del laboratorio desarrollador/distribuidor exacto por la Dra. Sara.",
+  "contraindications": [
+    "Hipersensibilidad a alguno de los componentes",
+    "Trastornos neuromusculares (miastenia gravis, síndrome de Lambert-Eaton, ELA)",
+    "Embarazo o lactancia",
+    "Infección en el sitio de inyección"
+  ],
+  "adverseEffects": [
+    "Dolor local",
+    "Hematoma",
+    "Inflamación",
+    "Sensación de presión",
+    "Debilidad muscular localizada",
+    "Debilidad en músculos cercanos por difusión de la toxina"
+  ],
+  "presentations": [
+    {
+      "canonicalName": "Vial Liofilizado 100 UI",
+      "status": "activa",
+      "aliases": [{ "term": "Vial 100 UI" }],
+      "reconstitution": {
+        "diluentType": "Solución Salina Estéril 0.9% sin conservadores (refrigerada)",
+        "volumeMl": 1.0,
+        "instructions": "Inyectar lentamente 1 mL de solución salina estéril al 0.9% refrigerada sin agitar para obtener 10 UI por cada 0.1 mL. Usar preferentemente en 24h (máximo 7-10 días en refrigeración)."
+      }
+    }
+  ]
+}

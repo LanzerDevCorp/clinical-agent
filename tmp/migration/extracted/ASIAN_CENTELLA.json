@@ -1,0 +1,33 @@
+{
+  "canonicalName": "ASIAN CENTELLA",
+  "productType": "liquido",
+  "laboratory": "Laboratorio MCCM",
+  "activeIngredients": [
+    "Extracto de Centella Asiática"
+  ],
+  "aliases": [
+    { "term": "MCCM ASIAN CENTELLA" },
+    { "term": "Centella Asiática" }
+  ],
+  "validationStatus": "PENDING",
+  "validationNotes": "Tratamiento de Mesoterapia Lipolítica y anticelulitis. Previene y trata la fibrosis.",
+  "contraindications": [
+    "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "Hipersensibilidad a cualquiera de los componentes de la fórmula",
+    "Pacientes con enfermedades crónicas en descontrol",
+    "Embarazo y lactancia"
+  ],
+  "adverseEffects": [
+    "Dolor leve en sitio de punción",
+    "Enrojecimiento leve",
+    "Prurito leve"
+  ],
+  "presentations": [
+    {
+      "canonicalName": "Ampolleta 5 ml",
+      "status": "activa",
+      "aliases": [{ "term": "Ampolleta 5ml" }],
+      "reconstitution": null
+    }
+  ]
+}

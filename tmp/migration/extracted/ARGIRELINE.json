@@ -1,0 +1,33 @@
+{
+  "canonicalName": "ARGIRELINE",
+  "productType": "liquido",
+  "laboratory": "Laboratorio MCCM",
+  "activeIngredients": [
+    "Argireline (Hexapéptido)"
+  ],
+  "aliases": [
+    { "term": "MCCM ARGIRELINE" },
+    { "term": "ARGIBTX" }
+  ],
+  "validationStatus": "PENDING",
+  "validationNotes": "Mencionado como ARGIBTX en el índice del catálogo de mesoterapia regenerativa.",
+  "contraindications": [
+    "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "Hipersensibilidad a cualquiera de los componentes de la fórmula",
+    "Pacientes hipertensos o con enfermedades crónicas en descontrol",
+    "Embarazo y lactancia"
+  ],
+  "adverseEffects": [
+    "Dolor leve en sitio de punción",
+    "Enrojecimiento leve",
+    "Prurito leve"
+  ],
+  "presentations": [
+    {
+      "canonicalName": "Ampolleta 2 ml",
+      "status": "activa",
+      "aliases": [{ "term": "Ampolleta 2ml" }],
+      "reconstitution": null
+    }
+  ]
+}

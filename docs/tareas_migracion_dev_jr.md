@@ -44,18 +44,19 @@ Diseñar e implementar un agente o script extractor encargado de leer los datos 
 
 ### Entradas y Salidas
 * **Entradas:**
-  - Archivos Markdown de productos reales: `apps/agent/lib/data/real-products/*.md`
-  - Catálogos clínicos de categorías: `apps/agent/lib/data/catalogs/*.md`
-  - Esquema final de la colección `Products` de Payload (definido en TypeScript/JSON).
+  - Archivos Markdown de productos reales: `real-products/*.md`
+  - Catálogos clínicos de categorías: `catalogs/*.md`
+  - Índices detallados por categoría: `catalogs/indices/*.md`
+  - Esquema final de la colección `Products` de Payload (`src/collections/Products.ts`).
 * **Salidas:**
   - Un directorio de archivos JSON individuales (uno por cada línea de producto) guardados temporalmente en `tmp/migration/extracted/`.
   - Estructura del JSON debe coincidir 1:1 con los campos requeridos por Payload.
 
 ### Criterios de Aceptación
-- [ ] El extractor procesa las 66 fichas comerciales de origen sin abortar por errores de formato.
+- [ ] El extractor procesa las fichas comerciales en **lotes de máximo 10 productos** por iteración para permitir la revisión clínica de la Dra. Sara.
 - [ ] Cada JSON resultante valida correctamente contra el esquema de TypeScript de la colección de Payload.
-- [ ] No se pierde información textual al convertir los bloques clínicos a texto plano en español (no usar estructuras Lexical complejas de Payload, solo strings planos).
-- [ ] Todos los nombres de variantes y productos están normalizados.
+- [ ] No se pierde información textual al convertir los bloques clínicos a texto plano en español.
+- [ ] Todos los nombres de variantes y productos están normalizados en mayúsculas (`UPPERCASE`).
 
 ---
 

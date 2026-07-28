@@ -1,0 +1,32 @@
+{
+  "canonicalName": "AEC",
+  "productType": "liquido",
+  "laboratory": "Laboratorio MCCM",
+  "activeIngredients": [
+    "Vitamina A (Retinol)",
+    "Vitamina E (Tocopherol)",
+    "Vitamina C (Ácido Ascórbico)"
+  ],
+  "aliases": [
+    { "term": "MCCM AEC" }
+  ],
+  "validationStatus": "PENDING",
+  "validationNotes": null,
+  "contraindications": [
+    "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "Intolerancia individual a cualquiera de los componentes"
+  ],
+  "adverseEffects": [
+    "Dolor leve en sitio de punción",
+    "Enrojecimiento leve",
+    "Prurito leve"
+  ],
+  "presentations": [
+    {
+      "canonicalName": "Ampolleta 5 ml",
+      "status": "activa",
+      "aliases": [{ "term": "Ampolleta 5ml" }],
+      "reconstitution": null
+    }
+  ]
+}

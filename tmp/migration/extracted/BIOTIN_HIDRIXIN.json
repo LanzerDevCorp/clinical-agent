@@ -1,0 +1,33 @@
+{
+  "canonicalName": "BIOTIN HIDRIXIN",
+  "productType": "liquido",
+  "laboratory": "Laboratorio MCCM",
+  "activeIngredients": [
+    "Vitamina B7 (Biotina)"
+  ],
+  "aliases": [
+    { "term": "MCCM BIOTIN HIDRIXIN" },
+    { "term": "Biotin Hidrixin" }
+  ],
+  "validationStatus": "PENDING",
+  "validationNotes": "Tratamiento de Mesoterapia Capilar. Astringente natural del cuero cabelludo, fortalece folículo piloso.",
+  "contraindications": [
+    "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "Hipersensibilidad a cualquiera de los componentes de la fórmula",
+    "Pacientes con enfermedades crónicas en descontrol",
+    "Embarazo y lactancia"
+  ],
+  "adverseEffects": [
+    "Dolor leve en sitio de punción",
+    "Enrojecimiento leve",
+    "Prurito leve"
+  ],
+  "presentations": [
+    {
+      "canonicalName": "Ampolleta 2 ml",
+      "status": "activa",
+      "aliases": [{ "term": "Ampolleta 2ml" }],
+      "reconstitution": null
+    }
+  ]
+}

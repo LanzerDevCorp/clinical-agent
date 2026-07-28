@@ -1,0 +1,42 @@
+{
+  "canonicalName": "ANTIAGING",
+  "productType": "liquido",
+  "laboratory": "Laboratorio MCCM",
+  "activeIngredients": [
+    "Ácido Hialurónico",
+    "Pantenol",
+    "DMAE",
+    "Silicio Orgánico",
+    "Centella Asiática"
+  ],
+  "aliases": [
+    { "term": "MCCM ANTIAGING" }
+  ],
+  "validationStatus": "PENDING",
+  "validationNotes": null,
+  "contraindications": [
+    "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "Hipersensibilidad a cualquiera de los componentes de la fórmula",
+    "Pacientes hipertensos o con enfermedades crónicas en descontrol",
+    "Embarazo y lactancia"
+  ],
+  "adverseEffects": [
+    "Dolor leve en sitio de punción",
+    "Enrojecimiento leve",
+    "Prurito leve"
+  ],
+  "presentations": [
+    {
+      "canonicalName": "Ampolleta 5 ml",
+      "status": "activa",
+      "aliases": [{ "term": "Ampolleta 5ml" }],
+      "reconstitution": null
+    },
+    {
+      "canonicalName": "Vial 10 ml",
+      "status": "activa",
+      "aliases": [{ "term": "Vial 10ml" }],
+      "reconstitution": null
+    }
+  ]
+}

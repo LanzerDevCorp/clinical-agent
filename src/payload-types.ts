@@ -309,7 +309,7 @@ export interface Product {
   validationStatus: 'PENDING' | 'APPROVED';
   validationNotes?: string | null;
   canonicalName: string;
-  productType?: 'otro' | null;
+  productType?: ('liofilizado' | 'liquido' | 'hilos_pdo' | 'dispositivo_medico' | 'insumo' | 'otro') | null;
   laboratory: number | Laboratory;
   activeIngredients?: (number | ActiveIngredient)[] | null;
   aliases?:
