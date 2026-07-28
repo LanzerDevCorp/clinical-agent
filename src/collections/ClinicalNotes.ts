@@ -3,12 +3,21 @@ import type { CollectionConfig } from 'payload'
 export const ClinicalNotes: CollectionConfig = {
   slug: 'clinical-notes',
   labels: {
-    singular: 'Nota Clínica',
-    plural: 'Notas Clínicas',
+    singular: {
+      es: 'Nota Clínica',
+      en: 'Nota Clínica',
+    },
+    plural: {
+      es: 'Notas Clínicas',
+      en: 'Notas Clínicas',
+    },
   },
   admin: {
     useAsTitle: 'description',
-    group: 'Seguridad Clínica',
+    group: {
+      es: 'Seguridad Clínica',
+      en: 'Seguridad Clínica',
+    },
   },
   fields: [
     {

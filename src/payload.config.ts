@@ -23,10 +23,11 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 import { es } from 'payload/i18n/es'
+import { en } from 'payload/i18n/en'
 
 export default buildConfig({
   i18n: {
-    supportedLanguages: { es },
+    supportedLanguages: { es, en },
     fallbackLanguage: 'es',
   },
   admin: {

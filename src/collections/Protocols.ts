@@ -3,12 +3,21 @@ import type { CollectionConfig } from 'payload'
 export const Protocols: CollectionConfig = {
   slug: 'protocols',
   labels: {
-    singular: 'Protocolo de Aplicación',
-    plural: 'Protocolos de Aplicación',
+    singular: {
+      es: 'Protocolo de Aplicación',
+      en: 'Protocolo de Aplicación',
+    },
+    plural: {
+      es: 'Protocolos de Aplicación',
+      en: 'Protocolos de Aplicación',
+    },
   },
   admin: {
     useAsTitle: 'name',
-    group: 'Catálogo Clínico',
+    group: {
+      es: 'Catálogo Clínico',
+      en: 'Catálogo Clínico',
+    },
     defaultColumns: ['name', 'zone', 'route', 'technique', 'frequency'],
   },
   fields: [

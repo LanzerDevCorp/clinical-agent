@@ -3,12 +3,21 @@ import type { CollectionConfig } from 'payload'
 export const AdverseEffects: CollectionConfig = {
   slug: 'adverse-effects',
   labels: {
-    singular: 'Efecto Adverso',
-    plural: 'Efectos Adversos',
+    singular: {
+      es: 'Efecto Adverso',
+      en: 'Efecto Adverso',
+    },
+    plural: {
+      es: 'Efectos Adversos',
+      en: 'Efectos Adversos',
+    },
   },
   admin: {
     useAsTitle: 'description',
-    group: 'Seguridad Clínica',
+    group: {
+      es: 'Seguridad Clínica',
+      en: 'Seguridad Clínica',
+    },
   },
   fields: [
     {

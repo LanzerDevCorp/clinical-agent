@@ -3,12 +3,21 @@ import type { CollectionConfig } from 'payload'
 export const AdministrationRoutes: CollectionConfig = {
   slug: 'administration-routes',
   labels: {
-    singular: 'Vía de Administración',
-    plural: 'Vías de Administración',
+    singular: {
+      es: 'Vía de Administración',
+      en: 'Vía de Administración',
+    },
+    plural: {
+      es: 'Vías de Administración',
+      en: 'Vías de Administración',
+    },
   },
   admin: {
     useAsTitle: 'name',
-    group: 'Catálogos Maestros',
+    group: {
+      es: 'Catálogos Maestros',
+      en: 'Catálogos Maestros',
+    },
   },
   fields: [
     {

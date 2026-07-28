@@ -3,11 +3,20 @@ import type { CollectionConfig } from 'payload'
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: {
-    singular: 'Archivo Multimedia',
-    plural: 'Multimedia',
+    singular: {
+      es: 'Archivo Multimedia',
+      en: 'Archivo Multimedia',
+    },
+    plural: {
+      es: 'Multimedia',
+      en: 'Multimedia',
+    },
   },
   admin: {
-    group: 'Catálogo Clínico',
+    group: {
+      es: 'Catálogo Clínico',
+      en: 'Catálogo Clínico',
+    },
   },
   access: {
     read: () => true,

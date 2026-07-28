@@ -3,12 +3,21 @@ import type { CollectionConfig } from 'payload'
 export const ApplicationZones: CollectionConfig = {
   slug: 'application-zones',
   labels: {
-    singular: 'Zona de Aplicación',
-    plural: 'Zonas de Aplicación',
+    singular: {
+      es: 'Zona de Aplicación',
+      en: 'Zona de Aplicación',
+    },
+    plural: {
+      es: 'Zonas de Aplicación',
+      en: 'Zonas de Aplicación',
+    },
   },
   admin: {
     useAsTitle: 'name',
-    group: 'Catálogos Maestros',
+    group: {
+      es: 'Catálogos Maestros',
+      en: 'Catálogos Maestros',
+    },
   },
   fields: [
     {

@@ -3,12 +3,21 @@ import type { CollectionConfig } from 'payload'
 export const ActiveIngredients: CollectionConfig = {
   slug: 'active-ingredients',
   labels: {
-    singular: 'Ingrediente Activo',
-    plural: 'Ingredientes Activos',
+    singular: {
+      es: 'Ingrediente Activo',
+      en: 'Ingrediente Activo',
+    },
+    plural: {
+      es: 'Ingredientes Activos',
+      en: 'Ingredientes Activos',
+    },
   },
   admin: {
     useAsTitle: 'name',
-    group: 'Catálogos Maestros',
+    group: {
+      es: 'Catálogos Maestros',
+      en: 'Catálogos Maestros',
+    },
   },
   fields: [
     {

@@ -3,12 +3,21 @@ import type { CollectionConfig } from 'payload'
 export const ApplicationTechniques: CollectionConfig = {
   slug: 'application-techniques',
   labels: {
-    singular: 'Técnica de Aplicación',
-    plural: 'Técnicas de Aplicación',
+    singular: {
+      es: 'Técnica de Aplicación',
+      en: 'Técnica de Aplicación',
+    },
+    plural: {
+      es: 'Técnicas de Aplicación',
+      en: 'Técnicas de Aplicación',
+    },
   },
   admin: {
     useAsTitle: 'name',
-    group: 'Catálogos Maestros',
+    group: {
+      es: 'Catálogos Maestros',
+      en: 'Catálogos Maestros',
+    },
   },
   fields: [
     {

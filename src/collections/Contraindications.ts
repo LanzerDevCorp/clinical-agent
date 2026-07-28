@@ -3,12 +3,21 @@ import type { CollectionConfig } from 'payload'
 export const Contraindications: CollectionConfig = {
   slug: 'contraindications',
   labels: {
-    singular: 'Contraindicación',
-    plural: 'Contraindicaciones',
+    singular: {
+      es: 'Contraindicación',
+      en: 'Contraindicación',
+    },
+    plural: {
+      es: 'Contraindicaciones',
+      en: 'Contraindicaciones',
+    },
   },
   admin: {
     useAsTitle: 'description',
-    group: 'Seguridad Clínica',
+    group: {
+      es: 'Seguridad Clínica',
+      en: 'Seguridad Clínica',
+    },
   },
   fields: [
     {

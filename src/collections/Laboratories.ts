@@ -3,12 +3,21 @@ import type { CollectionConfig } from 'payload'
 export const Laboratories: CollectionConfig = {
   slug: 'laboratories',
   labels: {
-    singular: 'Laboratorio',
-    plural: 'Laboratorios',
+    singular: {
+      es: 'Laboratorio',
+      en: 'Laboratorio',
+    },
+    plural: {
+      es: 'Laboratorios',
+      en: 'Laboratorios',
+    },
   },
   admin: {
     useAsTitle: 'name',
-    group: 'Catálogos Maestros',
+    group: {
+      es: 'Catálogos Maestros',
+      en: 'Catálogos Maestros',
+    },
   },
   fields: [
     {

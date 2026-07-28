@@ -3,12 +3,21 @@ import type { CollectionConfig } from 'payload'
 export const Products: CollectionConfig = {
   slug: 'products',
   labels: {
-    singular: 'Producto',
-    plural: 'Productos',
+    singular: {
+      es: 'Producto',
+      en: 'Producto',
+    },
+    plural: {
+      es: 'Productos',
+      en: 'Productos',
+    },
   },
   admin: {
     useAsTitle: 'canonicalName',
-    group: 'Catálogo Clínico',
+    group: {
+      es: 'Catálogo Clínico',
+      en: 'Catálogo Clínico',
+    },
     defaultColumns: ['canonicalName', 'productType', 'laboratory', 'validationStatus'],
   },
   fields: [
