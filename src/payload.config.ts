@@ -22,9 +22,16 @@ import { Products } from './collections/Products'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+import { es } from 'payload/i18n/es'
+
 export default buildConfig({
+  i18n: {
+    supportedLanguages: { es },
+    fallbackLanguage: 'es',
+  },
   admin: {
     user: Users.slug,
+    dateFormat: "d 'de' MMMM 'de' yyyy, h:mm a",
     importMap: {
       baseDir: path.resolve(dirname),
     },

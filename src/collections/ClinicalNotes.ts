@@ -2,13 +2,18 @@ import type { CollectionConfig } from 'payload'
 
 export const ClinicalNotes: CollectionConfig = {
   slug: 'clinical-notes',
+  labels: {
+    singular: 'Nota Clínica',
+    plural: 'Notas Clínicas',
+  },
   admin: {
     useAsTitle: 'description',
-    group: 'Catálogo Clínico',
+    group: 'Seguridad Clínica',
   },
   fields: [
     {
       name: 'type',
+      label: 'Tipo de nota clínica',
       type: 'select',
       required: true,
       options: [
@@ -19,6 +24,7 @@ export const ClinicalNotes: CollectionConfig = {
     },
     {
       name: 'description',
+      label: 'Descripción',
       type: 'textarea',
       required: true,
     },
