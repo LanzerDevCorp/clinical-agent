@@ -19,7 +19,22 @@ export const Products: CollectionConfig = {
       en: 'Catálogo Clínico',
     },
     defaultColumns: ['canonicalName', 'productType', 'laboratory', 'validationStatus'],
+    components: {
+      edit: {
+        beforeDocumentControls: ['@/components/ProductPdfAction'],
+      },
+    },
   },
+  endpoints: [
+    {
+      path: '/:id/pdf',
+      method: 'get',
+      handler: async (req) => {
+        const { createProductPdfResponse } = await import('@/lib/product-pdf/endpoint')
+        return createProductPdfResponse(req, String(req.routeParams?.id ?? ''))
+      },
+    },
+  ],
   fields: [
     {
       name: 'validationStatus',
