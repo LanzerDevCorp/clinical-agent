@@ -55,6 +55,17 @@ Esta skill define el comportamiento del **Agente Extractor**, encargado de proce
       "canonicalName": "NOMBRE_PRESENTACION",
       "status": "activa",
       "aliases": [{ "term": "Sinonimo Presentacion" }],
+      "protocols": [
+        {
+          "name": "Nombre descriptivo del protocolo de aplicación",
+          "zone": "Zona de aplicación (ej: Facial, Corporal, Cuero Cabelludo)",
+          "route": "Vía de administración (ej: Intradérmica, Subcutánea, Intramuscular)",
+          "technique": "Técnica (ej: Mesoterapia / Dermapen, Inyección Punto a Punto)",
+          "sessionsMin": 4,
+          "sessionsMax": 6,
+          "frequency": "Frecuencia (ej: Cada 2 semanas)"
+        }
+      ],
       "reconstitution": {
         "diluentType": "Solución Fisiológica 0.9%",
         "volumeMl": 2.5,

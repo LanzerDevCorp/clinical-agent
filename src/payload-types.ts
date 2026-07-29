@@ -291,9 +291,9 @@ export interface ClinicalNote {
 export interface Protocol {
   id: number;
   name: string;
-  zone: number | ApplicationZone;
-  route: number | AdministrationRoute;
-  technique: number | ApplicationTechnique;
+  zones: (number | ApplicationZone)[];
+  routes: (number | AdministrationRoute)[];
+  techniques: (number | ApplicationTechnique)[];
   sessionsMin?: number | null;
   sessionsMax?: number | null;
   frequency?: string | null;
@@ -774,9 +774,9 @@ export interface ClinicalNotesSelect<T extends boolean = true> {
  */
 export interface ProtocolsSelect<T extends boolean = true> {
   name?: T;
-  zone?: T;
-  route?: T;
-  technique?: T;
+  zones?: T;
+  routes?: T;
+  techniques?: T;
   sessionsMin?: T;
   sessionsMax?: T;
   frequency?: T;

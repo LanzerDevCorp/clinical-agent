@@ -7,10 +7,10 @@
   ],
   "aliases": [
     { "term": "MCCM ARTICHOKE" },
-    { "term": "Alcachofa" }
+    { "term": "Extracto de Alcachofa" }
   ],
   "validationStatus": "PENDING",
-  "validationNotes": "Tratamiento de Mesoterapia Lipolítica. Propiedades desintoxicantes y diuréticas.",
+  "validationNotes": null,
   "contraindications": [
     "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
     "Hipersensibilidad a cualquiera de los componentes de la fórmula",
@@ -27,6 +27,17 @@
       "canonicalName": "Ampolleta 5 ml",
       "status": "activa",
       "aliases": [{ "term": "Ampolleta 5ml" }],
+      "protocols": [
+        {
+          "name": "Protocolo Lipolítico y Drenante Alcachofa",
+          "zones": ["Corporal", "Grasa Localizada", "Celulitis Edematosa"],
+          "routes": ["Subcutánea", "Tejido Adiposo"],
+          "techniques": ["Mesoterapia Corporal"],
+          "sessionsMin": 4,
+          "sessionsMax": 6,
+          "frequency": "Cada 2 semanas"
+        }
+      ],
       "reconstitution": null
     }
   ]

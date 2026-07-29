@@ -31,6 +31,17 @@
       "canonicalName": "Vial Liofilizado 100 UI",
       "status": "activa",
       "aliases": [{ "term": "Vial 100 UI" }],
+      "protocols": [
+        {
+          "name": "Protocolo Relajación Muscular Bellatoxel",
+          "zones": ["Músculos Faciales", "Zonas Terapéuticas"],
+          "routes": ["Intramuscular"],
+          "techniques": ["Inyección Punto a Punto"],
+          "sessionsMin": 1,
+          "sessionsMax": 1,
+          "frequency": "Cada 4 a 6 meses"
+        }
+      ],
       "reconstitution": {
         "diluentType": "Solución Salina Estéril 0.9% sin conservadores (refrigerada)",
         "volumeMl": 1.0,

@@ -3,19 +3,17 @@
   "productType": "liquido",
   "laboratory": "Laboratorio MCCM",
   "activeIngredients": [
-    "Vitamina B7 (Biotina)"
+    "Biotina (Vitamina B7 / Vitamina H)"
   ],
   "aliases": [
     { "term": "MCCM BIOTIN HIDRIXIN" },
-    { "term": "Biotin Hidrixin" }
+    { "term": "Biotina MCCM" }
   ],
   "validationStatus": "PENDING",
-  "validationNotes": "Tratamiento de Mesoterapia Capilar. Astringente natural del cuero cabelludo, fortalece folículo piloso.",
+  "validationNotes": null,
   "contraindications": [
     "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
-    "Hipersensibilidad a cualquiera de los componentes de la fórmula",
-    "Pacientes con enfermedades crónicas en descontrol",
-    "Embarazo y lactancia"
+    "Intolerancia individual a cualquiera de los componentes"
   ],
   "adverseEffects": [
     "Dolor leve en sitio de punción",
@@ -27,6 +25,17 @@
       "canonicalName": "Ampolleta 2 ml",
       "status": "activa",
       "aliases": [{ "term": "Ampolleta 2ml" }],
+      "protocols": [
+        {
+          "name": "Protocolo Fortalecedor Capilar Biotin Hidrixin",
+          "zones": ["Cuero Cabelludo"],
+          "routes": ["Intradérmica"],
+          "techniques": ["Mesoterapia Capilar", "Dermapen"],
+          "sessionsMin": 6,
+          "sessionsMax": 12,
+          "frequency": "Cada 2 semanas por 3-6 meses"
+        }
+      ],
       "reconstitution": null
     }
   ]

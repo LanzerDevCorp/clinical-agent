@@ -30,12 +30,34 @@
       "canonicalName": "Ampolleta 5 ml",
       "status": "activa",
       "aliases": [{ "term": "Ampolleta 5ml" }],
+      "protocols": [
+        {
+          "name": "Protocolo Rejuvenecimiento Integral Antiaging",
+          "zones": ["Facial", "Cuello"],
+          "routes": ["Intradérmica"],
+          "techniques": ["Mesoterapia", "Dermapen"],
+          "sessionsMin": 4,
+          "sessionsMax": 6,
+          "frequency": "Cada 2 semanas"
+        }
+      ],
       "reconstitution": null
     },
     {
       "canonicalName": "Vial 10 ml",
       "status": "activa",
       "aliases": [{ "term": "Vial 10ml" }],
+      "protocols": [
+        {
+          "name": "Protocolo Rejuvenecimiento Integral Antiaging",
+          "zones": ["Facial", "Cuello"],
+          "routes": ["Intradérmica"],
+          "techniques": ["Mesoterapia", "Dermapen"],
+          "sessionsMin": 4,
+          "sessionsMax": 6,
+          "frequency": "Cada 2 semanas"
+        }
+      ],
       "reconstitution": null
     }
   ]

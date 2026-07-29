@@ -18,7 +18,7 @@ export const Protocols: CollectionConfig = {
       es: 'Catálogo Clínico',
       en: 'Catálogo Clínico',
     },
-    defaultColumns: ['name', 'zone', 'route', 'technique', 'frequency'],
+    defaultColumns: ['name', 'frequency'],
   },
   fields: [
     {
@@ -28,24 +28,27 @@ export const Protocols: CollectionConfig = {
       required: true,
     },
     {
-      name: 'zone',
-      label: 'Zona de aplicación',
+      name: 'zones',
+      label: 'Zonas de aplicación',
       type: 'relationship',
       relationTo: 'application-zones',
+      hasMany: true,
       required: true,
     },
     {
-      name: 'route',
-      label: 'Vía de administración',
+      name: 'routes',
+      label: 'Vías de administración',
       type: 'relationship',
       relationTo: 'administration-routes',
+      hasMany: true,
       required: true,
     },
     {
-      name: 'technique',
-      label: 'Técnica de aplicación',
+      name: 'techniques',
+      label: 'Técnicas de aplicación',
       type: 'relationship',
       relationTo: 'application-techniques',
+      hasMany: true,
       required: true,
     },
     {

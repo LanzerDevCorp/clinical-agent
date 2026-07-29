@@ -7,10 +7,10 @@
   ],
   "aliases": [
     { "term": "MCCM ARGIRELINE" },
-    { "term": "ARGIBTX" }
+    { "term": "ArgiBTX" }
   ],
   "validationStatus": "PENDING",
-  "validationNotes": "Mencionado como ARGIBTX en el índice del catálogo de mesoterapia regenerativa.",
+  "validationNotes": null,
   "contraindications": [
     "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
     "Hipersensibilidad a cualquiera de los componentes de la fórmula",
@@ -27,6 +27,17 @@
       "canonicalName": "Ampolleta 2 ml",
       "status": "activa",
       "aliases": [{ "term": "Ampolleta 2ml" }],
+      "protocols": [
+        {
+          "name": "Protocolo Antiarrugas Botox-Like Argireline",
+          "zones": ["Frente", "Entrecejo", "Periocular"],
+          "routes": ["Intradérmica"],
+          "techniques": ["Mesoterapia puntual en arruga", "Dermapen"],
+          "sessionsMin": 4,
+          "sessionsMax": 6,
+          "frequency": "Cada 2 semanas"
+        }
+      ],
       "reconstitution": null
     }
   ]
