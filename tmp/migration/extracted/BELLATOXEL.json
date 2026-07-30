@@ -8,7 +8,9 @@
     "Cloruro de Sodio 0.9 mg"
   ],
   "aliases": [
-    { "term": "Bellatoxel 100 UI" }
+    {
+      "term": "Bellatoxel 100 UI"
+    }
   ],
   "validationStatus": "PENDING",
   "validationNotes": "ALERTA CLÍNICA: BELLATOXEL no figura en la lista principal del índice de toxinas (catalogs/indices/toxinas.md). Requiere confirmación del laboratorio desarrollador/distribuidor exacto por la Dra. Sara.",
@@ -30,13 +32,24 @@
     {
       "canonicalName": "Vial Liofilizado 100 UI",
       "status": "activa",
-      "aliases": [{ "term": "Vial 100 UI" }],
+      "aliases": [
+        {
+          "term": "Vial 100 UI"
+        }
+      ],
       "protocols": [
         {
           "name": "Protocolo Relajación Muscular Bellatoxel",
-          "zones": ["Músculos Faciales", "Zonas Terapéuticas"],
-          "routes": ["Intramuscular"],
-          "techniques": ["Inyección Punto a Punto"],
+          "zones": [
+            "Músculos Faciales",
+            "Zonas Terapéuticas"
+          ],
+          "routes": [
+            "Intramuscular"
+          ],
+          "techniques": [
+            "Inyección Punto a Punto"
+          ],
           "sessionsMin": 1,
           "sessionsMax": 1,
           "frequency": "Cada 4 a 6 meses"
@@ -44,9 +57,12 @@
       ],
       "reconstitution": {
         "diluentType": "Solución Salina Estéril 0.9% sin conservadores (refrigerada)",
-        "volumeMl": 1.0,
+        "volumeMl": 1,
         "instructions": "Inyectar lentamente 1 mL de solución salina estéril al 0.9% refrigerada sin agitar para obtener 10 UI por cada 0.1 mL. Usar preferentemente en 24h (máximo 7-10 días en refrigeración)."
       }
     }
-  ]
+  ],
+  "visibleEffectsOnset": "A partir de 3 a 7 días",
+  "effectDuration": "De 4 a 6 meses",
+  "recommendedDose": "100 UI / 1 mL (10 UI por 0.1 mL). Uso médico especializado."
 }

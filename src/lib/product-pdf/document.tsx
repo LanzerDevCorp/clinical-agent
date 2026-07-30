@@ -62,7 +62,7 @@ function ClassifiedFields({ label, entries, labels }: {
 }
 
 export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
-  const { traceability, general, clinicalSafety, presentations } = model
+  const { traceability, general, specifications, clinicalSafety, presentations } = model
   const pending = traceability.validationStatus === 'PENDING'
 
   return (
@@ -85,6 +85,14 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
           <Field label="Laboratorio" value={general.laboratory} />
           <Field label="Ingredientes activos" value={general.activeIngredients} />
           <Field label="Sinónimos" value={general.aliases} />
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.heading}>Especificaciones técnicas</Text>
+          <Field label="Inicio de efectos visibles" value={specifications.visibleEffectsOnset} />
+          <Field label="Duración del efecto" value={specifications.effectDuration} />
+          <Field label="Dosis recomendada y calibre de aguja" value={specifications.recommendedDose} />
+          <Field label="Profundidad de inyección" value={specifications.injectionDepth} />
+          <Field label="Certificaciones" value={specifications.certifications} />
         </View>
         <View style={styles.section}>
           <Text style={styles.heading}>Seguridad clínica</Text>

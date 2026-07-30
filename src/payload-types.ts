@@ -340,6 +340,11 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  visibleEffectsOnset?: string | null;
+  effectDuration?: string | null;
+  recommendedDose?: string | null;
+  injectionDepth?: string | null;
+  certifications?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -824,6 +829,11 @@ export interface ProductsSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  visibleEffectsOnset?: T;
+  effectDuration?: T;
+  recommendedDose?: T;
+  injectionDepth?: T;
+  certifications?: T;
   updatedAt?: T;
   createdAt?: T;
 }

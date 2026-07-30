@@ -251,6 +251,11 @@ async function run() {
         contraindications: contraIds,
         adverseEffects: adverseIds,
         presentations: cleanedPresentations,
+        visibleEffectsOnset: (productData as any).visibleEffectsOnset || null,
+        effectDuration: (productData as any).effectDuration || null,
+        recommendedDose: (productData as any).recommendedDose || null,
+        injectionDepth: (productData as any).injectionDepth || null,
+        certifications: (productData as any).certifications || null,
       }
 
       // 6. Upsert por canonicalName

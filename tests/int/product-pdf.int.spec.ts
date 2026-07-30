@@ -180,7 +180,7 @@ describe('Product PDF document', () => {
     expect(text).toContain('Relativa')
     expect(text).toContain('Advertencia de seguridad')
     expect(text).toContain('Reconstitución / Dilución')
-    expect(text.match(/No informado/g)).toHaveLength(3)
+    expect(text.match(/No informado/g)).toHaveLength(8)
     expect(text).not.toContain('PENDIENTE DE VALIDACIÓN — NO APROBADO')
   })
 })

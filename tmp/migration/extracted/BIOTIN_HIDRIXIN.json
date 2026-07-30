@@ -6,8 +6,12 @@
     "Biotina (Vitamina B7 / Vitamina H)"
   ],
   "aliases": [
-    { "term": "MCCM BIOTIN HIDRIXIN" },
-    { "term": "Biotina MCCM" }
+    {
+      "term": "MCCM BIOTIN HIDRIXIN"
+    },
+    {
+      "term": "Biotina MCCM"
+    }
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
@@ -24,13 +28,24 @@
     {
       "canonicalName": "Ampolleta 2 ml",
       "status": "activa",
-      "aliases": [{ "term": "Ampolleta 2ml" }],
+      "aliases": [
+        {
+          "term": "Ampolleta 2ml"
+        }
+      ],
       "protocols": [
         {
           "name": "Protocolo Fortalecedor Capilar Biotin Hidrixin",
-          "zones": ["Cuero Cabelludo"],
-          "routes": ["Intradérmica"],
-          "techniques": ["Mesoterapia Capilar", "Dermapen"],
+          "zones": [
+            "Cuero Cabelludo"
+          ],
+          "routes": [
+            "Intradérmica"
+          ],
+          "techniques": [
+            "Mesoterapia Capilar",
+            "Dermapen"
+          ],
           "sessionsMin": 6,
           "sessionsMax": 12,
           "frequency": "Cada 2 semanas por 3-6 meses"
@@ -38,5 +53,7 @@
       ],
       "reconstitution": null
     }
-  ]
+  ],
+  "visibleEffectsOnset": "Progresivo en fortalecimiento capilar",
+  "effectDuration": "Según ciclo de crecimiento y sesiones capilares"
 }

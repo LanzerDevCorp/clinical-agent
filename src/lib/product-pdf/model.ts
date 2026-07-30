@@ -32,6 +32,13 @@ export type ProductPdfViewModel = {
     updatedAt: string
   }
   general: { productType: string; laboratory: string; activeIngredients: string[]; aliases: string[] }
+  specifications: {
+    visibleEffectsOnset: string
+    effectDuration: string
+    recommendedDose: string
+    injectionDepth: string
+    certifications: string
+  }
   clinicalSafety: {
     contraindications: Array<{ type: Contraindication['type']; description: string }>
     adverseEffects: string[]
@@ -88,6 +95,13 @@ export function toProductPdfViewModel(product: Product): ProductPdfViewModel {
       laboratory: laboratory.name,
       activeIngredients: named(product.activeIngredients as (number | ActiveIngredient)[] | null | undefined, 'activeIngredients'),
       aliases: records(product.aliases, (alias) => alias.term),
+    },
+    specifications: {
+      visibleEffectsOnset: value(product.visibleEffectsOnset),
+      effectDuration: value(product.effectDuration),
+      recommendedDose: value(product.recommendedDose),
+      injectionDepth: value(product.injectionDepth),
+      certifications: value(product.certifications),
     },
     clinicalSafety: {
       contraindications: (product.contraindications ?? []).map((record, index) => {

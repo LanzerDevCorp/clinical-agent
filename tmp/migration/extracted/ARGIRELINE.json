@@ -6,8 +6,12 @@
     "Argireline (Hexapéptido)"
   ],
   "aliases": [
-    { "term": "MCCM ARGIRELINE" },
-    { "term": "ArgiBTX" }
+    {
+      "term": "MCCM ARGIRELINE"
+    },
+    {
+      "term": "ArgiBTX"
+    }
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
@@ -26,13 +30,26 @@
     {
       "canonicalName": "Ampolleta 2 ml",
       "status": "activa",
-      "aliases": [{ "term": "Ampolleta 2ml" }],
+      "aliases": [
+        {
+          "term": "Ampolleta 2ml"
+        }
+      ],
       "protocols": [
         {
           "name": "Protocolo Antiarrugas Botox-Like Argireline",
-          "zones": ["Frente", "Entrecejo", "Periocular"],
-          "routes": ["Intradérmica"],
-          "techniques": ["Mesoterapia puntual en arruga", "Dermapen"],
+          "zones": [
+            "Frente",
+            "Entrecejo",
+            "Periocular"
+          ],
+          "routes": [
+            "Intradérmica"
+          ],
+          "techniques": [
+            "Mesoterapia puntual en arruga",
+            "Dermapen"
+          ],
           "sessionsMin": 4,
           "sessionsMax": 6,
           "frequency": "Cada 2 semanas"
@@ -40,5 +57,7 @@
       ],
       "reconstitution": null
     }
-  ]
+  ],
+  "visibleEffectsOnset": "Efecto Botox-Like progresivo desde las primeras aplicaciones",
+  "effectDuration": "Según protocolo de mantenimiento"
 }

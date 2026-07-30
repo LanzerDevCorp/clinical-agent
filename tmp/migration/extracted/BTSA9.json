@@ -8,8 +8,12 @@
     "Albúmina Sérica Humana 0.5 mg"
   ],
   "aliases": [
-    { "term": "BTSA 9" },
-    { "term": "BTSA9 100 UI" }
+    {
+      "term": "BTSA 9"
+    },
+    {
+      "term": "BTSA9 100 UI"
+    }
   ],
   "validationStatus": "PENDING",
   "validationNotes": "Peso molecular: 900 kDa. Pureza: 99%. Origen: Corea del Sur (Protox). Certificación KFDA. Duración del efecto: Hasta 6 meses.",
@@ -30,13 +34,24 @@
     {
       "canonicalName": "Vial Liofilizado 100 UI",
       "status": "activa",
-      "aliases": [{ "term": "Vial 100 UI" }],
+      "aliases": [
+        {
+          "term": "Vial 100 UI"
+        }
+      ],
       "protocols": [
         {
           "name": "Protocolo Relajación Muscular BTSA9",
-          "zones": ["Músculos Faciales", "Zonas Terapéuticas"],
-          "routes": ["Intramuscular"],
-          "techniques": ["Inyección Punto a Punto"],
+          "zones": [
+            "Músculos Faciales",
+            "Zonas Terapéuticas"
+          ],
+          "routes": [
+            "Intramuscular"
+          ],
+          "techniques": [
+            "Inyección Punto a Punto"
+          ],
           "sessionsMin": 1,
           "sessionsMax": 1,
           "frequency": "Cada 4 a 6 meses"
@@ -44,9 +59,13 @@
       ],
       "reconstitution": {
         "diluentType": "Solución Salina 0.9% refrigerada",
-        "volumeMl": 1.0,
+        "volumeMl": 1,
         "instructions": "Reconstituir con 1 mL de solución salina al 0.9% refrigerada para evitar choque térmico (10 UI / 0.1 mL). Aplicar preferentemente en 24h."
       }
     }
-  ]
+  ],
+  "visibleEffectsOnset": "A partir de 5 a 7 días",
+  "effectDuration": "Hasta 6 meses",
+  "recommendedDose": "Aplicación con aguja 30G x 6mm. Dosis recomendada: 2-4 UI.",
+  "certifications": "Aprobado por la KFDA (Corea del Sur)"
 }

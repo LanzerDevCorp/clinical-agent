@@ -6,8 +6,12 @@
     "Extracto de Alcachofa"
   ],
   "aliases": [
-    { "term": "MCCM ARTICHOKE" },
-    { "term": "Extracto de Alcachofa" }
+    {
+      "term": "MCCM ARTICHOKE"
+    },
+    {
+      "term": "Extracto de Alcachofa"
+    }
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
@@ -26,13 +30,26 @@
     {
       "canonicalName": "Ampolleta 5 ml",
       "status": "activa",
-      "aliases": [{ "term": "Ampolleta 5ml" }],
+      "aliases": [
+        {
+          "term": "Ampolleta 5ml"
+        }
+      ],
       "protocols": [
         {
           "name": "Protocolo Lipolítico y Drenante Alcachofa",
-          "zones": ["Corporal", "Grasa Localizada", "Celulitis Edematosa"],
-          "routes": ["Subcutánea", "Tejido Adiposo"],
-          "techniques": ["Mesoterapia Corporal"],
+          "zones": [
+            "Corporal",
+            "Grasa Localizada",
+            "Celulitis Edematosa"
+          ],
+          "routes": [
+            "Subcutánea",
+            "Tejido Adiposo"
+          ],
+          "techniques": [
+            "Mesoterapia Corporal"
+          ],
           "sessionsMin": 4,
           "sessionsMax": 6,
           "frequency": "Cada 2 semanas"
@@ -40,5 +57,7 @@
       ],
       "reconstitution": null
     }
-  ]
+  ],
+  "visibleEffectsOnset": "Progresivo con drenaje linfático",
+  "effectDuration": "Según sesiones recomendadas (4 a 8 sesiones)"
 }

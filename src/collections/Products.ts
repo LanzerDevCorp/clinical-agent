@@ -212,6 +212,36 @@ export const Products: CollectionConfig = {
             },
           ],
         },
+        {
+          label: 'Ficha Técnica',
+          fields: [
+            {
+              name: 'visibleEffectsOnset',
+              label: 'Inicio de efectos visibles',
+              type: 'text',
+            },
+            {
+              name: 'effectDuration',
+              label: 'Duración del efecto',
+              type: 'text',
+            },
+            {
+              name: 'recommendedDose',
+              label: 'Dosis recomendada y calibre de aguja',
+              type: 'textarea',
+            },
+            {
+              name: 'injectionDepth',
+              label: 'Profundidad de inyección',
+              type: 'text',
+            },
+            {
+              name: 'certifications',
+              label: 'Certificaciones / Registros sanitarios',
+              type: 'text',
+            },
+          ],
+        },
       ],
     },
   ],

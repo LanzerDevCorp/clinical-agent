@@ -10,8 +10,12 @@
     "Vitamina B12 (Cobalamina)"
   ],
   "aliases": [
-    { "term": "MCCM B-COMPLEX" },
-    { "term": "Complejo B" }
+    {
+      "term": "MCCM B-COMPLEX"
+    },
+    {
+      "term": "Complejo B"
+    }
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
@@ -28,13 +32,25 @@
     {
       "canonicalName": "Ampolleta 5 ml",
       "status": "activa",
-      "aliases": [{ "term": "Ampolleta 5ml" }],
+      "aliases": [
+        {
+          "term": "Ampolleta 5ml"
+        }
+      ],
       "protocols": [
         {
           "name": "Protocolo Revitalizante Celular B-Complex",
-          "zones": ["Facial", "Corporal"],
-          "routes": ["Intradérmica"],
-          "techniques": ["Mesoterapia", "Dermapen"],
+          "zones": [
+            "Facial",
+            "Corporal"
+          ],
+          "routes": [
+            "Intradérmica"
+          ],
+          "techniques": [
+            "Mesoterapia",
+            "Dermapen"
+          ],
           "sessionsMin": 4,
           "sessionsMax": 6,
           "frequency": "Cada 2 semanas"
@@ -42,5 +58,7 @@
       ],
       "reconstitution": null
     }
-  ]
+  ],
+  "visibleEffectsOnset": "Inmediato a progresivo",
+  "effectDuration": "Según mantenimiento celular"
 }
