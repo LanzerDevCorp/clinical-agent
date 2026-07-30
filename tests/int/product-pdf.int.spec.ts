@@ -158,8 +158,8 @@ describe('Product PDF document', () => {
     const text = tree.map(({ text }) => text).join(' ')
     for (const expected of [
       'Ácido hialurónico', '42', 'PENDING', 'Revisar ficha técnica.', 'PRODUCT-CREATED-SENTINEL', 'PRODUCT-UPDATED-SENTINEL',
-      'liofilizado', 'Laboratorio Clínico', 'Hialuronato de sodio', 'AH', 'Absoluta', 'Hipersensibilidad', 'Eritema',
-      'Presentación clínica extensa', 'activa', '1 ml', 'Indicación clínica', 'Uso profesional', 'Reconstitución / Dilución',
+      'Liofilizado', 'Laboratorio Clínico', 'Hialuronato de sodio', 'AH', 'Absoluta', 'Hipersensibilidad', 'Eritema',
+      'Presentación clínica extensa', 'Activa', '1 ml', 'Indicación clínica', 'Uso profesional', 'Reconstitución / Dilución',
       'Tipo de diluyente', 'Solución salina', 'Volumen (mL)', '2', 'Instrucciones', 'Mezclar suavemente.',
       'Protocolo facial 1', 'Protocolo facial 32', 'Mejillas', 'Intradérmica', 'Retroinyección', '2', '3', 'Cada 4 semanas',
     ]) expect(text).toContain(expected)

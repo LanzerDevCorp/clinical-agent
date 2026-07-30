@@ -23,6 +23,24 @@ const clinicalNoteLabels: Record<ProductPdfViewModel['presentations'][number]['c
   cuidado_post_aplicacion: 'Cuidado post-aplicación',
   advertencia_seguridad: 'Advertencia de seguridad',
 }
+const productTypeLabels: Record<string, string> = {
+  liofilizado: 'Liofilizado',
+  liquido: 'Líquido',
+  hilos_pdo: 'Hilos PDO',
+  dispositivo_medico: 'Dispositivo Médico',
+  insumo: 'Insumo de Aplicación',
+  otro: 'Otro',
+}
+const presentationStatusLabels: Record<string, string> = {
+  activa: 'Activa',
+  descontinuada: 'Descontinuada',
+}
+
+function formatLabel(value: string, labels: Record<string, string>): string {
+  if (!value || value === 'No informado') return value
+  if (labels[value]) return labels[value]
+  return value.charAt(0).toUpperCase() + value.slice(1)
+}
 
 export function getPdfStatusLabel(status: ProductPdfViewModel['traceability']['validationStatus']): string {
   return status === 'PENDING' ? 'PENDIENTE DE VALIDACIÓN — NO APROBADO' : 'Aprobado'
@@ -63,7 +81,7 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
         </View>
         <View style={styles.section}>
           <Text style={styles.heading}>General</Text>
-          <Field label="Tipo de producto" value={general.productType} />
+          <Field label="Tipo de producto" value={formatLabel(general.productType, productTypeLabels)} />
           <Field label="Laboratorio" value={general.laboratory} />
           <Field label="Ingredientes activos" value={general.activeIngredients} />
           <Field label="Sinónimos" value={general.aliases} />
@@ -78,7 +96,7 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
           {presentations.length === 0 ? <Text>Sin registros</Text> : presentations.map((presentation, index) => (
             <View key={`${presentation.canonicalName}-${index}`} style={styles.section}>
               <Text style={styles.heading}>{presentation.canonicalName}</Text>
-              <Field label="Estado" value={presentation.status} />
+              <Field label="Estado" value={formatLabel(presentation.status, presentationStatusLabels)} />
               <Field label="Sinónimos" value={presentation.aliases} />
               <ClassifiedFields label="Notas clínicas" entries={presentation.clinicalNotes} labels={clinicalNoteLabels} />
               <View style={styles.section}>

@@ -232,7 +232,10 @@ async function run() {
         }
 
         if (!copy.reconstitution || Object.keys(copy.reconstitution).length === 0) {
-          delete copy.reconstitution
+          copy.reconstitution = {
+            diluentType: 'No requiere',
+            instructions: 'Solución líquida lista para usar. No requiere reconstitución ni dilución previa.',
+          }
         }
         cleanedPresentations.push(copy)
       }
