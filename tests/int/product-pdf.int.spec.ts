@@ -29,6 +29,10 @@ const completeProduct: Product = {
     protocols: [{
       id: 99006,
       name: 'Protocolo facial',
+      visibleEffectsOnset: '5 a 7 días',
+      effectDuration: '4 a 6 meses',
+      recommendedDose: '2-4 UI',
+      injectionDepth: 'Intradérmica',
       zones: [{ id: 99007, name: 'Mejillas', createdAt: 'ZONE-CREATED-SENTINEL', updatedAt: 'ZONE-UPDATED-SENTINEL' }],
       routes: [{ id: 99008, name: 'Intradérmica', createdAt: 'ROUTE-CREATED-SENTINEL', updatedAt: 'ROUTE-UPDATED-SENTINEL' }],
       techniques: [{ id: 99009, name: 'Retroinyección', createdAt: 'TECHNIQUE-CREATED-SENTINEL', updatedAt: 'TECHNIQUE-UPDATED-SENTINEL' }],
@@ -181,7 +185,7 @@ describe('Product PDF document', () => {
     expect(text).toContain('Relativa')
     expect(text).toContain('Advertencias de seguridad')
     expect(text).toContain('Reconstitución / Dilución')
-    expect(text.match(/No informado/g)).toHaveLength(8)
+    expect(text.match(/No informado/g)).toHaveLength(4)
     expect(text).not.toContain('PENDIENTE DE VALIDACIÓN — NO APROBADO')
   })
 })

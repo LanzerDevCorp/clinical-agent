@@ -83,13 +83,38 @@ function parseMarkdownNotes(content: string) {
         } else if (currentSection === 'CUIDADOS') {
           cuidados.push(cleanText)
         } else if (currentSection === 'ADVERTENCIAS') {
-          advertencias.push(cleanText)
+          if (!isReconstitutionText(cleanText)) {
+            advertencias.push(cleanText)
+          } else {
+            console.log(`  [RECON SKIP] Se omite texto de reconstitución en advertencias: "${cleanText.substring(0, 40)}..."`)
+          }
         }
       }
     }
   }
 
   return { indicaciones, cuidados, advertencias }
+}
+
+function isReconstitutionText(text: string): boolean {
+  const lower = text.toLowerCase()
+  return (
+    lower.includes('reconstitu') ||
+    lower.includes('diluyen') ||
+    lower.includes('dilución') ||
+    lower.includes('dilucion') ||
+    lower.includes('liofilizado') ||
+    lower.includes('volumen adecuado') ||
+    lower.includes('inyectar lentamente en el vial') ||
+    lower.includes('10 ui') ||
+    lower.includes('100 ui. / 1 ml') ||
+    lower.includes('0.1 ml') ||
+    lower.includes('cloruro de sodio al 0.9%') ||
+    lower.includes('procedimiento:') ||
+    lower.includes('extraer el volumen') ||
+    lower.includes('evitar agitación') ||
+    lower.includes('registrar fecha y hora')
+  )
 }
 
 async function getOrCreateIndication(payload: any, name: string): Promise<number> {
@@ -143,6 +168,22 @@ async function getOrCreateSafetyWarning(payload: any, description: string): Prom
 async function main() {
   console.log('🚀 Inicializando carga desduplicada para las 3 nuevas colecciones clínicas...\n')
   const payload = await getPayload({ config: configPromise })
+
+  // Clean existing safety-warnings documents that contain reconstitution text
+  console.log('🧹 Limpiando registros de reconstitución en advertencias de seguridad...')
+  const existingWarnings = await payload.find({
+    collection: 'safety-warnings',
+    limit: 500,
+  })
+  for (const w of existingWarnings.docs) {
+    if (isReconstitutionText(w.description)) {
+      console.log(`  [CLEANUP DELETE] Eliminando advertencia de reconstitución: "${w.description.substring(0, 45)}..."`)
+      await payload.delete({
+        collection: 'safety-warnings',
+        id: w.id,
+      })
+    }
+  }
 
   const realProductsDir = path.resolve(dirname, '../../real-products')
 
@@ -225,10 +266,31 @@ async function main() {
     const contraIds = (prod.contraindications || []).map((c: any) => (typeof c === 'object' ? c.id : c))
     const adverseIds = (prod.adverseEffects || []).map((a: any) => (typeof a === 'object' ? a.id : a))
 
+    const getReconstitutionData = (canonicalName: string) => {
+      if (canonicalName === 'BELLATOXEL') {
+        return {
+          diluentType: 'Solución salina estéril al 0.9%',
+          volumeMl: 1,
+          instructions: 'Reconstituir exclusivamente con 1 mL de solución salina estéril al 0.9% sin conservadores (refrigerada para evitar choque térmico). Inyectar lentamente en el vial evitando agitación o formación de burbujas hasta obtener 10 UI por 0.1 mL. Registrar fecha y hora de reconstitución.',
+        }
+      }
+      if (canonicalName === 'BOTULAX' || canonicalName === 'BTSA9') {
+        return {
+          diluentType: 'Solución salina estéril al 0.9%',
+          volumeMl: 1,
+          instructions: 'Reconstituir con 1 mL de solución salina al 0.9% (refrigerada para evitar choque térmico) para obtener 10 UI por 0.1 mL.',
+        }
+      }
+      return null
+    }
+
+    const reconInfo = getReconstitutionData(prod.canonicalName)
+
     const presentations = prod.presentations || []
     if (presentations.length > 0) {
       const updatedPresentations = presentations.map((pres: any) => ({
         ...pres,
+        ...(reconInfo ? { reconstitution: reconInfo } : {}),
         contraindications: Array.from(new Set([...((pres.contraindications || []).map((c: any) => (typeof c === 'object' ? c.id : c))), ...contraIds])),
         adverseEffects: Array.from(new Set([...((pres.adverseEffects || []).map((a: any) => (typeof a === 'object' ? a.id : a))), ...adverseIds])),
         clinicalIndications: indicationIds,
@@ -243,6 +305,10 @@ async function main() {
           presentations: updatedPresentations,
         },
       })
+
+      if (reconInfo) {
+        console.log(`  [RECON UPDATED] Actualizados datos de Reconstitución para '${prod.canonicalName}' (${reconInfo.diluentType}, ${reconInfo.volumeMl} mL)`)
+      }
 
       console.log(`  ✅ Vinculadas: ${indicationIds.length} Indicaciones | ${postCareIds.length} Cuidados | ${warningIds.length} Advertencias a '${prod.canonicalName}'.`)
       totalIndications += indicationIds.length

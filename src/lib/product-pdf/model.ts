@@ -32,10 +32,6 @@ export type ProductPdfViewModel = {
   }
   general: { productType: string; laboratory: string; activeIngredients: string[]; aliases: string[] }
   specifications: {
-    visibleEffectsOnset: string
-    effectDuration: string
-    recommendedDose: string
-    injectionDepth: string
     certifications: string
   }
   presentations: Array<{
@@ -48,6 +44,10 @@ export type ProductPdfViewModel = {
     reconstitution: { diluentType: string; volumeMl: string; instructions: string }
     protocols: Array<{
       name: string
+      visibleEffectsOnset: string
+      effectDuration: string
+      recommendedDose: string
+      injectionDepth: string
       zones: string[]
       routes: string[]
       techniques: string[]
@@ -94,10 +94,6 @@ export function toProductPdfViewModel(product: Product): ProductPdfViewModel {
       aliases: records(product.aliases, (alias) => alias.term),
     },
     specifications: {
-      visibleEffectsOnset: value(product.visibleEffectsOnset),
-      effectDuration: value(product.effectDuration),
-      recommendedDose: value(product.recommendedDose),
-      injectionDepth: value(product.injectionDepth),
       certifications: value(product.certifications),
     },
     presentations: (product.presentations ?? []).map((presentation, presentationIndex) => ({
@@ -134,6 +130,10 @@ export function toProductPdfViewModel(product: Product): ProductPdfViewModel {
         const protocol = populated(record, `presentations[${presentationIndex}].protocols[${protocolIndex}]`) as Protocol
         return {
           name: protocol.name,
+          visibleEffectsOnset: value((protocol as any).visibleEffectsOnset),
+          effectDuration: value((protocol as any).effectDuration),
+          recommendedDose: value((protocol as any).recommendedDose),
+          injectionDepth: value((protocol as any).injectionDepth),
           zones: named(protocol.zones as (number | ApplicationZone)[], `protocols[${protocolIndex}].zones`),
           routes: named(protocol.routes as (number | AdministrationRoute)[], `protocols[${protocolIndex}].routes`),
           techniques: named(protocol.techniques as (number | ApplicationTechnique)[], `protocols[${protocolIndex}].techniques`),

@@ -117,10 +117,6 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
         </View>
         <View style={styles.section}>
           <Text style={styles.heading}>Especificaciones técnicas</Text>
-          <Field label="Inicio de efectos visibles" value={specifications.visibleEffectsOnset} />
-          <Field label="Duración del efecto" value={specifications.effectDuration} />
-          <Field label="Dosis recomendada y calibre de aguja" value={specifications.recommendedDose} />
-          <Field label="Profundidad de inyección" value={specifications.injectionDepth} />
           <Field label="Certificaciones" value={specifications.certifications} />
         </View>
         <View style={styles.section}>
@@ -165,6 +161,10 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
                     presentation.protocols.map((protocol, protocolIndex) => (
                       <View key={`${protocol.name}-${protocolIndex}`} style={styles.item}>
                         <Field label="Nombre" value={protocol.name} />
+                        <Field label="Inicio de efectos visibles" value={protocol.visibleEffectsOnset} />
+                        <Field label="Duración del efecto" value={protocol.effectDuration} />
+                        <Field label="Dosis recomendada y calibre de aguja" value={protocol.recommendedDose} />
+                        <Field label="Profundidad de inyección" value={protocol.injectionDepth} />
                         <Field label="Zonas" value={protocol.zones} />
                         <Field label="Vías" value={protocol.routes} />
                         <Field label="Técnicas" value={protocol.techniques} />

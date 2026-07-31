@@ -317,6 +317,10 @@ export interface Protocol {
   zones: (number | ApplicationZone)[];
   routes: (number | AdministrationRoute)[];
   techniques: (number | ApplicationTechnique)[];
+  visibleEffectsOnset?: string | null;
+  effectDuration?: string | null;
+  recommendedDose?: string | null;
+  injectionDepth?: string | null;
   sessionsMin?: number | null;
   sessionsMax?: number | null;
   frequency?: string | null;
@@ -365,10 +369,6 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
-  visibleEffectsOnset?: string | null;
-  effectDuration?: string | null;
-  recommendedDose?: string | null;
-  injectionDepth?: string | null;
   certifications?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -860,6 +860,10 @@ export interface ProtocolsSelect<T extends boolean = true> {
   zones?: T;
   routes?: T;
   techniques?: T;
+  visibleEffectsOnset?: T;
+  effectDuration?: T;
+  recommendedDose?: T;
+  injectionDepth?: T;
   sessionsMin?: T;
   sessionsMax?: T;
   frequency?: T;
@@ -909,10 +913,6 @@ export interface ProductsSelect<T extends boolean = true> {
             };
         id?: T;
       };
-  visibleEffectsOnset?: T;
-  effectDuration?: T;
-  recommendedDose?: T;
-  injectionDepth?: T;
   certifications?: T;
   updatedAt?: T;
   createdAt?: T;

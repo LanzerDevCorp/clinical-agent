@@ -46,6 +46,11 @@ async function run() {
     ALTER TABLE "payload_locked_documents_rels" ADD COLUMN IF NOT EXISTS "clinical_indications_id" integer;
     ALTER TABLE "payload_locked_documents_rels" ADD COLUMN IF NOT EXISTS "post_care_notes_id" integer;
     ALTER TABLE "payload_locked_documents_rels" ADD COLUMN IF NOT EXISTS "safety_warnings_id" integer;
+
+    ALTER TABLE "protocols" ADD COLUMN IF NOT EXISTS "visible_effects_onset" varchar;
+    ALTER TABLE "protocols" ADD COLUMN IF NOT EXISTS "effect_duration" varchar;
+    ALTER TABLE "protocols" ADD COLUMN IF NOT EXISTS "recommended_dose" varchar;
+    ALTER TABLE "protocols" ADD COLUMN IF NOT EXISTS "injection_depth" varchar;
   `))
 
   console.log('Schema SQL executed successfully!')
