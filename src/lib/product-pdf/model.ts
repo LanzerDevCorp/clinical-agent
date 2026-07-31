@@ -94,7 +94,7 @@ export function toProductPdfViewModel(product: Product): ProductPdfViewModel {
       aliases: records(product.aliases, (alias) => alias.term),
     },
     specifications: {
-      certifications: value(product.certifications),
+      certifications: value((product.presentations?.[0] as any)?.certifications ?? (product as any).certifications),
     },
     presentations: (product.presentations ?? []).map((presentation, presentationIndex) => ({
       canonicalName: presentation.canonicalName,

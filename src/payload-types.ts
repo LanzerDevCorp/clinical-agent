@@ -345,7 +345,6 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
-  certifications?: string | null;
   presentations?:
     | {
         canonicalName: string;
@@ -356,6 +355,7 @@ export interface Product {
               id?: string | null;
             }[]
           | null;
+        certifications?: string | null;
         contraindications?: (number | Contraindication)[] | null;
         adverseEffects?: (number | AdverseEffect)[] | null;
         clinicalIndications?: (number | ClinicalIndication)[] | null;
@@ -887,7 +887,6 @@ export interface ProductsSelect<T extends boolean = true> {
         term?: T;
         id?: T;
       };
-  certifications?: T;
   presentations?:
     | T
     | {
@@ -899,6 +898,7 @@ export interface ProductsSelect<T extends boolean = true> {
               term?: T;
               id?: T;
             };
+        certifications?: T;
         contraindications?: T;
         adverseEffects?: T;
         clinicalIndications?: T;

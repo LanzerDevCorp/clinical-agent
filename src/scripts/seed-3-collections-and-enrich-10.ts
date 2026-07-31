@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { getPayload } from 'payload'
 import configPromise from '../payload.config.js'
 import path from 'path'
@@ -19,6 +20,55 @@ const TARGET_10_PRODUCTS = [
   { canonicalName: 'BOTULAX', file: 'BOTULAX.md' },
   { canonicalName: 'BTSA9', file: 'BTSA9.md' },
 ]
+
+function isClinicalIndication(text: string): boolean {
+  const lower = text.toLowerCase().trim()
+  if (
+    lower.startsWith('no administrar') ||
+    lower.startsWith('posibles reacciones') ||
+    lower.startsWith('los eventos adversos') ||
+    lower.includes('hipersensibilidad') ||
+    lower.includes('trastornos neuromusculares') ||
+    lower.includes('embarazo o lactancia') ||
+    lower.includes('infección en el sitio') ||
+    lower.includes('dolor local') ||
+    lower.includes('hematoma') ||
+    lower.includes('inflamación') ||
+    lower.includes('sensación de presión') ||
+    lower.includes('debilidad muscular') ||
+    lower.includes('difusión de la toxina') ||
+    lower.includes('parálisis incompleta') ||
+    lower.includes('náuseas, fatiga') ||
+    lower.includes('sintomatología pseudogripal') ||
+    lower.includes('proceso inflamatorio') ||
+    lower.includes('propagación a larga distancia') ||
+    lower.includes('reacción de hipersensibilidad') ||
+    lower.includes('desaparecer en las primeras') ||
+    lower.includes('efectos adversos') ||
+    lower.includes('dolor leve') ||
+    lower.includes('enrojecimiento') ||
+    lower.includes('prurito') ||
+    lower.includes('sitio de punción') ||
+    lower.includes('reacciones')
+  ) {
+    return false
+  }
+  return true
+}
+
+function isPostCareNote(text: string): boolean {
+  const lower = text.toLowerCase().trim()
+  if (
+    lower.includes('no aplicar en heridas') ||
+    lower.includes('contraindicado en') ||
+    lower.includes('hipersensibilidad') ||
+    lower.includes('no aplica en embarazo') ||
+    lower.includes('enfermedades crónicas')
+  ) {
+    return false
+  }
+  return true
+}
 
 function parseMarkdownNotes(content: string) {
   const lines = content.split('\n')
@@ -79,9 +129,13 @@ function parseMarkdownNotes(content: string) {
       if (itemText.length > 3 && !itemText.startsWith('#')) {
         const cleanText = itemText.replace(/\*\*/g, '').trim()
         if (currentSection === 'INDICACIONES') {
-          indicaciones.push(cleanText)
+          if (isClinicalIndication(cleanText)) {
+            indicaciones.push(cleanText)
+          }
         } else if (currentSection === 'CUIDADOS') {
-          cuidados.push(cleanText)
+          if (isPostCareNote(cleanText)) {
+            cuidados.push(cleanText)
+          }
         } else if (currentSection === 'ADVERTENCIAS') {
           if (!isReconstitutionText(cleanText)) {
             advertencias.push(cleanText)
@@ -206,7 +260,7 @@ async function main() {
         ],
       },
       limit: 1,
-      depth: 2,
+      depth: 1,
     })
 
     if (found.docs.length === 0) {
@@ -229,7 +283,7 @@ async function main() {
              existingActiveTexts.some((act: string) => act && lower.includes(act))
     }
 
-    // 1. Process Indicaciones Clínicas (deduplicated)
+    // 1. Process Indicaciones Clínicas (deduplicated & filtered)
     const indicationIds: number[] = []
     for (const ind of indicaciones) {
       if (isDuplicate(ind)) {
@@ -240,7 +294,7 @@ async function main() {
       if (!indicationIds.includes(id)) indicationIds.push(id)
     }
 
-    // 2. Process Cuidados Post-Aplicación (deduplicated)
+    // 2. Process Cuidados Post-Aplicación (deduplicated & filtered)
     const postCareIds: number[] = []
     for (const cuid of cuidados) {
       if (isDuplicate(cuid)) {
@@ -251,7 +305,7 @@ async function main() {
       if (!postCareIds.includes(id)) postCareIds.push(id)
     }
 
-    // 3. Process Advertencias de Seguridad (deduplicated)
+    // 3. Process Advertencias de Seguridad (deduplicated & filtered)
     const warningIds: number[] = []
     for (const adv of advertencias) {
       if (isDuplicate(adv)) {

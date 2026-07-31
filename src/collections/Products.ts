@@ -109,11 +109,6 @@ export const Products: CollectionConfig = {
                 },
               ],
             },
-            {
-              name: 'certifications',
-              label: 'Certificaciones / Registros sanitarios',
-              type: 'text',
-            },
           ],
         },
         {
@@ -157,6 +152,11 @@ export const Products: CollectionConfig = {
                       required: true,
                     },
                   ],
+                },
+                {
+                  name: 'certifications',
+                  label: 'Certificaciones / Registros sanitarios',
+                  type: 'text',
                 },
                 {
                   label: 'Seguridad Clínica',

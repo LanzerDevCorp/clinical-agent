@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { getPayload } from 'payload'
 import configPromise from '../payload.config'
 import path from 'path'
@@ -218,7 +219,12 @@ async function run() {
       // 5. Mapear presentaciones y resolver protocolos
       const cleanedPresentations = []
       for (const pres of productData.presentations || []) {
-        const copy: any = { ...pres }
+        const copy: any = {
+          ...pres,
+          certifications: (productData as any).certifications || null,
+          contraindications: contraIds,
+          adverseEffects: adverseIds,
+        }
 
         if (pres.protocols && pres.protocols.length > 0) {
           const protocolIds: number[] = []
@@ -248,14 +254,7 @@ async function run() {
         aliases: productData.aliases || [],
         validationStatus: productData.validationStatus || 'PENDING',
         validationNotes: productData.validationNotes || null,
-        contraindications: contraIds,
-        adverseEffects: adverseIds,
         presentations: cleanedPresentations,
-        visibleEffectsOnset: (productData as any).visibleEffectsOnset || null,
-        effectDuration: (productData as any).effectDuration || null,
-        recommendedDose: (productData as any).recommendedDose || null,
-        injectionDepth: (productData as any).injectionDepth || null,
-        certifications: (productData as any).certifications || null,
       }
 
       // 6. Upsert por canonicalName

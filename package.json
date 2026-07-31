@@ -16,12 +16,10 @@
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
-    "db:list": "tsx --env-file=.env src/scripts/list-db-tables.ts",
-    "db:drop": "tsx --env-file=.env src/scripts/drop-payload-tables.ts",
-    "db:migrate:create": "tsx --env-file=.env src/scripts/run-migrate-create.ts",
-    "db:migrate": "tsx --env-file=.env src/scripts/run-migrate.ts",
     "db:seed": "tsx --env-file=.env src/scripts/seed-catalogs.ts",
-    "db:ingest": "tsx --env-file=.env src/scripts/ingest-extracted-products.ts"
+    "db:ingest": "tsx --env-file=.env src/scripts/ingest-extracted-products.ts",
+    "db:enrich": "tsx --env-file=.env src/scripts/seed-3-collections-and-enrich-10.ts",
+    "db:reset-safety": "tsx --env-file=.env src/scripts/reset-clinical-safety.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.85.1",

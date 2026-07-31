@@ -14,10 +14,6 @@ const styles = StyleSheet.create({
   approved: { color: '#166534', fontFamily: 'Helvetica-Bold' },
 })
 
-const contraindicationLabels: Record<'absoluta' | 'relativa', string> = {
-  absoluta: 'Absoluta',
-  relativa: 'Relativa',
-}
 const productTypeLabels: Record<string, string> = {
   liofilizado: 'Liofilizado',
   liquido: 'Líquido',
@@ -53,20 +49,17 @@ function Field({ label, value }: { label: string; value: string | string[] }) {
 function ClassifiedFields({
   label,
   entries,
-  labels,
 }: {
   label: string
   entries: Array<{ type: string; description: string }>
-  labels: Record<string, string>
 }) {
   if (entries.length === 0) return <Field label={label} value="Sin registros" />
   return (
     <View style={{ marginBottom: 4 }}>
       <Text style={styles.label}>{label}:</Text>
       {entries.map((entry, index) => (
-        <Text key={`${entry.type}-${index}`} style={styles.item}>
-          • <Text style={styles.label}>{labels[entry.type] || entry.type}: </Text>
-          {entry.description}
+        <Text key={`contra-${index}`} style={styles.item}>
+          • {entry.description}
         </Text>
       ))}
     </View>
@@ -142,7 +135,7 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
                   <Field label="Sinónimos" value={presentation.aliases} />
                   <View style={styles.section}>
                     <Text style={styles.heading}>Seguridad clínica</Text>
-                    <ClassifiedFields label="Contraindicaciones" entries={presentation.contraindications || []} labels={contraindicationLabels} />
+                    <ClassifiedFields label="Contraindicaciones" entries={presentation.contraindications || []} />
                     <NoteGroupList label="Efectos adversos" items={presentation.adverseEffects || []} />
                     <NoteGroupList label="Indicaciones clínicas" items={indications} />
                     <NoteGroupList label="Cuidados post-aplicación" items={postCare} />
