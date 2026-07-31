@@ -345,6 +345,7 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  certifications?: string | null;
   presentations?:
     | {
         canonicalName: string;
@@ -369,7 +370,6 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
-  certifications?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -887,6 +887,7 @@ export interface ProductsSelect<T extends boolean = true> {
         term?: T;
         id?: T;
       };
+  certifications?: T;
   presentations?:
     | T
     | {
@@ -913,7 +914,6 @@ export interface ProductsSelect<T extends boolean = true> {
             };
         id?: T;
       };
-  certifications?: T;
   updatedAt?: T;
   createdAt?: T;
 }

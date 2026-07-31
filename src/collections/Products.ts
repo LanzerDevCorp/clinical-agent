@@ -109,6 +109,11 @@ export const Products: CollectionConfig = {
                 },
               ],
             },
+            {
+              name: 'certifications',
+              label: 'Certificaciones / Registros sanitarios',
+              type: 'text',
+            },
           ],
         },
         {
@@ -232,13 +237,7 @@ export const Products: CollectionConfig = {
         },
         {
           label: 'Ficha Técnica',
-          fields: [
-            {
-              name: 'certifications',
-              label: 'Certificaciones / Registros sanitarios',
-              type: 'text',
-            },
-          ],
+          fields: [],
         },
       ],
     },
