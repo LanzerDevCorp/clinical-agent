@@ -7,21 +7,16 @@ const styles = StyleSheet.create({
   page: { padding: 32, fontFamily: 'Helvetica', fontSize: 9, color: '#1f2937' },
   title: { fontSize: 18, fontFamily: 'Helvetica-Bold', marginBottom: 8 },
   section: { marginTop: 12 },
-  heading: { fontFamily: 'Helvetica-Bold', fontSize: 12, marginBottom: 4},
+  heading: { fontFamily: 'Helvetica-Bold', fontSize: 12, marginBottom: 4 },
   label: { fontFamily: 'Helvetica-Bold' },
   item: { marginBottom: 3 },
   warning: { color: '#991b1b', fontFamily: 'Helvetica-Bold', fontSize: 8, bottom: 16, left: 32, position: 'absolute' },
   approved: { color: '#166534', fontFamily: 'Helvetica-Bold' },
 })
 
-const contraindicationLabels: Record<ProductPdfViewModel['clinicalSafety']['contraindications'][number]['type'], string> = {
+const contraindicationLabels: Record<'absoluta' | 'relativa', string> = {
   absoluta: 'Absoluta',
   relativa: 'Relativa',
-}
-const clinicalNoteLabels: Record<ProductPdfViewModel['presentations'][number]['clinicalNotes'][number]['type'], string> = {
-  indicacion_clinica: 'Indicación clínica',
-  cuidado_post_aplicacion: 'Cuidado post-aplicación',
-  advertencia_seguridad: 'Advertencia de seguridad',
 }
 const productTypeLabels: Record<string, string> = {
   liofilizado: 'Liofilizado',
@@ -47,22 +42,56 @@ export function getPdfStatusLabel(status: ProductPdfViewModel['traceability']['v
 }
 
 function Field({ label, value }: { label: string; value: string | string[] }) {
-  return <Text style={styles.item}><Text style={styles.label}>{label}: </Text>{Array.isArray(value) ? value.join(', ') : value}</Text>
+  return (
+    <Text style={styles.item}>
+      <Text style={styles.label}>{label}: </Text>
+      {Array.isArray(value) ? value.join(', ') : value}
+    </Text>
+  )
 }
 
-function ClassifiedFields({ label, entries, labels }: {
+function ClassifiedFields({
+  label,
+  entries,
+  labels,
+}: {
   label: string
   entries: Array<{ type: string; description: string }>
   labels: Record<string, string>
 }) {
   if (entries.length === 0) return <Field label={label} value="Sin registros" />
-  return <View><Text style={styles.label}>{label}</Text>{entries.map((entry, index) => (
-    <Text key={`${entry.type}-${index}`} style={styles.item}><Text style={styles.label}>{labels[entry.type]}: </Text>{entry.description}</Text>
-  ))}</View>
+  return (
+    <View style={{ marginBottom: 4 }}>
+      <Text style={styles.label}>{label}:</Text>
+      {entries.map((entry, index) => (
+        <Text key={`${entry.type}-${index}`} style={styles.item}>
+          • <Text style={styles.label}>{labels[entry.type] || entry.type}: </Text>
+          {entry.description}
+        </Text>
+      ))}
+    </View>
+  )
+}
+
+function NoteGroupList({ label, items }: { label: string; items: string[] }) {
+  if (!items || items.length === 0) return null
+  if (items.length === 1 && (items[0] === 'Sin registros' || items[0] === 'No informado')) {
+    return <Field label={label} value={items[0]} />
+  }
+  return (
+    <View style={{ marginBottom: 4 }}>
+      <Text style={styles.label}>{label}:</Text>
+      {items.map((item, index) => (
+        <Text key={`${label}-${index}`} style={styles.item}>
+          • {item}
+        </Text>
+      ))}
+    </View>
+  )
 }
 
 export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
-  const { traceability, general, specifications, clinicalSafety, presentations } = model
+  const { traceability, general, specifications, presentations } = model
   const pending = traceability.validationStatus === 'PENDING'
 
   return (
@@ -95,38 +124,60 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
           <Field label="Certificaciones" value={specifications.certifications} />
         </View>
         <View style={styles.section}>
-          <Text style={styles.heading}>Seguridad clínica</Text>
-          <ClassifiedFields label="Contraindicaciones" entries={clinicalSafety.contraindications} labels={contraindicationLabels} />
-          <Field label="Efectos adversos" value={clinicalSafety.adverseEffects} />
-        </View>
-        <View style={styles.section}>
           <Text style={styles.heading}>Presentaciones</Text>
-          {presentations.length === 0 ? <Text>Sin registros</Text> : presentations.map((presentation, index) => (
-            <View key={`${presentation.canonicalName}-${index}`} style={styles.section}>
-              <Text style={styles.heading}>{presentation.canonicalName}</Text>
-              <Field label="Estado" value={formatLabel(presentation.status, presentationStatusLabels)} />
-              <Field label="Sinónimos" value={presentation.aliases} />
-              <ClassifiedFields label="Notas clínicas" entries={presentation.clinicalNotes} labels={clinicalNoteLabels} />
-              <View style={styles.section}>
-                <Text style={styles.heading}>Reconstitución / Dilución</Text>
-                <Field label="Tipo de diluyente" value={presentation.reconstitution.diluentType} />
-                <Field label="Volumen (mL)" value={presentation.reconstitution.volumeMl} />
-                <Field label="Instrucciones" value={presentation.reconstitution.instructions} />
-              </View>
-              <Text style={{fontFamily: 'Helvetica-Bold', fontSize: 12, marginBottom: 4, marginTop: 4}}>Protocolos</Text>
-              {presentation.protocols.length === 0 ? <Text>Sin registros</Text> : presentation.protocols.map((protocol, protocolIndex) => (
-                <View key={`${protocol.name}-${protocolIndex}`} style={styles.item}>
-                  <Field label="Nombre" value={protocol.name} />
-                  <Field label="Zonas" value={protocol.zones} />
-                  <Field label="Vías" value={protocol.routes} />
-                  <Field label="Técnicas" value={protocol.techniques} />
-                  <Field label="Sesiones mínimas" value={protocol.sessionsMin} />
-                  <Field label="Sesiones máximas" value={protocol.sessionsMax} />
-                  <Field label="Frecuencia" value={protocol.frequency} />
+          {presentations.length === 0 ? (
+            <Text>Sin registros</Text>
+          ) : (
+            presentations.map((presentation, index) => {
+              const indications = presentation.clinicalNotes
+                .filter((n) => n.type === 'indicacion_clinica')
+                .map((n) => n.description)
+              const postCare = presentation.clinicalNotes
+                .filter((n) => n.type === 'cuidado_post_aplicacion')
+                .map((n) => n.description)
+              const warnings = presentation.clinicalNotes
+                .filter((n) => n.type === 'advertencia_seguridad')
+                .map((n) => n.description)
+
+              return (
+                <View key={`${presentation.canonicalName}-${index}`} style={styles.section}>
+                  <Text style={styles.heading}>{presentation.canonicalName}</Text>
+                  <Field label="Estado" value={formatLabel(presentation.status, presentationStatusLabels)} />
+                  <Field label="Sinónimos" value={presentation.aliases} />
+                  <View style={styles.section}>
+                    <Text style={styles.heading}>Seguridad clínica</Text>
+                    <ClassifiedFields label="Contraindicaciones" entries={presentation.contraindications || []} labels={contraindicationLabels} />
+                    <NoteGroupList label="Efectos adversos" items={presentation.adverseEffects || []} />
+                    <NoteGroupList label="Indicaciones clínicas" items={indications} />
+                    <NoteGroupList label="Cuidados post-aplicación" items={postCare} />
+                    <NoteGroupList label="Advertencias de seguridad" items={warnings} />
+                  </View>
+                  <View style={styles.section}>
+                    <Text style={styles.heading}>Reconstitución / Dilución</Text>
+                    <Field label="Tipo de diluyente" value={presentation.reconstitution.diluentType} />
+                    <Field label="Volumen (mL)" value={presentation.reconstitution.volumeMl} />
+                    <Field label="Instrucciones" value={presentation.reconstitution.instructions} />
+                  </View>
+                  <Text style={{ fontFamily: 'Helvetica-Bold', fontSize: 12, marginBottom: 4, marginTop: 4 }}>Protocolos</Text>
+                  {presentation.protocols.length === 0 ? (
+                    <Text>Sin registros</Text>
+                  ) : (
+                    presentation.protocols.map((protocol, protocolIndex) => (
+                      <View key={`${protocol.name}-${protocolIndex}`} style={styles.item}>
+                        <Field label="Nombre" value={protocol.name} />
+                        <Field label="Zonas" value={protocol.zones} />
+                        <Field label="Vías" value={protocol.routes} />
+                        <Field label="Técnicas" value={protocol.techniques} />
+                        <Field label="Sesiones mínimas" value={protocol.sessionsMin} />
+                        <Field label="Sesiones máximas" value={protocol.sessionsMax} />
+                        <Field label="Frecuencia" value={protocol.frequency} />
+                      </View>
+                    ))
+                  )}
                 </View>
-              ))}
-            </View>
-          ))}
+              )
+            })
+          )}
         </View>
       </Page>
     </Document>

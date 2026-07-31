@@ -77,7 +77,9 @@ export interface Config {
     'application-techniques': ApplicationTechnique;
     contraindications: Contraindication;
     'adverse-effects': AdverseEffect;
-    'clinical-notes': ClinicalNote;
+    'clinical-indications': ClinicalIndication;
+    'post-care-notes': PostCareNote;
+    'safety-warnings': SafetyWarning;
     protocols: Protocol;
     products: Product;
     'payload-mcp-api-keys': PayloadMcpApiKey;
@@ -97,7 +99,9 @@ export interface Config {
     'application-techniques': ApplicationTechniquesSelect<false> | ApplicationTechniquesSelect<true>;
     contraindications: ContraindicationsSelect<false> | ContraindicationsSelect<true>;
     'adverse-effects': AdverseEffectsSelect<false> | AdverseEffectsSelect<true>;
-    'clinical-notes': ClinicalNotesSelect<false> | ClinicalNotesSelect<true>;
+    'clinical-indications': ClinicalIndicationsSelect<false> | ClinicalIndicationsSelect<true>;
+    'post-care-notes': PostCareNotesSelect<false> | PostCareNotesSelect<true>;
+    'safety-warnings': SafetyWarningsSelect<false> | SafetyWarningsSelect<true>;
     protocols: ProtocolsSelect<false> | ProtocolsSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     'payload-mcp-api-keys': PayloadMcpApiKeysSelect<false> | PayloadMcpApiKeysSelect<true>;
@@ -275,11 +279,30 @@ export interface AdverseEffect {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "clinical-notes".
+ * via the `definition` "clinical-indications".
  */
-export interface ClinicalNote {
+export interface ClinicalIndication {
   id: number;
-  type: 'indicacion_clinica' | 'cuidado_post_aplicacion' | 'advertencia_seguridad';
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "post-care-notes".
+ */
+export interface PostCareNote {
+  id: number;
+  description: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "safety-warnings".
+ */
+export interface SafetyWarning {
+  id: number;
   description: string;
   updatedAt: string;
   createdAt: string;
@@ -318,8 +341,6 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
-  contraindications?: (number | Contraindication)[] | null;
-  adverseEffects?: (number | AdverseEffect)[] | null;
   presentations?:
     | {
         canonicalName: string;
@@ -330,7 +351,11 @@ export interface Product {
               id?: string | null;
             }[]
           | null;
-        clinicalNotes?: (number | ClinicalNote)[] | null;
+        contraindications?: (number | Contraindication)[] | null;
+        adverseEffects?: (number | AdverseEffect)[] | null;
+        clinicalIndications?: (number | ClinicalIndication)[] | null;
+        postCareNotes?: (number | PostCareNote)[] | null;
+        safetyWarnings?: (number | SafetyWarning)[] | null;
         protocols?: (number | Protocol)[] | null;
         reconstitution?: {
           diluentType?: string | null;
@@ -482,17 +507,45 @@ export interface PayloadMcpApiKey {
      */
     update?: boolean | null;
   };
-  clinicalNotes?: {
+  clinicalIndications?: {
     /**
-     * Allow clients to find clinical-notes.
+     * Allow clients to find clinical-indications.
      */
     find?: boolean | null;
     /**
-     * Allow clients to create clinical-notes.
+     * Allow clients to create clinical-indications.
      */
     create?: boolean | null;
     /**
-     * Allow clients to update clinical-notes.
+     * Allow clients to update clinical-indications.
+     */
+    update?: boolean | null;
+  };
+  postCareNotes?: {
+    /**
+     * Allow clients to find post-care-notes.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create post-care-notes.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update post-care-notes.
+     */
+    update?: boolean | null;
+  };
+  safetyWarnings?: {
+    /**
+     * Allow clients to find safety-warnings.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create safety-warnings.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update safety-warnings.
      */
     update?: boolean | null;
   };
@@ -592,8 +645,16 @@ export interface PayloadLockedDocument {
         value: number | AdverseEffect;
       } | null)
     | ({
-        relationTo: 'clinical-notes';
-        value: number | ClinicalNote;
+        relationTo: 'clinical-indications';
+        value: number | ClinicalIndication;
+      } | null)
+    | ({
+        relationTo: 'post-care-notes';
+        value: number | PostCareNote;
+      } | null)
+    | ({
+        relationTo: 'safety-warnings';
+        value: number | SafetyWarning;
       } | null)
     | ({
         relationTo: 'protocols';
@@ -765,10 +826,27 @@ export interface AdverseEffectsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "clinical-notes_select".
+ * via the `definition` "clinical-indications_select".
  */
-export interface ClinicalNotesSelect<T extends boolean = true> {
-  type?: T;
+export interface ClinicalIndicationsSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "post-care-notes_select".
+ */
+export interface PostCareNotesSelect<T extends boolean = true> {
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "safety-warnings_select".
+ */
+export interface SafetyWarningsSelect<T extends boolean = true> {
   description?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -805,8 +883,6 @@ export interface ProductsSelect<T extends boolean = true> {
         term?: T;
         id?: T;
       };
-  contraindications?: T;
-  adverseEffects?: T;
   presentations?:
     | T
     | {
@@ -818,7 +894,11 @@ export interface ProductsSelect<T extends boolean = true> {
               term?: T;
               id?: T;
             };
-        clinicalNotes?: T;
+        contraindications?: T;
+        adverseEffects?: T;
+        clinicalIndications?: T;
+        postCareNotes?: T;
+        safetyWarnings?: T;
         protocols?: T;
         reconstitution?:
           | T
@@ -905,7 +985,21 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         create?: T;
         update?: T;
       };
-  clinicalNotes?:
+  clinicalIndications?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  postCareNotes?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  safetyWarnings?:
     | T
     | {
         find?: T;

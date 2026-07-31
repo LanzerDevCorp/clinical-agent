@@ -112,25 +112,6 @@ export const Products: CollectionConfig = {
           ],
         },
         {
-          label: 'Seguridad Clínica',
-          fields: [
-            {
-              name: 'contraindications',
-              label: 'Contraindicaciones',
-              type: 'relationship',
-              relationTo: 'contraindications',
-              hasMany: true,
-            },
-            {
-              name: 'adverseEffects',
-              label: 'Efectos adversos',
-              type: 'relationship',
-              relationTo: 'adverse-effects',
-              hasMany: true,
-            },
-          ],
-        },
-        {
           label: 'Presentaciones',
           fields: [
             {
@@ -173,18 +154,55 @@ export const Products: CollectionConfig = {
                   ],
                 },
                 {
-                  name: 'clinicalNotes',
-                  label: 'Notas clínicas',
-                  type: 'relationship',
-                  relationTo: 'clinical-notes',
-                  hasMany: true,
-                },
-                {
-                  name: 'protocols',
-                  label: 'Protocolos de aplicación',
-                  type: 'relationship',
-                  relationTo: 'protocols',
-                  hasMany: true,
+                  label: 'Seguridad Clínica',
+                  type: 'collapsible',
+                  admin: {
+                    initCollapsed: false,
+                  },
+                  fields: [
+                    {
+                      name: 'contraindications',
+                      label: 'Contraindicaciones',
+                      type: 'relationship',
+                      relationTo: 'contraindications',
+                      hasMany: true,
+                    },
+                    {
+                      name: 'adverseEffects',
+                      label: 'Efectos adversos',
+                      type: 'relationship',
+                      relationTo: 'adverse-effects',
+                      hasMany: true,
+                    },
+                    {
+                      name: 'clinicalIndications',
+                      label: 'Indicaciones clínicas',
+                      type: 'relationship',
+                      relationTo: 'clinical-indications',
+                      hasMany: true,
+                    },
+                    {
+                      name: 'postCareNotes',
+                      label: 'Cuidados post-aplicación',
+                      type: 'relationship',
+                      relationTo: 'post-care-notes',
+                      hasMany: true,
+                    },
+                    {
+                      name: 'safetyWarnings',
+                      label: 'Advertencias de seguridad',
+                      type: 'relationship',
+                      relationTo: 'safety-warnings',
+                      hasMany: true,
+                    },
+                    {
+                      name: 'protocols',
+                      label: 'Protocolos de aplicación',
+                      type: 'relationship',
+                      relationTo: 'protocols',
+                      hasMany: true,
+                    },
+                  ],
                 },
                 {
                   name: 'reconstitution',

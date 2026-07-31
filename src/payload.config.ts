@@ -15,7 +15,9 @@ import { AdministrationRoutes } from './collections/AdministrationRoutes'
 import { ApplicationTechniques } from './collections/ApplicationTechniques'
 import { Contraindications } from './collections/Contraindications'
 import { AdverseEffects } from './collections/AdverseEffects'
-import { ClinicalNotes } from './collections/ClinicalNotes'
+import { ClinicalIndications } from './collections/ClinicalIndications'
+import { PostCareNotes } from './collections/PostCareNotes'
+import { SafetyWarnings } from './collections/SafetyWarnings'
 import { Protocols } from './collections/Protocols'
 import { Products } from './collections/Products'
 
@@ -54,7 +56,9 @@ export default buildConfig({
     ApplicationTechniques,
     Contraindications,
     AdverseEffects,
-    ClinicalNotes,
+    ClinicalIndications,
+    PostCareNotes,
+    SafetyWarnings,
     Protocols,
     Products,
   ],
@@ -82,7 +86,9 @@ export default buildConfig({
         'application-techniques': { enabled: { find: true, create: true, update: true, delete: false } },
         contraindications: { enabled: { find: true, create: true, update: true, delete: false } },
         'adverse-effects': { enabled: { find: true, create: true, update: true, delete: false } },
-        'clinical-notes': { enabled: { find: true, create: true, update: true, delete: false } },
+        'clinical-indications': { enabled: { find: true, create: true, update: true, delete: false } },
+        'post-care-notes': { enabled: { find: true, create: true, update: true, delete: false } },
+        'safety-warnings': { enabled: { find: true, create: true, update: true, delete: false } },
         protocols: { enabled: { find: true, create: true, update: true, delete: false } },
         products: { enabled: { find: true, create: true, update: true, delete: false } },
       },

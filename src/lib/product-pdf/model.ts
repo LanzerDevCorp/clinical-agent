@@ -3,7 +3,6 @@ import type {
   ApplicationTechnique,
   ApplicationZone,
   AdministrationRoute,
-  ClinicalNote,
   Contraindication,
   Laboratory,
   Product,
@@ -39,15 +38,13 @@ export type ProductPdfViewModel = {
     injectionDepth: string
     certifications: string
   }
-  clinicalSafety: {
-    contraindications: Array<{ type: Contraindication['type']; description: string }>
-    adverseEffects: string[]
-  }
   presentations: Array<{
     canonicalName: string
     status: string
     aliases: string[]
-    clinicalNotes: Array<{ type: ClinicalNote['type']; description: string }>
+    contraindications: Array<{ type: Contraindication['type']; description: string }>
+    adverseEffects: string[]
+    clinicalNotes: Array<{ type: 'indicacion_clinica' | 'cuidado_post_aplicacion' | 'advertencia_seguridad'; description: string }>
     reconstitution: { diluentType: string; volumeMl: string; instructions: string }
     protocols: Array<{
       name: string
@@ -103,21 +100,31 @@ export function toProductPdfViewModel(product: Product): ProductPdfViewModel {
       injectionDepth: value(product.injectionDepth),
       certifications: value(product.certifications),
     },
-    clinicalSafety: {
-      contraindications: (product.contraindications ?? []).map((record, index) => {
-        const contraindication = populated(record, `contraindications[${index}]`) as Contraindication
-        return { type: contraindication.type, description: contraindication.description }
-      }),
-      adverseEffects: records(product.adverseEffects, (record, index) => populated(record, `adverseEffects[${index}]`).description),
-    },
     presentations: (product.presentations ?? []).map((presentation, presentationIndex) => ({
       canonicalName: presentation.canonicalName,
       status: value(presentation.status),
       aliases: records(presentation.aliases, (alias) => alias.term),
-      clinicalNotes: (presentation.clinicalNotes ?? []).map((record, index) => {
-        const note = populated(record, `presentations[${presentationIndex}].clinicalNotes[${index}]`) as ClinicalNote
-        return { type: note.type, description: note.description }
+      contraindications: ((presentation as any).contraindications ?? []).map((record: any, index: number) => {
+        const contraindication = populated(record, `presentations[${presentationIndex}].contraindications[${index}]`) as Contraindication
+        return { type: contraindication.type, description: contraindication.description }
       }),
+      adverseEffects: records((presentation as any).adverseEffects, (record: any, index: number) =>
+        (populated(record, `presentations[${presentationIndex}].adverseEffects[${index}]`) as any).description,
+      ),
+      clinicalNotes: [
+        ...((presentation as any).clinicalIndications ?? []).map((record: any, index: number) => {
+          const item = populated(record, `presentations[${presentationIndex}].clinicalIndications[${index}]`) as any
+          return { type: 'indicacion_clinica' as const, description: item.name || item.description || '' }
+        }),
+        ...((presentation as any).postCareNotes ?? []).map((record: any, index: number) => {
+          const item = populated(record, `presentations[${presentationIndex}].postCareNotes[${index}]`) as any
+          return { type: 'cuidado_post_aplicacion' as const, description: item.description || '' }
+        }),
+        ...((presentation as any).safetyWarnings ?? []).map((record: any, index: number) => {
+          const item = populated(record, `presentations[${presentationIndex}].safetyWarnings[${index}]`) as any
+          return { type: 'advertencia_seguridad' as const, description: item.description || '' }
+        }),
+      ],
       reconstitution: {
         diluentType: value(presentation.reconstitution?.diluentType),
         volumeMl: value(presentation.reconstitution?.volumeMl),

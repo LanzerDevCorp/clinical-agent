@@ -1,6 +1,6 @@
 import { Children, isValidElement, type ReactNode } from 'react'
 import { describe, expect, it } from 'vitest'
-import type { ClinicalNote, Contraindication, Product, Protocol } from '@/payload-types'
+import type { Contraindication, Product, Protocol } from '@/payload-types'
 import {
   ProductPdfIncompleteGraphError,
   toProductPdfViewModel,
@@ -18,14 +18,14 @@ const completeProduct: Product = {
   laboratory: { id: 99001, name: 'Laboratorio Clínico', createdAt: 'LAB-CREATED-SENTINEL', updatedAt: 'LAB-UPDATED-SENTINEL' },
   activeIngredients: [{ id: 99002, name: 'Hialuronato de sodio', createdAt: 'INGREDIENT-CREATED-SENTINEL', updatedAt: 'INGREDIENT-UPDATED-SENTINEL' }],
   aliases: [{ id: 'PRODUCT-ALIAS-ROW-SENTINEL', term: 'AH' }],
-  contraindications: [{ id: 99003, type: 'absoluta', description: 'Hipersensibilidad', createdAt: 'CONTRA-CREATED-SENTINEL', updatedAt: 'CONTRA-UPDATED-SENTINEL' }],
-  adverseEffects: [{ id: 99004, description: 'Eritema', createdAt: 'ADVERSE-CREATED-SENTINEL', updatedAt: 'ADVERSE-UPDATED-SENTINEL' }],
   presentations: [{
     id: 'PRESENTATION-ROW-SENTINEL',
     canonicalName: 'Jeringa 1 mL',
     status: 'activa',
     aliases: [{ id: 'PRESENTATION-ALIAS-ROW-SENTINEL', term: '1 ml' }],
-    clinicalNotes: [{ id: 99005, type: 'indicacion_clinica', description: 'Uso profesional', createdAt: 'NOTE-CREATED-SENTINEL', updatedAt: 'NOTE-UPDATED-SENTINEL' }],
+    contraindications: [{ id: 99003, type: 'absoluta', description: 'Hipersensibilidad', createdAt: 'CONTRA-CREATED-SENTINEL', updatedAt: 'CONTRA-UPDATED-SENTINEL' }],
+    adverseEffects: [{ id: 99004, description: 'Eritema', createdAt: 'ADVERSE-CREATED-SENTINEL', updatedAt: 'ADVERSE-UPDATED-SENTINEL' }],
+    clinicalIndications: [{ id: 99005, name: 'Uso profesional', createdAt: 'NOTE-CREATED-SENTINEL', updatedAt: 'NOTE-UPDATED-SENTINEL' } as any],
     protocols: [{
       id: 99006,
       name: 'Protocolo facial',
@@ -71,9 +71,10 @@ describe('Product PDF review model', () => {
         validationNotes: 'Revisar ficha técnica.',
       },
       general: { laboratory: 'Laboratorio Clínico', activeIngredients: ['Hialuronato de sodio'], aliases: ['AH'] },
-      clinicalSafety: { contraindications: [{ type: 'absoluta', description: 'Hipersensibilidad' }], adverseEffects: ['Eritema'] },
       presentations: [{
         canonicalName: 'Jeringa 1 mL',
+        contraindications: [{ type: 'absoluta', description: 'Hipersensibilidad' }],
+        adverseEffects: ['Eritema'],
         clinicalNotes: [{ type: 'indicacion_clinica', description: 'Uso profesional' }],
         protocols: [{
           name: 'Protocolo facial', zones: ['Mejillas'], routes: ['Intradérmica'],
@@ -111,8 +112,6 @@ describe('Product PDF review model', () => {
       productType: null,
       activeIngredients: [],
       aliases: [],
-      contraindications: [],
-      adverseEffects: [],
       presentations: [],
     }
 
@@ -138,6 +137,7 @@ describe('Product PDF document', () => {
       presentations: [{
         ...completeProduct.presentations![0],
         canonicalName: 'Presentación clínica extensa',
+        aliases: [{ id: 'PRESENTATION-ALIAS-ROW-SENTINEL', term: '1 ml' }],
         protocols: Array.from({ length: 32 }, (_, index) => ({
           ...(completeProduct.presentations![0].protocols![0] as Protocol),
           name: `Protocolo facial ${index + 1}`,
@@ -159,7 +159,7 @@ describe('Product PDF document', () => {
     for (const expected of [
       'Ácido hialurónico', '42', 'PENDING', 'Revisar ficha técnica.', 'PRODUCT-CREATED-SENTINEL', 'PRODUCT-UPDATED-SENTINEL',
       'Liofilizado', 'Laboratorio Clínico', 'Hialuronato de sodio', 'AH', 'Absoluta', 'Hipersensibilidad', 'Eritema',
-      'Presentación clínica extensa', 'Activa', '1 ml', 'Indicación clínica', 'Uso profesional', 'Reconstitución / Dilución',
+      'Presentación clínica extensa', 'Activa', '1 ml', 'Indicaciones clínicas', 'Uso profesional', 'Reconstitución / Dilución',
       'Tipo de diluyente', 'Solución salina', 'Volumen (mL)', '2', 'Instrucciones', 'Mezclar suavemente.',
       'Protocolo facial 1', 'Protocolo facial 32', 'Mejillas', 'Intradérmica', 'Retroinyección', '2', '3', 'Cada 4 semanas',
     ]) expect(text).toContain(expected)
@@ -170,15 +170,16 @@ describe('Product PDF document', () => {
   it('renders the approved treatment without the pending warning', () => {
     const product = structuredClone(completeProduct)
     product.validationStatus = 'APPROVED'
-    ;(product.contraindications![0] as Contraindication).type = 'relativa'
-    ;(product.presentations![0].clinicalNotes![0] as ClinicalNote).type = 'advertencia_seguridad'
+    ;(product.presentations![0].contraindications![0] as Contraindication).type = 'relativa'
+    ;(product.presentations![0] as any).safetyWarnings = [{ id: 99005, description: 'Uso profesional', createdAt: 'NOTE-CREATED-SENTINEL', updatedAt: 'NOTE-UPDATED-SENTINEL' }]
+    delete (product.presentations![0] as any).clinicalIndications
     product.presentations![0].reconstitution = { diluentType: null, volumeMl: null, instructions: null }
     const model = toProductPdfViewModel(product)
     const tree = renderedText(ProductPdfDocument({ model }))
     expect(tree).toContainEqual({ text: 'Aprobado', fixed: false })
     const text = tree.map(({ text }) => text).join(' ')
     expect(text).toContain('Relativa')
-    expect(text).toContain('Advertencia de seguridad')
+    expect(text).toContain('Advertencias de seguridad')
     expect(text).toContain('Reconstitución / Dilución')
     expect(text.match(/No informado/g)).toHaveLength(8)
     expect(text).not.toContain('PENDIENTE DE VALIDACIÓN — NO APROBADO')
