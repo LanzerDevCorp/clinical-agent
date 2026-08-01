@@ -1,0 +1,19 @@
+/* Custom Payload Admin Styles */
+
+/* Remove text underline from all collection list tables and admin links */
+a,
+a:hover,
+a:focus,
+a:visited,
+table a,
+table a:hover,
+.table a,
+.table a:hover,
+.cell-primary a,
+.cell-primary a:hover,
+.row-link,
+.row-link:hover,
+[class*="cell"] a,
+[class*="cell"] a:hover {
+  text-decoration: none !important;
+}

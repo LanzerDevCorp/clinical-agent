@@ -71,6 +71,11 @@ export const Products: CollectionConfig = {
               required: true,
             },
             {
+              name: 'description',
+              label: 'Descripción del producto',
+              type: 'textarea',
+            },
+            {
               name: 'productType',
               label: 'Tipo de producto',
               type: 'select',

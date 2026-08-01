@@ -30,7 +30,7 @@ export type ProductPdfViewModel = {
     createdAt: string
     updatedAt: string
   }
-  general: { productType: string; laboratory: string; activeIngredients: string[]; aliases: string[] }
+  general: { description: string; productType: string; laboratory: string; activeIngredients: string[]; aliases: string[] }
   specifications: {
     certifications: string
   }
@@ -88,6 +88,7 @@ export function toProductPdfViewModel(product: Product): ProductPdfViewModel {
       updatedAt: product.updatedAt,
     },
     general: {
+      description: value((product as any).description),
       productType: value(product.productType),
       laboratory: laboratory.name,
       activeIngredients: named(product.activeIngredients as (number | ActiveIngredient)[] | null | undefined, 'activeIngredients'),

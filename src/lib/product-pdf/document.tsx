@@ -103,6 +103,7 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
         </View>
         <View style={styles.section}>
           <Text style={styles.heading}>General</Text>
+          <Field label="Descripción" value={general.description} />
           <Field label="Tipo de producto" value={formatLabel(general.productType, productTypeLabels)} />
           <Field label="Laboratorio" value={general.laboratory} />
           <Field label="Ingredientes activos" value={general.activeIngredients} />

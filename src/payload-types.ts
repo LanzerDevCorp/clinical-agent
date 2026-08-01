@@ -336,6 +336,7 @@ export interface Product {
   validationStatus: 'PENDING' | 'APPROVED';
   validationNotes?: string | null;
   canonicalName: string;
+  description?: string | null;
   productType?: ('liofilizado' | 'liquido' | 'hilos_pdo' | 'dispositivo_medico' | 'insumo' | 'otro') | null;
   laboratory: number | Laboratory;
   activeIngredients?: (number | ActiveIngredient)[] | null;
@@ -878,6 +879,7 @@ export interface ProductsSelect<T extends boolean = true> {
   validationStatus?: T;
   validationNotes?: T;
   canonicalName?: T;
+  description?: T;
   productType?: T;
   laboratory?: T;
   activeIngredients?: T;

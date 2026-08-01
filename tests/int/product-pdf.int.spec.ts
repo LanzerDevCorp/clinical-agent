@@ -121,7 +121,7 @@ describe('Product PDF review model', () => {
 
     expect(toProductPdfViewModel(sparseProduct)).toMatchObject({
       traceability: { validationStatus: 'APPROVED', validationNotes: 'No informado' },
-      general: { productType: 'No informado', activeIngredients: ['Sin registros'], aliases: ['Sin registros'] },
+      general: { description: 'No informado', productType: 'No informado', activeIngredients: ['Sin registros'], aliases: ['Sin registros'] },
       presentations: [],
     })
     expect(() => toProductPdfViewModel({ ...completeProduct, laboratory: 1 })).toThrow(ProductPdfIncompleteGraphError)
@@ -185,7 +185,7 @@ describe('Product PDF document', () => {
     expect(text).toContain('Hipersensibilidad')
     expect(text).toContain('Advertencias de seguridad')
     expect(text).toContain('Reconstitución / Dilución')
-    expect(text.match(/No informado/g)).toHaveLength(4)
+    expect(text.match(/No informado/g)).toHaveLength(5)
     expect(text).not.toContain('PENDIENTE DE VALIDACIÓN — NO APROBADO')
   })
 })
