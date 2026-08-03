@@ -6,7 +6,7 @@ import type { ProductPdfViewModel } from './model'
 const styles = StyleSheet.create({
   page: { padding: 32, fontFamily: 'Helvetica', fontSize: 9, color: '#1f2937' },
   title: { fontSize: 18, fontFamily: 'Helvetica-Bold', marginBottom: 8 },
-  section: { marginTop: 12 },
+  section: { marginTop: 4 },
   heading: { fontFamily: 'Helvetica-Bold', fontSize: 12, marginBottom: 4 },
   label: { fontFamily: 'Helvetica-Bold' },
   item: { marginBottom: 3 },
@@ -25,6 +25,10 @@ const productTypeLabels: Record<string, string> = {
 const presentationStatusLabels: Record<string, string> = {
   activa: 'Activa',
   descontinuada: 'Descontinuada',
+}
+const validationStatusLabels: Record<string, string> = {
+  PENDING: 'Pendiente de aprobación',
+  APPROVED: 'Aprobado',
 }
 
 function formatLabel(value: string, labels: Record<string, string>): string {
@@ -94,15 +98,9 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
         <Text style={styles.title}>{traceability.canonicalName}</Text>
         {!pending && <Text style={styles.approved}>{getPdfStatusLabel('APPROVED')}</Text>}
         <View style={styles.section}>
-          <Text style={styles.heading}>Trazabilidad</Text>
-          <Field label="ID de producto" value={traceability.productId} />
-          <Field label="Estado de validación" value={traceability.validationStatus} />
-          <Field label="Notas de validación" value={traceability.validationNotes} />
-          <Field label="Creado" value={traceability.createdAt} />
-          <Field label="Actualizado" value={traceability.updatedAt} />
-        </View>
-        <View style={styles.section}>
           <Text style={styles.heading}>General</Text>
+          <Field label="Estado de validación" value={formatLabel(traceability.validationStatus, validationStatusLabels)} />
+          <Field label="Notas de validación" value={traceability.validationNotes} />
           <Field label="Descripción" value={general.description} />
           <Field label="Tipo de producto" value={formatLabel(general.productType, productTypeLabels)} />
           <Field label="Laboratorio" value={general.laboratory} />
@@ -114,7 +112,7 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
           <Field label="Certificaciones" value={specifications.certifications} />
         </View>
         <View style={styles.section}>
-          <Text style={styles.heading}>Presentaciones</Text>
+          <Text style={[styles.heading, { fontSize: 14, marginTop: 8 }]}>Presentaciones</Text>
           {presentations.length === 0 ? (
             <Text>Sin registros</Text>
           ) : (
@@ -148,7 +146,7 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
                     <Field label="Volumen (mL)" value={presentation.reconstitution.volumeMl} />
                     <Field label="Instrucciones" value={presentation.reconstitution.instructions} />
                   </View>
-                  <Text style={{ fontFamily: 'Helvetica-Bold', fontSize: 12, marginBottom: 4, marginTop: 4 }}>Protocolos</Text>
+                  <Text style={{ fontFamily: 'Helvetica-Bold', fontSize: 12, marginBottom: 4, marginTop: 4 }}>Protocolo de Aplicación</Text>
                   {presentation.protocols.length === 0 ? (
                     <Text>Sin registros</Text>
                   ) : (
@@ -160,7 +158,7 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
                         <Field label="Dosis recomendada y calibre de aguja" value={protocol.recommendedDose} />
                         <Field label="Profundidad de inyección" value={protocol.injectionDepth} />
                         <Field label="Zonas" value={protocol.zones} />
-                        <Field label="Vías" value={protocol.routes} />
+                        <Field label="Vía" value={protocol.routes} />
                         <Field label="Técnicas" value={protocol.techniques} />
                         <Field label="Sesiones mínimas" value={protocol.sessionsMin} />
                         <Field label="Sesiones máximas" value={protocol.sessionsMax} />

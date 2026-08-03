@@ -46,11 +46,6 @@ async function main() {
       collection: 'products',
       id: prod.id,
       data: {
-        contraindications: [],
-        adverseEffects: [],
-        clinicalIndications: [],
-        postCareNotes: [],
-        safetyWarnings: [],
         presentations: cleanedPresentations,
       },
     })

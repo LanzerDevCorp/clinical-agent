@@ -16,19 +16,25 @@ interface ProtocolInput {
   routes?: string[] | string
   technique?: string | string[]
   techniques?: string[] | string
-  sessionsMin?: number
-  sessionsMax?: number
-  frequency?: string
+  visibleEffectsOnset?: string | null
+  effectDuration?: string | null
+  recommendedDose?: string | null
+  injectionDepth?: string | null
+  sessionsMin?: number | null
+  sessionsMax?: number | null
+  frequency?: string | null
 }
 
 interface ExtractedProduct {
   canonicalName: string
+  description?: string | null
   productType: string
   laboratory: string
   activeIngredients?: string[]
   aliases?: { term: string }[]
   validationStatus: 'PENDING' | 'APPROVED'
   validationNotes?: string | null
+  certifications?: string | null
   contraindications?: string[]
   adverseEffects?: string[]
   presentations?: Array<{
@@ -170,7 +176,7 @@ async function getOrCreateProtocol(
 }
 
 async function run() {
-  console.log('🚀 Inicializando Payload CMS...')
+  console.log('Inicializando Payload CMS...')
   const payload = await getPayload({ config: configPromise })
 
   const extractedDir = path.resolve(dirname, '../../tmp/migration/extracted')

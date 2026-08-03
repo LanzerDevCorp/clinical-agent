@@ -161,7 +161,7 @@ describe('Product PDF document', () => {
     expect(tree).toContainEqual({ text: 'PENDIENTE DE VALIDACIÓN — NO APROBADO', fixed: true })
     const text = tree.map(({ text }) => text).join(' ')
     for (const expected of [
-      'Ácido hialurónico', '42', 'PENDING', 'Revisar ficha técnica.', 'PRODUCT-CREATED-SENTINEL', 'PRODUCT-UPDATED-SENTINEL',
+      'Ácido hialurónico', 'Pendiente de aprobación', 'Revisar ficha técnica.',
       'Liofilizado', 'Laboratorio Clínico', 'Hialuronato de sodio', 'AH', 'Hipersensibilidad', 'Eritema',
       'Presentación clínica extensa', 'Activa', '1 ml', 'Indicaciones clínicas', 'Uso profesional', 'Reconstitución / Dilución',
       'Tipo de diluyente', 'Solución salina', 'Volumen (mL)', '2', 'Instrucciones', 'Mezclar suavemente.',
