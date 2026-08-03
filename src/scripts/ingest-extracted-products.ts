@@ -3,10 +3,57 @@ import { getPayload } from 'payload'
 import configPromise from '../payload.config'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { readdirSync, readFileSync } from 'fs'
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+function getOrExtractDescription(productData: ExtractedProduct, jsonFile: string): string | null {
+  if (productData.description && productData.description.trim()) {
+    return productData.description.trim()
+  }
+
+  const realProductsDir = path.resolve(dirname, '../../real-products')
+  const possibleMdFiles = [
+    jsonFile.replace('.json', '.md'),
+    jsonFile.replace(/_/g, ' ').replace('.json', '.md'),
+    `${productData.canonicalName}.md`,
+  ]
+
+  for (const mdName of possibleMdFiles) {
+    const mdPath = path.join(realProductsDir, mdName)
+    if (existsSync(mdPath)) {
+      const mdContent = readFileSync(mdPath, 'utf-8')
+      const lines = mdContent.split('\n')
+      const paragraphs: string[] = []
+      for (const line of lines) {
+        const trimmed = line.trim()
+        if (
+          !trimmed ||
+          trimmed.startsWith('#') ||
+          trimmed.toUpperCase() === 'FICHA TÉCNICA' ||
+          trimmed.toUpperCase().startsWith('FICHA TÉCNICA') ||
+          trimmed.startsWith('**ACTIVOS') ||
+          trimmed.startsWith('**PRESENTACIÓN') ||
+          trimmed.startsWith('**INDICACIONES') ||
+          trimmed.startsWith('**LABORATORIO') ||
+          trimmed.startsWith('**RECOMENDACIONES') ||
+          trimmed.startsWith('**REACCIONES') ||
+          trimmed.startsWith('## ') ||
+          trimmed.startsWith('### ')
+        ) {
+          if (paragraphs.length > 0) break
+          continue
+        }
+        paragraphs.push(trimmed.replace(/\*\*/g, '').trim())
+      }
+      if (paragraphs.length > 0) {
+        return paragraphs.join(' ')
+      }
+    }
+  }
+  return null
+}
 
 interface ProtocolInput {
   name: string
@@ -199,6 +246,12 @@ async function run() {
     try {
       const content = readFileSync(filePath, 'utf-8')
       const productData: ExtractedProduct = JSON.parse(content)
+
+      const description = getOrExtractDescription(productData, file)
+      if (description && productData.description !== description) {
+        productData.description = description
+        writeFileSync(filePath, JSON.stringify(productData, null, 2), 'utf-8')
+      }
 
       // 1. Resolver Laboratorio
       const labId = await getOrCreateEntity(payload, 'laboratories', productData.laboratory)
