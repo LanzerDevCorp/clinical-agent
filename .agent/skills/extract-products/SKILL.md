@@ -42,6 +42,14 @@ Esta skill define el comportamiento del **Agente Extractor**, encargado de proce
    - El agente extractor debe corregir faltas de ortografía y homogeneizar variantes de nexos (ej: preferir término canónico `"Embarazo y lactancia"` sobre `"Embarazo o lanctancia"`).
    - El script de ingesta cuenta con un algoritmo de coincidencia difusa (distancia de Levenshtein + similitud de tokens ≥ 80%) que detecta variantes o erratas leves y reutiliza el ID del registro existente en la BD sin crear duplicados.
 
+6. **Desglose Semántico por Intención Clínica (Secciones Mixtas/Generales):**
+   - Cuando la ficha de origen contenga secciones heterogéneas o agrupadas como `## RECOMENDACIONES:`, `## CONSIDERACIONES:`, `## NOTAS:` o `## REACCIONES:`, **NO clasificar por el título de la sección**. El agente debe analizar e interpretar cada punto individualmente según su intención clínica:
+     - **Contraindicaciones (`contraindications`)**: Frases de prohibición o situaciones donde NO se debe aplicar (ej: *"No aplicar en heridas"*, *"Contraindicado en embarazo/lactancia"*, *"Intolerancia a componentes"*).
+     - **Cuidados Post-Aplicación (`postCareNotes`)**: Instrucciones o conducta sugerida tras el procedimiento (ej: *"No exponer al sol por 48h"*, *"Usar fotoprotector FPS 50+"*, *"Evitar ejercicio el primer día"*).
+     - **Advertencias de Seguridad (`safetyWarnings`)**: Precauciones de manipulación técnica, conservación o perfil profesional (ej: *"Uso exclusivo por profesional sanitario"*, *"Mantener refrigerado entre 2°C y 8°C"*, *"Desechar vial al abrir"*).
+     - **Efectos Adversos (`adverseEffects`)**: Reacciones corporales esperadas o eventos adversos fisiológicos (ej: *"Eritema en sitio de punción"*, *"Dolor leve"*, *"Edema transitorio"*).
+     - **Reconstitución / Dilución (`reconstitution`)**: Instrucciones explícitas de mezcla o volumen de diluyente (ej: *"Reconstituir con 1 mL de solución salina 0.9%"*).
+
 ---
 
 ## Formato del JSON de Salida
