@@ -22,7 +22,12 @@ Esta skill define el comportamiento del **Agente Extractor**, encargado de proce
 
 2. **Normalización Estricta:**
    - `canonicalName`: Siempre en MAYÚSCULAS SOSTENIDAS (ej: `"BELLATOX"`, `"SOFIDERM DEEP"`).
+   - `description`: Párrafo descriptivo o resumen técnico introductorio extraído de la ficha comercial (`real-products/<PRODUCTO>.md`), limpio de marcas de formato Markdown (`**`).
+   - `productType`: Debe ser uno de los enums válidos: `"liofilizado"`, `"liquido"`, `"hilos_pdo"`, `"dispositivo_medico"`, `"insumo"`, `"otro"`.
    - `laboratory`: Nombre limpio del laboratorio desarrollador/distribuidor.
+   - `reconstitution`: Si el producto es líquido/listo para usar y no requiere reconstitución, explicitar:
+     `{ "diluentType": "No requiere", "volumeMl": null, "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa." }`.
+   - `zones`, `routes`, `techniques`: Arrays de strings divididos por elementos individuales (ej: `["Facial", "Cuello"]` en lugar de `"Facial y Cuello"`).
    - `validationStatus`: Setear `"PENDING"` por defecto. Si existen inconsistencias o faltantes graves en la ficha origen, indicar las observaciones detalladas en `validationNotes`.
 
 3. **Principio de Cero Alucinación (Grounding):**
@@ -33,6 +38,10 @@ Esta skill define el comportamiento del **Agente Extractor**, encargado de proce
    - Generar un archivo JSON por cada producto en la ruta: `tmp/migration/extracted/<CANONICAL_NAME>.json`.
    - La estructura debe concordar 1:1 con el esquema de la colección `Products` de Payload CMS (`src/collections/Products.ts`).
 
+5. **Desduplicación Inteligente y Normalización Ortográfica:**
+   - El agente extractor debe corregir faltas de ortografía y homogeneizar variantes de nexos (ej: preferir término canónico `"Embarazo y lactancia"` sobre `"Embarazo o lanctancia"`).
+   - El script de ingesta cuenta con un algoritmo de coincidencia difusa (distancia de Levenshtein + similitud de tokens ≥ 80%) que detecta variantes o erratas leves y reutiliza el ID del registro existente en la BD sin crear duplicados.
+
 ---
 
 ## Formato del JSON de Salida
@@ -40,6 +49,7 @@ Esta skill define el comportamiento del **Agente Extractor**, encargado de proce
 ```json
 {
   "canonicalName": "NOMBRE_DEL_PRODUCTO",
+  "description": "Párrafo descriptivo o resumen técnico del producto extraído de la ficha comercial...",
   "productType": "liofilizado | liquido | hilos_pdo | dispositivo_medico | insumo | otro",
   "laboratory": "Nombre del Laboratorio",
   "activeIngredients": ["Ingrediente 1", "Ingrediente 2"],
@@ -55,12 +65,17 @@ Esta skill define el comportamiento del **Agente Extractor**, encargado de proce
       "canonicalName": "NOMBRE_PRESENTACION",
       "status": "activa",
       "aliases": [{ "term": "Sinonimo Presentacion" }],
+      "certifications": "Registro sanitario / certificación",
       "protocols": [
         {
           "name": "Nombre descriptivo del protocolo de aplicación",
-          "zone": "Zona de aplicación (ej: Facial, Corporal, Cuero Cabelludo)",
-          "route": "Vía de administración (ej: Intradérmica, Subcutánea, Intramuscular)",
-          "technique": "Técnica (ej: Mesoterapia / Dermapen, Inyección Punto a Punto)",
+          "visibleEffectsOnset": "Inicio de efectos (ej: 5 a 7 días)",
+          "effectDuration": "Duración del efecto (ej: 4 a 6 meses)",
+          "recommendedDose": "Dosis recomendada y calibre de aguja (ej: 2-4 UI)",
+          "injectionDepth": "Profundidad de inyección (ej: Intradérmica)",
+          "zones": ["Zona de aplicación (ej: Facial, Corporal)"],
+          "routes": ["Vía de administración (ej: Intradérmica, Subcutánea)"],
+          "techniques": ["Técnica (ej: Mesoterapia, Dermapen)"],
           "sessionsMin": 4,
           "sessionsMax": 6,
           "frequency": "Frecuencia (ej: Cada 2 semanas)"

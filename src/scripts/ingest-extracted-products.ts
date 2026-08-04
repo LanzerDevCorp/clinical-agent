@@ -97,6 +97,57 @@ interface ExtractedProduct {
   }>
 }
 
+function levenshteinDistance(a: string, b: string): number {
+  if (a.length === 0) return b.length
+  if (b.length === 0) return a.length
+  const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i])
+  for (let j = 1; j <= a.length; j++) matrix[0][j] = j
+
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1]
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        )
+      }
+    }
+  }
+  return matrix[b.length][a.length]
+}
+
+function normalizeCanonicalText(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\b(y|o|e|u)\b/gi, ' ')
+    .replace(/[^a-z0-9]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function tokenSimilarity(str1: string, str2: string): number {
+  const tokens1 = Array.from(new Set(normalizeCanonicalText(str1).split(' ').filter((w) => w.length > 2)))
+  const tokens2 = Array.from(new Set(normalizeCanonicalText(str2).split(' ').filter((w) => w.length > 2)))
+  if (tokens1.length === 0 || tokens2.length === 0) return 0
+
+  let matches = 0
+  for (const t1 of tokens1) {
+    for (const t2 of tokens2) {
+      if (t1 === t2 || (t1.length >= 4 && t2.length >= 4 && levenshteinDistance(t1, t2) <= 2)) {
+        matches++
+        break
+      }
+    }
+  }
+  const maxTokens = Math.max(tokens1.length, tokens2.length)
+  return matches / maxTokens
+}
+
 async function getOrCreateEntity(
   payload: Awaited<ReturnType<typeof getPayload>>,
   collection: 'laboratories' | 'active-ingredients' | 'contraindications' | 'adverse-effects' | 'application-zones' | 'administration-routes' | 'application-techniques',
@@ -105,16 +156,32 @@ async function getOrCreateEntity(
   const normalizedValue = value.trim()
   const fieldName = (collection === 'contraindications' || collection === 'adverse-effects') ? 'description' : 'name'
 
-  const existing = await payload.find({
+  // 1. Exact match
+  const existingExact = await payload.find({
     collection,
     where: { [fieldName]: { equals: normalizedValue } },
     limit: 1,
   })
 
-  if (existing.docs.length > 0) {
-    return existing.docs[0].id as number
+  if (existingExact.docs.length > 0) {
+    return existingExact.docs[0].id as number
   }
 
+  // 2. Fuzzy match against existing entities in collection
+  const allDocs = await payload.find({
+    collection,
+    limit: 500,
+  })
+
+  for (const doc of allDocs.docs) {
+    const docText = (doc as any)[fieldName]
+    if (typeof docText === 'string' && tokenSimilarity(normalizedValue, docText) >= 0.8) {
+      console.log(`  [DEDUP FUZZY] Coincidencia difusa en '${collection}': "${normalizedValue}" ➔ "${docText}" (ID: ${doc.id})`)
+      return doc.id as number
+    }
+  }
+
+  // 3. Create if no exact or fuzzy match
   const dataToCreate: any = { [fieldName]: normalizedValue }
   if (collection === 'contraindications') {
     dataToCreate.type = 'relativa'
