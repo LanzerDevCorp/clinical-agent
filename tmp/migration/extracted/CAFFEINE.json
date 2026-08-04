@@ -55,7 +55,29 @@
           "term": "Ampolleta 1ml"
         }
       ],
-      "protocols": [],
+      "protocols": [
+        {
+          "name": "Protocolo Mesoterapia Lipolítica Cafeína",
+          "zones": [
+            "Corporal",
+            "Grasa Localizada",
+            "Celulitis"
+          ],
+          "routes": [
+            "Subcutánea"
+          ],
+          "techniques": [
+            "Mesoterapia"
+          ],
+          "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+          "effectDuration": "Según protocolo de mantenimiento",
+          "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-13 mm, separación de 1-1.5 cm entre puntos).",
+          "injectionDepth": "Subcutáneo / Tejido adiposo",
+          "sessionsMin": 4,
+          "sessionsMax": 6,
+          "frequency": "Cada 2 semanas"
+        }
+      ],
       "reconstitution": {
         "diluentType": "No requiere",
         "volumeMl": null,
