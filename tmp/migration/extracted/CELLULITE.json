@@ -15,6 +15,11 @@
   ],
   "validationStatus": "PENDING",
   "validationNotes": "Inconsistencia detectada en la ficha técnica origen (real-products/CELLULITE.md): El párrafo descriptivo menciona 'L-CARNITINE' por error de copia en lugar de 'CELLULITE', aunque el título y los ingredientes corresponden a Cellulite.",
+  "clinicalIndications": [
+    "Reducción de celulitis adiposa, edematosa y dura",
+    "Reducción de grasa localizada corporal",
+    "Firmeza y suavidad en piel de abdomen, nalgas, muslos y caderas"
+  ],
   "contraindications": [
     "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
     "Hipersensibilidad a cualquiera de los componentes de la fórmula",
@@ -25,6 +30,16 @@
     "Dolor leve en sitio de punción",
     "Enrojecimiento en sitio de punción",
     "Prurito leve"
+  ],
+  "postCareNotes": [
+    "Tomar abundante agua",
+    "Evitar ingesta de carbohidratos los primeros 5 días post-aplicación",
+    "No hacer ejercicio en las primeras 24 horas",
+    "Aparatología o radiofrecuencia después de 72 horas"
+  ],
+  "safetyWarnings": [
+    "Uso exclusivo por profesional sanitario",
+    "Respetar intervalo mínimo de 2 semanas entre sesiones"
   ],
   "presentations": [
     {

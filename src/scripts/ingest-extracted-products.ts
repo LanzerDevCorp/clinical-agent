@@ -82,8 +82,11 @@ interface ExtractedProduct {
   validationStatus: 'PENDING' | 'APPROVED'
   validationNotes?: string | null
   certifications?: string | null
+  clinicalIndications?: string[]
   contraindications?: string[]
   adverseEffects?: string[]
+  postCareNotes?: string[]
+  safetyWarnings?: string[]
   presentations?: Array<{
     canonicalName: string
     status: 'activa' | 'descontinuada'
@@ -150,11 +153,11 @@ function tokenSimilarity(str1: string, str2: string): number {
 
 async function getOrCreateEntity(
   payload: Awaited<ReturnType<typeof getPayload>>,
-  collection: 'laboratories' | 'active-ingredients' | 'contraindications' | 'adverse-effects' | 'application-zones' | 'administration-routes' | 'application-techniques',
+  collection: 'laboratories' | 'active-ingredients' | 'contraindications' | 'adverse-effects' | 'application-zones' | 'administration-routes' | 'application-techniques' | 'post-care-notes' | 'safety-warnings' | 'clinical-indications',
   value: string
 ): Promise<number> {
   const normalizedValue = value.trim()
-  const fieldName = (collection === 'contraindications' || collection === 'adverse-effects') ? 'description' : 'name'
+  const fieldName = (collection === 'contraindications' || collection === 'adverse-effects' || collection === 'post-care-notes' || collection === 'safety-warnings') ? 'description' : 'name'
 
   // 1. Exact match
   const existingExact = await payload.find({
@@ -350,14 +353,44 @@ async function run() {
         }
       }
 
-      // 5. Mapear presentaciones y resolver protocolos
-      const cleanedPresentations = []
+      // 5. Resolver Indicaciones Clínicas
+      const indicationIds: number[] = []
+      if (productData.clinicalIndications && productData.clinicalIndications.length > 0) {
+        for (const ind of productData.clinicalIndications) {
+          const iId = await getOrCreateEntity(payload, 'clinical-indications', ind)
+          indicationIds.push(iId)
+        }
+      }
+
+      // 6. Resolver Cuidados Post-Aplicación
+      const postCareIds: number[] = []
+      if (productData.postCareNotes && productData.postCareNotes.length > 0) {
+        for (const note of productData.postCareNotes) {
+          const pId = await getOrCreateEntity(payload, 'post-care-notes', note)
+          postCareIds.push(pId)
+        }
+      }
+
+      // 7. Resolver Advertencias de Seguridad
+      const safetyIds: number[] = []
+      if (productData.safetyWarnings && productData.safetyWarnings.length > 0) {
+        for (const warn of productData.safetyWarnings) {
+          const sId = await getOrCreateEntity(payload, 'safety-warnings', warn)
+          safetyIds.push(sId)
+        }
+      }
+
+      // 8. Mapear presentaciones y resolver protocolos
+      const cleanedPresentations: any[] = []
       for (const pres of productData.presentations || []) {
         const copy: any = {
           ...pres,
           certifications: (productData as any).certifications || null,
           contraindications: contraIds,
           adverseEffects: adverseIds,
+          clinicalIndications: indicationIds,
+          postCareNotes: postCareIds,
+          safetyWarnings: safetyIds,
         }
 
         if (pres.protocols && pres.protocols.length > 0) {
@@ -427,10 +460,26 @@ async function run() {
           payloadData.laboratory = typeof existingDoc.laboratory === 'object' ? existingDoc.laboratory.id : existingDoc.laboratory
         }
         if (existingDoc.activeIngredients && existingDoc.activeIngredients.length > 0) {
-          payloadData.activeIngredients = existingDoc.activeIngredients.map((i: any) => (typeof i === 'object' ? i.id : i))
+          const getIds = (arr: any) => (!arr || !Array.isArray(arr) ? [] : arr.map((i) => (typeof i === 'object' ? i.id : i)))
+          payloadData.activeIngredients = Array.from(new Set([...getIds(existingDoc.activeIngredients), ...ingredientIds]))
         }
         if (existingDoc.presentations && existingDoc.presentations.length > 0) {
-          payloadData.presentations = existingDoc.presentations
+          payloadData.presentations = existingDoc.presentations.map((existingPres: any, idx: number) => {
+            const newPres = cleanedPresentations[idx] || cleanedPresentations[0] || {}
+
+            const getIds = (arr: any) => (!arr || !Array.isArray(arr) ? [] : arr.map((item) => (typeof item === 'object' ? item.id : item)))
+            const mergeIds = (existingArr: any, newArr: any) => Array.from(new Set([...getIds(existingArr), ...getIds(newArr)]))
+
+            return {
+              ...existingPres,
+              contraindications: mergeIds(existingPres.contraindications, newPres.contraindications),
+              postCareNotes: mergeIds(existingPres.postCareNotes, newPres.postCareNotes),
+              safetyWarnings: mergeIds(existingPres.safetyWarnings, newPres.safetyWarnings),
+              adverseEffects: mergeIds(existingPres.adverseEffects, newPres.adverseEffects),
+              clinicalIndications: mergeIds(existingPres.clinicalIndications, newPres.clinicalIndications),
+              protocols: mergeIds(existingPres.protocols, newPres.protocols),
+            }
+          })
         }
 
         await payload.update({

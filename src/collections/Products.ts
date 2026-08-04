@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { syncProductToJson } from '../hooks/syncProductToJson'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -11,6 +12,9 @@ export const Products: CollectionConfig = {
       es: 'Productos',
       en: 'Productos',
     },
+  },
+  hooks: {
+    afterChange: [syncProductToJson],
   },
   admin: {
     useAsTitle: 'canonicalName',

@@ -1,9 +1,9 @@
 {
   "canonicalName": "ARTICHOKE",
   "productType": "liquido",
-  "laboratory": "Laboratorio MCCM",
+  "laboratory": "Laboratorio MCCM, España",
   "activeIngredients": [
-    "Extracto de Alcachofa"
+    "Extracto de Alcachofa (Cynara Scolymus)"
   ],
   "aliases": [
     {
@@ -15,6 +15,12 @@
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
+  "clinicalIndications": [
+    "Reducción de grasa localizada",
+    "Mejorar el metabolismo lipídico",
+    "Reducción de la retención de líquidos",
+    "Celulitis edematosa y adiposa"
+  ],
   "contraindications": [
     "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
     "Hipersensibilidad a cualquiera de los componentes de la fórmula",
@@ -24,7 +30,23 @@
   "adverseEffects": [
     "Dolor leve en sitio de punción",
     "Enrojecimiento leve",
-    "Prurito leve"
+    "Prurito leve",
+    "Hematomas",
+    "Ardor temporal e hinchazón"
+  ],
+  "postCareNotes": [
+    "Tomar abundante agua",
+    "Evitar ingesta de carbohidratos los primeros 5 días post-aplicación",
+    "No hacer ejercicio en las primeras 24 horas",
+    "Radiofrecuencia o aparatología después de 72 horas",
+    "En caso de febrícula tomar paracetamol"
+  ],
+  "safetyWarnings": [
+    "No aplicar en heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "No aplicar si se tiene hipersensibilidad a cualquiera de los componentes de la fórmula",
+    "Contraindicado en pacientes hipertensos o con enfermedades crónicas en descontrol",
+    "No aplicar en embarazo y lactancia",
+    "Respetar intervalo mínimo entre sesiones para evitar necrosis o reacción excesiva"
   ],
   "presentations": [
     {
@@ -37,28 +59,31 @@
       ],
       "protocols": [
         {
-          "name": "Protocolo Lipolítico y Drenante Alcachofa",
+          "name": "Protocolo Mesoterapia Lipolítica Artichoke",
           "zones": [
             "Corporal",
             "Grasa Localizada",
-            "Celulitis Edematosa"
+            "Celulitis"
           ],
           "routes": [
-            "Subcutánea",
-            "Tejido Adiposo"
+            "Subcutánea"
           ],
           "techniques": [
-            "Mesoterapia Corporal"
+            "Mesoterapia"
           ],
           "sessionsMin": 4,
           "sessionsMax": 6,
           "frequency": "Cada 2 semanas"
         }
       ],
-      "reconstitution": null
+      "reconstitution": {
+        "diluentType": "No requiere",
+        "volumeMl": null,
+        "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+      }
     }
   ],
-  "visibleEffectsOnset": "Progresivo con drenaje linfático",
-  "effectDuration": "Según sesiones recomendadas (4 a 8 sesiones)",
-  "description": "ARTICHOKE es un tratamiento de Mesoterapia Lipolítica. Ayuda a estimular la circulación linfática, reduciendo la retención de líquidos. Su principal activo es la Alcachofa que es utilizada para tratar la celulitis y la grasa localizada. Este activo integra propiedades desintoxicantes y diuréticas."
+  "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+  "effectDuration": "Según protocolo de mantenimiento",
+  "description": "ARTICHOKE es un tratamiento de Mesoterapia Lipolítica a base de Extracto de Alcachofa (Cynara Scolymus), indicado para favorecer la lipólisis, el drenaje linfático y la reducción de retención de líquidos y celulitis."
 }

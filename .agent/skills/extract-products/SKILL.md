@@ -5,17 +5,16 @@ description: Extract clinical product files in batches of 10 into normalized Pay
 
 # Skill: Agente Extractor de Productos Clínicos
 
-Esta skill define el comportamiento del **Agente Extractor**, encargado de procesar los datos de las fichas clínicas comerciales (`real-products/*.md`), los catálogos por categoría (`catalogs/*.md`) y los índices detallados por categoría en **`catalogs/indices/*.md`**, transformándolos en documentos JSON estructurados y enriquecidos para Payload CMS.
+Esta skill define el comportamiento del **Agente Extractor**, encargado de procesar los datos de las fichas clínicas comerciales (`real-products/*.md`) y los catálogos/índices detallados por categoría exclusivamente en **`catalogs/indices/*.md`**, transformándolos en documentos JSON estructurados y enriquecidos para Payload CMS.
 
 ---
 
 ## Directivas Principales
 
 1. **Búsqueda Cruzada Multifuente:**
-   - Para cada producto del lote, el agente debe buscar obligatoriamente en tres fuentes:
+   - Para cada producto del lote, el agente debe buscar obligatoriamente en dos fuentes:
      - Ficha comercial del producto (`real-products/<PRODUCTO>.md`).
-     - Catálogo de su categoría (`catalogs/<categoria>.md`).
-     - **Índice específico en `catalogs/indices/<categoria>.md`** (donde reside el máximo detalle de composición, pureza %, peso molecular kDa, condiciones de almacenamiento, duración y alertas de duda clínica).
+     - **Índice específico en `catalogs/indices/<categoria>.md`** (donde reside la información técnica de composición, pureza %, peso molecular kDa, condiciones de almacenamiento, duración, cuidados post-aplicación, contraindicaciones compartidas y alertas de duda clínica).
 
 2. **Lote Acotado (Máximo 10 productos por lote):**
    - Procesar de a 10 productos por iteración para permitir la revisión clínica iterativa por parte de la Dra. Sara.
@@ -31,7 +30,7 @@ Esta skill define el comportamiento del **Agente Extractor**, encargado de proce
    - `validationStatus`: Setear `"PENDING"` por defecto. Si existen inconsistencias o faltantes graves en la ficha origen, indicar las observaciones detalladas en `validationNotes`.
 
 3. **Principio de Cero Alucinación (Grounding):**
-   - Extraer ÚNICAMENTE la información declarada explícitamente en la ficha técnica o catálogo de origen.
+   - Extraer ÚNICAMENTE la información declarada explícitamente en la ficha técnica o catálogo del índice de origen.
    - No asumir volúmenes de reconstitución, diluciones ni dosis que no figuren en los textos. Si un campo no aplica o no está en la fuente, omitirlo o dejarlo nulo.
 
 4. **Estructura de Salida:**
@@ -42,11 +41,14 @@ Esta skill define el comportamiento del **Agente Extractor**, encargado de proce
    - El agente extractor debe corregir faltas de ortografía y homogeneizar variantes de nexos (ej: preferir término canónico `"Embarazo y lactancia"` sobre `"Embarazo o lanctancia"`).
    - El script de ingesta cuenta con un algoritmo de coincidencia difusa (distancia de Levenshtein + similitud de tokens ≥ 80%) que detecta variantes o erratas leves y reutiliza el ID del registro existente en la BD sin crear duplicados.
 
-6. **Desglose Semántico por Intención Clínica (Secciones Mixtas/Generales):**
-   - Cuando la ficha de origen contenga secciones heterogéneas o agrupadas como `## RECOMENDACIONES:`, `## CONSIDERACIONES:`, `## NOTAS:` o `## REACCIONES:`, **NO clasificar por el título de la sección**. El agente debe analizar e interpretar cada punto individualmente según su intención clínica:
+6. **Desglose Semántico por Intención Clínica y Validación de Alcance (Secciones Compartidas en `catalogs/indices/`):**
+   - El agente debe leer obligatoriamente las secciones específicas del producto Y las secciones compartidas del índice (`catalogs/indices/<categoria>.md`, ej. *## Cuidados Post Aplicación*, *## Recomendaciones post aplicación*, *## Advertencias*, *## Contraindicaciones*).
+   - **Validación Estricta de Alcance (`Aplica a: ...`)**: Antes de heredar una sección compartida a un producto, el agente debe verificar obligatoriamente la línea de alcance y las notas de excepción (ej. `Aplica a: todos los productos intradérmicos` ➔ **NO heredar a productos con vía de administración distinta como LAURETH que es IV**).
+   - Analizar e clasificar cada ítem individualmente según su intención clínica:
+     - **Indicaciones Clínicas (`clinicalIndications`)**: Usos terapéuticos, estéticos o condiciones tratables (ej: *"Atenúa líneas finas"*, *"Reducción de celulitis edematosa"*, *"Alopecia por seborrea"*).
      - **Contraindicaciones (`contraindications`)**: Frases de prohibición o situaciones donde NO se debe aplicar (ej: *"No aplicar en heridas"*, *"Contraindicado en embarazo/lactancia"*, *"Intolerancia a componentes"*).
-     - **Cuidados Post-Aplicación (`postCareNotes`)**: Instrucciones o conducta sugerida tras el procedimiento (ej: *"No exponer al sol por 48h"*, *"Usar fotoprotector FPS 50+"*, *"Evitar ejercicio el primer día"*).
-     - **Advertencias de Seguridad (`safetyWarnings`)**: Precauciones de manipulación técnica, conservación o perfil profesional (ej: *"Uso exclusivo por profesional sanitario"*, *"Mantener refrigerado entre 2°C y 8°C"*, *"Desechar vial al abrir"*).
+     - **Cuidados Post-Aplicación (`postCareNotes`)**: Instrucciones o conducta sugerida tras el procedimiento (ej: *"No recostarse ni agacharse durante 4 horas"*, *"Evitar ejercicio en las primeras 24-48h"*, *"Usar fotoprotector FPS 50+"*, *"Tomar abundante agua"*).
+     - **Advertencias de Seguridad (`safetyWarnings`)**: Precauciones de manipulación técnica, conservación o perfil profesional (ej: *"Uso exclusivo por profesional sanitario"*, *"Mantener refrigerado entre 2°C y 8°C"*, *"Desechar vial al abrir"*, *"Riesgo de necrosis si se inyecta intravascular"*).
      - **Efectos Adversos (`adverseEffects`)**: Reacciones corporales esperadas o eventos adversos fisiológicos (ej: *"Eritema en sitio de punción"*, *"Dolor leve"*, *"Edema transitorio"*).
      - **Reconstitución / Dilución (`reconstitution`)**: Instrucciones explícitas de mezcla o volumen de diluyente (ej: *"Reconstituir con 1 mL de solución salina 0.9%"*).
 
@@ -66,8 +68,11 @@ Esta skill define el comportamiento del **Agente Extractor**, encargado de proce
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
-  "contraindications": ["Contraindicacion 1"],
+  "clinicalIndications": ["Indicación 1", "Indicación 2"],
+  "contraindications": ["Contraindicación 1"],
   "adverseEffects": ["Efecto adverso 1"],
+  "postCareNotes": ["Cuidado post 1", "Cuidado post 2"],
+  "safetyWarnings": ["Advertencia de seguridad 1"],
   "presentations": [
     {
       "canonicalName": "NOMBRE_PRESENTACION",

@@ -13,7 +13,12 @@
     }
   ],
   "validationStatus": "PENDING",
-  "validationNotes": null,
+  "validationNotes": "ALERTA CLÍNICA: CELLESTABYL figura en registry.json (categoría Lipolíticos) pero no tiene ficha descriptiva propia en el catálogo de Lipolíticos (catalogs/indices/Lipolíticos.md). Requiere confirmación por la Dra. Sara.",
+  "clinicalIndications": [
+    "Reducción de celulitis",
+    "Estimula la degradación, movilización y eliminación de grasa",
+    "Aumenta la permeabilidad de la membrana del adipocito"
+  ],
   "contraindications": [
     "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
     "Hipersensibilidad a cualquiera de los componentes de la fórmula",
@@ -24,6 +29,16 @@
     "Dolor leve en sitio de punción",
     "Enrojecimiento en sitio de punción",
     "Prurito leve"
+  ],
+  "postCareNotes": [
+    "Tomar abundante agua",
+    "Evitar ingesta de carbohidratos los primeros 5 días post-aplicación",
+    "No hacer ejercicio en las primeras 24 horas",
+    "Radiofrecuencia o aparatología después de 72 horas"
+  ],
+  "safetyWarnings": [
+    "Uso exclusivo por profesional sanitario",
+    "Respetar intervalo mínimo de 2 semanas entre sesiones"
   ],
   "presentations": [
     {

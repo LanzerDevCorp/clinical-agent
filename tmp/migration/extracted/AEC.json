@@ -1,11 +1,11 @@
 {
   "canonicalName": "AEC",
   "productType": "liquido",
-  "laboratory": "Laboratorio MCCM",
+  "laboratory": "Laboratorio MCCM, España",
   "activeIngredients": [
-    "Vitamina A (Retinol)",
-    "Vitamina E (Tocopherol)",
-    "Vitamina C (Ácido Ascórbico)"
+    "Vitamina A (retinol)",
+    "Vitamina E (tocopherol)",
+    "Vitamina C (ácido ascórbico)"
   ],
   "aliases": [
     {
@@ -14,14 +14,40 @@
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
+  "clinicalIndications": [
+    "Aumento de antioxidantes y vitaminas",
+    "Proteger la piel del sol",
+    "Promueve una piel más joven",
+    "Pieles fotoenvejecidas",
+    "Pieles jóvenes que deseen retrasar el envejecimiento",
+    "Nutrición de la piel"
+  ],
   "contraindications": [
-    "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
-    "Intolerancia individual a cualquiera de los componentes"
+    "Hipersensibilidad a cualquiera de los componentes",
+    "Embarazo y lactancia",
+    "Trastornos de la coagulación",
+    "Inmunosupresión",
+    "Enfermedades crónico-degenerativas en descontrol (DM, HTA, etc.)",
+    "Infección o inflamación local activa",
+    "No aplicar en heridas, úlceras, lesiones infectadas o dermatosis supurante"
   ],
   "adverseEffects": [
-    "Dolor leve en sitio de punción",
-    "Enrojecimiento leve",
-    "Prurito leve"
+    "Dolor leve",
+    "Enrojecimiento en sitio de punción",
+    "Prurito leve",
+    "Hematomas",
+    "Inflamación leve del sitio de punción"
+  ],
+  "postCareNotes": [
+    "Evitar tocar el rostro",
+    "No maquillaje, cremas ni productos hasta 4 horas después",
+    "Limpiar la piel y aplicar tónicos después de 4 horas",
+    "Cuidado con el sudor; evitar agua de mar o piscina",
+    "Protección solar estricta; evitar exposición prolongada al sol"
+  ],
+  "safetyWarnings": [
+    "Uso exclusivo por profesional sanitario",
+    "No aplicar o suspender tratamiento ante la intolerancia individual a cualquiera de los componentes"
   ],
   "presentations": [
     {
@@ -34,9 +60,11 @@
       ],
       "protocols": [
         {
-          "name": "Protocolo Revitalizante Antioxidante AEC",
+          "name": "Protocolo Mesoterapia Regenerativa AEC",
           "zones": [
-            "Facial"
+            "Facial",
+            "Cuello",
+            "Escote"
           ],
           "routes": [
             "Intradérmica"
@@ -50,10 +78,14 @@
           "frequency": "Cada 2 semanas"
         }
       ],
-      "reconstitution": null
+      "reconstitution": {
+        "diluentType": "No requiere",
+        "volumeMl": null,
+        "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+      }
     }
   ],
-  "visibleEffectsOnset": "Progresivo desde la primera sesión",
-  "effectDuration": "Según protocolo de mantenimiento (cada 2 a 4 semanas)",
-  "description": "AEC es un tratamiento de Mesoterapia Regenerativa, es un complejo con Vitamina A, E y C; que previene el envejecimiento, revierte las señales del fotoenvejecimiento y mejora la barrera protectora de la piel."
+  "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+  "effectDuration": "Según protocolo de mantenimiento",
+  "description": "AEC es un tratamiento de Mesoterapia Regenerativa, un complejo con Vitamina A, E y C que previene el envejecimiento, revierte las señales del fotoenvejecimiento y mejora la barrera protectora de la piel."
 }

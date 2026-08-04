@@ -1,9 +1,9 @@
 {
   "canonicalName": "ARGIRELINE",
   "productType": "liquido",
-  "laboratory": "Laboratorio MCCM",
+  "laboratory": "Laboratorio MCCM, España",
   "activeIngredients": [
-    "Argireline (Hexapéptido)"
+    "Argireline (Acetyl Hexapeptide-8)"
   ],
   "aliases": [
     {
@@ -15,16 +15,41 @@
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
+  "clinicalIndications": [
+    "Antiarrugas",
+    "Reduce las líneas de expresión en la frente, las cejas y alrededor de los ojos",
+    "Elimina las líneas finas de código de barras en el labio superior",
+    "Tratar arrugas finas",
+    "Pacientes que le temen o se reúsan a usar Toxina Botulínica"
+  ],
   "contraindications": [
-    "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
     "Hipersensibilidad a cualquiera de los componentes de la fórmula",
-    "Pacientes hipertensos o con enfermedades crónicas en descontrol",
-    "Embarazo y lactancia"
+    "Embarazo y lactancia",
+    "Trastornos de la coagulación",
+    "Inmunosupresión",
+    "Enfermedades crónico-degenerativas en descontrol (DM, HTA, etc.)",
+    "Infección o inflamación local activa",
+    "Heridas, úlceras, lesiones infectadas o dermatosis supurante"
   ],
   "adverseEffects": [
     "Dolor leve en sitio de punción",
     "Enrojecimiento leve",
-    "Prurito leve"
+    "Prurito leve",
+    "Hematomas",
+    "Inflamación leve del sitio de punción"
+  ],
+  "postCareNotes": [
+    "Evitar tocar el rostro",
+    "No maquillaje, cremas ni productos hasta 4 horas después",
+    "Limpiar la piel y aplicar tónicos después de 4 horas",
+    "Cuidado con el sudor; evitar agua de mar o piscina",
+    "Protección solar estricta; evitar exposición prolongada al sol"
+  ],
+  "safetyWarnings": [
+    "No aplicar en heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "No aplicar si se tiene hipersensibilidad a cualquiera de los componentes de la fórmula",
+    "Contraindicado en pacientes hipertensos o con enfermedades crónicas en descontrol",
+    "No aplicar en embarazo y lactancia"
   ],
   "presentations": [
     {
@@ -37,28 +62,32 @@
       ],
       "protocols": [
         {
-          "name": "Protocolo Antiarrugas Botox-Like Argireline",
+          "name": "Protocolo Mesoterapia Facial Argireline",
           "zones": [
-            "Frente",
-            "Entrecejo",
-            "Periocular"
+            "Facial",
+            "Zona de Arrugas"
           ],
           "routes": [
             "Intradérmica"
           ],
           "techniques": [
-            "Mesoterapia puntual en arruga",
-            "Dermapen"
+            "Mesoterapia",
+            "Dermapen",
+            "Inyección en la arruga"
           ],
           "sessionsMin": 4,
           "sessionsMax": 6,
           "frequency": "Cada 2 semanas"
         }
       ],
-      "reconstitution": null
+      "reconstitution": {
+        "diluentType": "No requiere",
+        "volumeMl": null,
+        "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+      }
     }
   ],
-  "visibleEffectsOnset": "Efecto Botox-Like progresivo desde las primeras aplicaciones",
+  "visibleEffectsOnset": "Progresivo con efecto botox-like no invasivo",
   "effectDuration": "Según protocolo de mantenimiento",
-  "description": "Regenerativo. Solución antienvejecimiento a base de hexapeptido."
+  "description": "ARGIRELINE es un activo de mesoterapia facial con acción antiarrugas y reafirmante (efecto botox-like no invasivo), ideal para suavizar líneas de expresión en pacientes que buscan evitar la toxina botulínica."
 }

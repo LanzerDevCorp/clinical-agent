@@ -15,6 +15,11 @@
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
+  "clinicalIndications": [
+    "Reducción de la retención de líquidos",
+    "Estimulación de la circulación sanguínea de retorno",
+    "Reducción de grasa localizada y celulitis adiposa/edematosa"
+  ],
   "contraindications": [
     "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
     "Hipersensibilidad a cualquiera de los componentes de la fórmula",
@@ -25,6 +30,18 @@
     "Dolor leve en sitio de punción",
     "Enrojecimiento en sitio de punción",
     "Prurito leve"
+  ],
+  "postCareNotes": [
+    "Tomar abundante agua",
+    "Evitar ingesta de carbohidratos los primeros 5 días post-aplicación",
+    "No hacer ejercicio en las primeras 24 horas",
+    "Radiofrecuencia o aparatología después de 72 horas",
+    "En caso de febrícula tomar paracetamol"
+  ],
+  "safetyWarnings": [
+    "Uso exclusivo por profesional sanitario",
+    "Contraindicado en pacientes hipertensos",
+    "Respetar intervalo mínimo de 2 semanas entre sesiones"
   ],
   "presentations": [
     {

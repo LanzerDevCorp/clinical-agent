@@ -1,13 +1,13 @@
 {
   "canonicalName": "ANTIAGING",
   "productType": "liquido",
-  "laboratory": "Laboratorio MCCM",
+  "laboratory": "Laboratorio MCCM, España",
   "activeIngredients": [
-    "Ácido Hialurónico",
+    "Ácido hialurónico",
     "Pantenol",
-    "DMAE",
-    "Silicio Orgánico",
-    "Centella Asiática"
+    "DMAE (Dimetilaminoetanol)",
+    "Silicio orgánico",
+    "Centella asiática"
   ],
   "aliases": [
     {
@@ -16,16 +16,44 @@
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
+  "clinicalIndications": [
+    "Atenúa líneas finas de expresión",
+    "Aporta firmeza en la piel",
+    "Hidratación profunda",
+    "Efecto regenerativo y antioxidante",
+    "Líneas finas de expresión",
+    "Levantamiento de piel",
+    "Arrugas",
+    "Despigmentante"
+  ],
   "contraindications": [
-    "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
     "Hipersensibilidad a cualquiera de los componentes de la fórmula",
-    "Pacientes hipertensos o con enfermedades crónicas en descontrol",
-    "Embarazo y lactancia"
+    "Embarazo y lactancia",
+    "Trastornos de la coagulación",
+    "Inmunosupresión",
+    "Enfermedades crónico-degenerativas en descontrol (DM, HTA, etc.)",
+    "Infección o inflamación local activa",
+    "Heridas, úlceras, lesiones infectadas o dermatosis supurante"
   ],
   "adverseEffects": [
     "Dolor leve en sitio de punción",
     "Enrojecimiento leve",
-    "Prurito leve"
+    "Prurito leve",
+    "Hematomas",
+    "Inflamación leve del sitio de punción"
+  ],
+  "postCareNotes": [
+    "Evitar tocar el rostro",
+    "No maquillaje, cremas ni productos hasta 4 horas después",
+    "Limpiar la piel y aplicar tónicos después de 4 horas",
+    "Cuidado con el sudor; evitar agua de mar o piscina",
+    "Protección solar estricta; evitar exposición prolongada al sol"
+  ],
+  "safetyWarnings": [
+    "No aplicar en heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "No aplicar si se tiene hipersensibilidad a cualquiera de los componentes de la fórmula",
+    "Contraindicado en pacientes hipertensos o con enfermedades crónicas en descontrol",
+    "No aplicar en embarazo y lactancia"
   ],
   "presentations": [
     {
@@ -38,10 +66,11 @@
       ],
       "protocols": [
         {
-          "name": "Protocolo Rejuvenecimiento Integral Antiaging",
+          "name": "Protocolo Mesoterapia Regenerativa Antiaging",
           "zones": [
             "Facial",
-            "Cuello"
+            "Cuello",
+            "Escote"
           ],
           "routes": [
             "Intradérmica"
@@ -55,7 +84,11 @@
           "frequency": "Cada 2 semanas"
         }
       ],
-      "reconstitution": null
+      "reconstitution": {
+        "diluentType": "No requiere",
+        "volumeMl": null,
+        "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+      }
     },
     {
       "canonicalName": "Vial 10 ml",
@@ -67,10 +100,11 @@
       ],
       "protocols": [
         {
-          "name": "Protocolo Rejuvenecimiento Integral Antiaging",
+          "name": "Protocolo Mesoterapia Regenerativa Antiaging Vial",
           "zones": [
             "Facial",
-            "Cuello"
+            "Cuello",
+            "Escote"
           ],
           "routes": [
             "Intradérmica"
@@ -87,7 +121,7 @@
       "reconstitution": null
     }
   ],
-  "visibleEffectsOnset": "Progresivo desde la primera sesión",
-  "effectDuration": "Según protocolo de mantenimiento (cada 2 a 4 semanas)",
-  "description": "ANTIAGING es un tratamiento de Mesoterapia Regenerativa, es un coctel de activos revitalizantes utilizados para rejuvenecer y mejorar el aspecto de la piel. Esta combinación reduce los signos del envejecimiento internos y externos. Proporcionando una piel hidratada, nutrida, suave y revitalizada."
+  "visibleEffectsOnset": "Progresivo según avance del tratamiento",
+  "effectDuration": "Según protocolo de mantenimiento",
+  "description": "ANTIAGING es un tratamiento de Mesoterapia Regenerativa con Ácido Hialurónico, Pantenol, DMAE, Silicio Orgánico y Centella Asiática, diseñado para el rejuvenecimiento cutáneo integral, firmeza e hidratación."
 }

@@ -1,42 +1,55 @@
 {
   "canonicalName": "BTSA9",
   "productType": "liofilizado",
-  "laboratory": "Protox",
+  "laboratory": "Protox, Corea del Sur",
   "activeIngredients": [
-    "Toxina Botulínica Tipo A 100 UI",
-    "Cloruro de Sodio 0.9 mg",
-    "Albúmina Sérica Humana 0.5 mg"
+    "Toxina botulínica tipo A (100 U)",
+    "Albúmina sérica humana",
+    "Cloruro de sodio 0.9 mg"
   ],
   "aliases": [
     {
-      "term": "BTSA 9"
-    },
-    {
-      "term": "BTSA9 100 UI"
+      "term": "BTSA9 100U"
     }
   ],
   "validationStatus": "PENDING",
   "validationNotes": "Peso molecular: 900 kDa. Pureza: 99%. Origen: Corea del Sur (Protox). Certificación KFDA. Duración del efecto: Hasta 6 meses.",
+  "clinicalIndications": [
+    "Líneas faciales hiperfuncionantes",
+    "Hiperhidrosis axilar, palmar y plantar",
+    "Tratamiento de bruxismo"
+  ],
   "contraindications": [
-    "Hipersensibilidad conocida a la albúmina, proteínas de huevo o cualquier componente",
-    "Enfermedades neuromusculares (miastenia gravis, esclerosis múltiple, ELA, Lambert-Eaton)",
-    "Proceso inflamatorio o infeccioso en la zona de punción",
+    "Infección o inflamación en el sitio de aplicación",
+    "Tratamiento con antibióticos aminoglucósidos o espectinomicina",
+    "Enfermedades neuromusculares",
     "Embarazo y lactancia"
   ],
   "adverseEffects": [
-    "Propagación a larga distancia del efecto de la toxina",
-    "Reacción de hipersensibilidad",
-    "Parálisis incompleta muscular con arrugas residuales",
-    "Náuseas, fatiga, malestar, sintomatología pseudogripal",
-    "Dolor, edema, eritema, equimosis en punción, cefalea, hiperestesia"
+    "Dolor e inflamación en sitio de aplicación",
+    "Equimosis y hematomas",
+    "Cefalea leve-moderada",
+    "Propagación a distancia del efecto de la toxina"
+  ],
+  "postCareNotes": [
+    "No recostarse ni agacharse durante 4 horas post-aplicación",
+    "Evitar masajear o manipular las regiones tratadas",
+    "Evitar ambientes fríos o calurosos extremos",
+    "Suspender actividad física por 48 horas",
+    "No consumir bebidas alcohólicas por 48 horas"
+  ],
+  "safetyWarnings": [
+    "Uso exclusivo por profesional médico capacitado",
+    "Conservar bajo refrigeración entre 2°C y 8°C (no congelar)",
+    "Técnica aséptica e inyección intramuscular estricta"
   ],
   "presentations": [
     {
-      "canonicalName": "Vial Liofilizado 100 UI",
+      "canonicalName": "Vial 100 U",
       "status": "activa",
       "aliases": [
         {
-          "term": "Vial 100 UI"
+          "term": "Vial 100UI"
         }
       ],
       "protocols": [
@@ -58,15 +71,13 @@
         }
       ],
       "reconstitution": {
-        "diluentType": "Solución Salina 0.9% refrigerada",
-        "volumeMl": 1,
-        "instructions": "Reconstituir con 1 mL de solución salina al 0.9% refrigerada para evitar choque térmico (10 UI / 0.1 mL). Aplicar preferentemente en 24h."
+        "diluentType": "Solución Fisiológica 0.9%",
+        "volumeMl": 2,
+        "instructions": "Reconstituir suavemente con 2.0 mL de solución salina 0.9% (5 UI por 0.1 mL)."
       }
     }
   ],
-  "visibleEffectsOnset": "A partir de 5 a 7 días",
-  "effectDuration": "Hasta 6 meses",
-  "recommendedDose": "Aplicación con aguja 30G x 6mm. Dosis recomendada: 2-4 UI.",
-  "certifications": "Aprobado por la KFDA (Corea del Sur)",
-  "description": "La Toxina Botulínica, BTSA 9 es un potente tensor, que mejora notablemente las arrugas."
+  "visibleEffectsOnset": "3 a 7 días post-aplicación",
+  "effectDuration": "4 a 6 meses (hasta 6 meses)",
+  "description": "BTSA9 es un tratamiento de Toxina Botulínica tipo A (100 U) de nueva generación, con peso molecular de 900 kDa y pureza del 99%, producido con certificación KFDA."
 }

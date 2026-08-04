@@ -1,9 +1,9 @@
 {
   "canonicalName": "ASIAN CENTELLA",
   "productType": "liquido",
-  "laboratory": "Laboratorio MCCM",
+  "laboratory": "Laboratorio MCCM, España",
   "activeIngredients": [
-    "Extracto de Centella Asiática"
+    "Centella Asiática (Gotu Kola)"
   ],
   "aliases": [
     {
@@ -15,6 +15,12 @@
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
+  "clinicalIndications": [
+    "Reducción de la retención de líquidos",
+    "Mejorar el metabolismo lipídico",
+    "Reducción de grasa localizada y celulitis",
+    "Estimular la síntesis de colágeno y firmeza vascular"
+  ],
   "contraindications": [
     "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
     "Hipersensibilidad a cualquiera de los componentes de la fórmula",
@@ -24,27 +30,43 @@
   "adverseEffects": [
     "Dolor leve en sitio de punción",
     "Enrojecimiento leve",
-    "Prurito leve"
+    "Prurito leve",
+    "Hematomas",
+    "Inflamación leve del sitio de punción"
+  ],
+  "postCareNotes": [
+    "Tomar abundante agua",
+    "Evitar ingesta de carbohidratos los primeros 5 días post-aplicación",
+    "No hacer ejercicio en las primeras 24 horas",
+    "Radiofrecuencia o aparatología después de 72 horas",
+    "Evitar tocar la zona tratada y no exponerse a fuentes de calor extremas"
+  ],
+  "safetyWarnings": [
+    "No aplicar en heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "No aplicar si se tiene hipersensibilidad a cualquiera de los componentes de la fórmula",
+    "Contraindicado en pacientes hipertensos o con enfermedades crónicas en descontrol",
+    "No aplicar en embarazo y lactancia"
   ],
   "presentations": [
     {
-      "canonicalName": "Ampolleta 5 ml",
+      "canonicalName": "Ampolleta 4 ml",
       "status": "activa",
       "aliases": [
         {
-          "term": "Ampolleta 5ml"
+          "term": "Ampolleta 4ml"
         }
       ],
       "protocols": [
         {
-          "name": "Protocolo Drenante y Antifibrosis Centella Asiática",
+          "name": "Protocolo Mesoterapia Asian Centella",
           "zones": [
             "Corporal",
-            "Facial"
+            "Grasa Localizada",
+            "Celulitis"
           ],
           "routes": [
-            "Intradérmica",
-            "Tejido Adiposo"
+            "Subcutánea",
+            "Intradérmica"
           ],
           "techniques": [
             "Mesoterapia",
@@ -55,10 +77,14 @@
           "frequency": "Cada 2 semanas"
         }
       ],
-      "reconstitution": null
+      "reconstitution": {
+        "diluentType": "No requiere",
+        "volumeMl": null,
+        "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+      }
     }
   ],
-  "visibleEffectsOnset": "Progresivo",
-  "effectDuration": "Según protocolo y sesiones de mantenimiento",
-  "description": "ASIAN CENTELLA, es un tratamiento de Mesoterapia Lipolítica. Tiene propiedades antioxidantes y drenantes, y por su efecto drenante, es utilizada en tratamientos lipolíticos y disminución de celulitis."
+  "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+  "effectDuration": "Según protocolo de mantenimiento",
+  "description": "ASIAN CENTELLA es un tratamiento de Mesoterapia con extracto puro de Centella Asiática, formulado para mejorar la microcirculación, estimular la síntesis de colágeno, reducir el edema y tratar la celulitis edematosa y flacidez."
 }
