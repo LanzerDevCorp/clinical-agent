@@ -25,6 +25,10 @@ Esta skill define el comportamiento del **Agente Cargador**, responsable de toma
 3. **Preservación de Aliases:**
    - Al actualizar un producto o presentación existente, recuperar los `aliases` humanos guardados previamente en la base de datos y combinarlos con los nuevos sin borrar los existentes.
 
-4. **Invocación del Script de Ingesta:**
+4. **Protección de Registro y Avance Existente en DB:**
+   - Si el producto ya existe en la base de datos (sea su estado `'APPROVED'` o `'PENDING'`), la ingesta **NUNCA** debe restablecer su estado de validación ni sobreescribir la información clínica corregida manualmente en Payload CMS (descripciones, ingredientes, notas de validación, laboratorio o presentaciones). La base de datos es la fuente de verdad primaria para cualquier registro ya ingresado.
+
+5. **Invocación del Script de Ingesta:**
    - Ejecutar el script `src/scripts/ingest-extracted-products.ts` para procesar el lote actual de `tmp/migration/extracted/`.
    - Reportar el resultado detallado de la ingesta (creados, actualizados, entidades relacionales creadas y errores).
+

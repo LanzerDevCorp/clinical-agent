@@ -400,12 +400,38 @@ async function run() {
       })
 
       if (existingProduct.docs.length > 0) {
-        const prodId = existingProduct.docs[0].id
-        const existingAliases = (existingProduct.docs[0] as any).aliases || []
+        const existingDoc = existingProduct.docs[0] as any
+        const prodId = existingDoc.id
+
+        // 1. Preservar aliases existentes combinando con los nuevos
+        const existingAliases = existingDoc.aliases || []
         const aliasMap = new Map<string, { term: string }>()
         existingAliases.forEach((a: any) => aliasMap.set(a.term.toLowerCase(), a))
         payloadData.aliases.forEach((a: any) => aliasMap.set(a.term.toLowerCase(), a))
         payloadData.aliases = Array.from(aliasMap.values())
+
+        // 2. Preservación incondicional de datos y progreso existente en DB (PENDING o APPROVED)
+        if (existingDoc.validationStatus) {
+          payloadData.validationStatus = existingDoc.validationStatus
+        }
+        if (existingDoc.description) {
+          payloadData.description = existingDoc.description
+        }
+        if (existingDoc.validationNotes) {
+          payloadData.validationNotes = existingDoc.validationNotes
+        }
+        if (existingDoc.productType) {
+          payloadData.productType = existingDoc.productType
+        }
+        if (existingDoc.laboratory) {
+          payloadData.laboratory = typeof existingDoc.laboratory === 'object' ? existingDoc.laboratory.id : existingDoc.laboratory
+        }
+        if (existingDoc.activeIngredients && existingDoc.activeIngredients.length > 0) {
+          payloadData.activeIngredients = existingDoc.activeIngredients.map((i: any) => (typeof i === 'object' ? i.id : i))
+        }
+        if (existingDoc.presentations && existingDoc.presentations.length > 0) {
+          payloadData.presentations = existingDoc.presentations
+        }
 
         await payload.update({
           collection: 'products',
@@ -413,8 +439,8 @@ async function run() {
           data: payloadData,
         })
         summary.updated++
-        console.log(`  [UPDATE] Producto '${payloadData.canonicalName}' actualizado con éxito (ID: ${prodId}).`)
-        summary.details.push(`UPDATED: ${payloadData.canonicalName}`)
+        console.log(`  [UPDATE] Producto '${payloadData.canonicalName}' actualizado con éxito (ID: ${prodId}) [Estado: ${payloadData.validationStatus}].`)
+        summary.details.push(`UPDATED: ${payloadData.canonicalName} [${payloadData.validationStatus}]`)
       } else {
         const created = await payload.create({
           collection: 'products',
