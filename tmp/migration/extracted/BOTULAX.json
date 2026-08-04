@@ -1,14 +1,20 @@
 {
   "canonicalName": "BOTULAX",
   "productType": "liofilizado",
-  "laboratory": "HUGEL Inc., Corea del Sur",
+  "laboratory": "Hugelpharma",
   "activeIngredients": [
-    "Toxina botulínica tipo A (100 U)",
-    "Albúmina sérica humana",
-    "Cloruro de sodio 0.9 mg"
+    "Clostridium Botulinum Tipo A 100 UI",
+    "Albúmina Sérica Humana 0.5 mg",
+    "Cloruro de Sodio 0.9 mg",
+    "Toxina Botulínica Tipo A 100 UI"
   ],
   "aliases": [
     {
+      "id": "6a7219ee13e2a76af0757ea7",
+      "term": "Botulax 100 UI"
+    },
+    {
+      "id": "6a7271dc36363f699c7c023b",
       "term": "Botulax 100U"
     }
   ],
@@ -20,16 +26,23 @@
     "Tratamiento de bruxismo y migraña"
   ],
   "contraindications": [
+    "Hipersensibilidad conocida a la albúmina, proteínas de huevo o cualquier componente",
+    "Enfermedades neuromusculares (miastenia gravis, esclerosis múltiple, ELA, Lambert-Eaton)",
+    "Proceso inflamatorio o infeccioso en la zona de punción",
+    "Embarazo y lactancia",
     "Infección o inflamación en el sitio de aplicación",
-    "Tratamiento con antibióticos aminoglucósidos o espectinomicina",
-    "Enfermedades neuromusculares (Miastenia Gravis, Eaton-Lambert)",
-    "Embarazo y lactancia"
+    "Tratamiento con antibióticos, aminoglucósidos o espectinomicina.",
+    "Enfermedades neuromusculares (Miastenia Gravis, Eaton-Lambert)"
   ],
   "adverseEffects": [
+    "Propagación a distancia del efecto de la toxina",
+    "Reacción de hipersensibilidad",
+    "Parálisis incompleta muscular con arrugas residuales",
+    "Náuseas, fatiga, malestar, sintomatología pseudogripal",
+    "Dolor, edema, eritema, equimosis en punción, cefalea, hiperestesia",
     "Dolor e inflamación en sitio de aplicación",
     "Equimosis y hematomas",
-    "Cefalea leve-moderada",
-    "Propagación a distancia del efecto de la toxina"
+    "Cefalea leve-moderada"
   ],
   "postCareNotes": [
     "No recostarse ni agacharse durante 4 horas post-aplicación",
@@ -39,17 +52,24 @@
     "No consumir bebidas alcohólicas por 48 horas"
   ],
   "safetyWarnings": [
+    "Requiere refrigeración de 2º a 8°C.",
+    "Lo ideal es aplicar todo el vial en 24 horas, pero se puede guardar de 7 a 10 días en refrigeración.",
+    "Pacientes que estén en tratamiento con aminoglucósidos, sulfato de magnesio o quinina. (puede aumentar el efecto de la toxina botulínica).",
+    "Fármacos anticolinérgicos (la toxina botulínica puede aumentar el efecto del anticolinérgico).",
+    "El uso de polimixina, tetraciclina y lincomicina debe hacerse con precaución.",
+    "No aplicar si en la zona de punción existe un proceso inflamatorio o infeccioso.",
     "Uso exclusivo por profesional médico capacitado",
     "Conservar bajo refrigeración entre 2°C y 8°C (no congelar)",
     "Técnica aséptica e inyección intramuscular estricta"
   ],
   "presentations": [
     {
-      "canonicalName": "Vial 100 U",
+      "canonicalName": "Vial Liofilizado 100 UI",
       "status": "activa",
       "aliases": [
         {
-          "term": "Vial 100UI"
+          "id": "6a7219ee13e2a76af0757ea8",
+          "term": "Vial 100 UI"
         }
       ],
       "protocols": [
@@ -65,19 +85,23 @@
           "techniques": [
             "Inyección Punto a Punto"
           ],
+          "visibleEffectsOnset": "3 a 7 días post-aplicación",
+          "effectDuration": "4 a 6 meses",
+          "recommendedDose": "2 a 4 UI por punto (estético) / 2 UI por punción (hiperhidrosis). Aguja 30G-6 mm o 31G-6 mm.",
+          "injectionDepth": "Intramuscular",
           "sessionsMin": 1,
           "sessionsMax": 1,
           "frequency": "Cada 4 a 6 meses"
         }
       ],
       "reconstitution": {
-        "diluentType": "Solución Fisiológica 0.9%",
-        "volumeMl": 2,
-        "instructions": "Reconstituir suavemente con 2.0 mL de solución salina 0.9% (5 UI por 0.1 mL)."
+        "diluentType": "Solución Salina 0.9% refrigerada",
+        "volumeMl": 1,
+        "instructions": "Reconstituir con 1 mL de solución salina al 0.9% refrigerada para evitar choque térmico (10 UI / 0.1 mL). Aplicar preferentemente en 24h."
       }
     }
   ],
-  "visibleEffectsOnset": "3 a 7 días post-aplicación",
-  "effectDuration": "4 a 6 meses",
-  "description": "BOTULAX es un tratamiento de Toxina Botulínica tipo A (100 U) purificada a 900 kDa y 99% de pureza, indicada para la relajación muscular temporal de líneas faciales hiperfuncionantes e hiperhidrosis."
+  "visibleEffectsOnset": null,
+  "effectDuration": null,
+  "description": "La Toxina Botulínica BOTULAX, Mejora temporal de las arrugas del rostro de moderadas a graves."
 }

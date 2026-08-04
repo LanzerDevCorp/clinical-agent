@@ -36,12 +36,36 @@ export const syncProductToJson: CollectionAfterChangeHook = async ({ doc, req })
       : []
 
     const presentations = Array.isArray(doc.presentations)
-      ? doc.presentations.map((p: any) => ({
-          canonicalName: p.canonicalName,
-          status: p.status,
-          aliases: p.aliases || [],
-          reconstitution: p.reconstitution || null,
-        }))
+      ? doc.presentations.map((p: any) => {
+          const protoList = Array.isArray(p.protocols)
+            ? p.protocols.map((pr: any) => {
+                if (typeof pr === 'object' && pr !== null) {
+                  return {
+                    name: pr.name,
+                    zones: resolveList(pr.zones),
+                    routes: resolveList(pr.routes),
+                    techniques: resolveList(pr.techniques),
+                    visibleEffectsOnset: pr.visibleEffectsOnset || null,
+                    effectDuration: pr.effectDuration || null,
+                    recommendedDose: pr.recommendedDose || null,
+                    injectionDepth: pr.injectionDepth || null,
+                    sessionsMin: pr.sessionsMin ?? null,
+                    sessionsMax: pr.sessionsMax ?? null,
+                    frequency: pr.frequency || null,
+                  }
+                }
+                return pr
+              })
+            : []
+
+          return {
+            canonicalName: p.canonicalName,
+            status: p.status,
+            aliases: p.aliases || [],
+            protocols: protoList,
+            reconstitution: p.reconstitution || null,
+          }
+        })
       : []
 
     // Obtener contraindicaciones, postCareNotes, etc. de la primera presentación si están ahí

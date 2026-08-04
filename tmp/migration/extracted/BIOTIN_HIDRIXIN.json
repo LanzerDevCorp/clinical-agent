@@ -3,30 +3,42 @@
   "productType": "liquido",
   "laboratory": "Laboratorio MCCM",
   "activeIngredients": [
-    "Biotina (Vitamina B7)"
+    "Biotina (Vitamina B7 / Vitamina H)"
   ],
   "aliases": [
     {
+      "id": "6a7271c636363f699c7c023a",
       "term": "MCCM BIOTIN HIDRIXIN"
+    },
+    {
+      "id": "6a7219dd13e2a76af0757ea4",
+      "term": "Biotina MCCM"
     }
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
   "clinicalIndications": [
+    "Indicado en tratamientos para combatir la caída del cabello.",
+    "Nutrir y mejorar el folículo piloso.",
+    "Indicado para la producción de células nuevas y equilibrar la función sebácea.",
+    "197",
     "Cuero cabelludo oleoso y seborrea capilar",
     "Alopecia seborreica y debilitamiento folicular",
     "Estimulación de síntesis de queratina y crecimiento capilar",
-    "Mantenimiento post microinjerto o trasplante capilar"
+    "Mantenimiento post microinjerto o trasplante capilar",
+    "197"
   ],
   "contraindications": [
     "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "Intolerancia individual a cualquiera de los componentes",
     "Hipersensibilidad a cualquiera de los componentes de la fórmula",
     "Enfermedades crónicas en descontrol"
   ],
   "adverseEffects": [
     "Dolor leve en sitio de punción",
-    "Enrojecimiento en sitio de punción",
-    "Prurito leve"
+    "Enrojecimiento leve",
+    "Prurito leve",
+    "Enrojecimiento en sitio de punción"
   ],
   "postCareNotes": [
     "No tocar ni lavar el cuero cabelludo en las primeras 12 horas post-aplicación",
@@ -35,16 +47,21 @@
     "Reducir estrés e hidratarse adecuadamente"
   ],
   "safetyWarnings": [
+    "No aplicar en heridas, úlceras, lesiones infectadas o dermatosis supurante.",
+    "No aplicar si se tiene hipersensibilidad a cualquiera de los componentes de la fórmula.",
+    "Contraindicado en pacientes hipertensos o con enfermedades crónicas en descontrol.",
+    "No aplicar en embarazo y lactancia.",
     "Uso exclusivo por profesional sanitario",
     "No aplicar en presencia de lesiones o infecciones activas en cuero cabelludo"
   ],
   "presentations": [
     {
-      "canonicalName": "Ampolleta 5 ml",
+      "canonicalName": "Ampolleta 2 ml",
       "status": "activa",
       "aliases": [
         {
-          "term": "Ampolleta 5ml"
+          "id": "6a7219dd13e2a76af0757ea5",
+          "term": "Ampolleta 2ml"
         }
       ],
       "protocols": [
@@ -60,15 +77,23 @@
             "Mesoterapia Capilar",
             "Dermapen"
           ],
+          "visibleEffectsOnset": "Progresivo según protocolo capilar",
+          "effectDuration": "Según protocolo de mantenimiento",
+          "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-4 mm / Dermapen, separación de 1 cm entre puntos).",
+          "injectionDepth": "Intradérmico (cuero cabelludo)",
           "sessionsMin": 6,
           "sessionsMax": 12,
           "frequency": "Cada 2 semanas"
         }
       ],
-      "reconstitution": null
+      "reconstitution": {
+        "diluentType": "No requiere",
+        "volumeMl": null,
+        "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+      }
     }
   ],
-  "visibleEffectsOnset": "Progresivo desde las 4 a 6 semanas",
-  "effectDuration": "Mantenimiento semestral o anual",
-  "description": "BIOTIN HIDRIXIN es un tratamiento de Mesoterapia Capilar formulado con Biotina (Vitamina B7/H) que estimula la producción de queratina, regula la secreción sebácea y fortalece el folículo piloso."
+  "visibleEffectsOnset": null,
+  "effectDuration": null,
+  "description": "FICHA TÉCNICA"
 }

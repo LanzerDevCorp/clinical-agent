@@ -1,41 +1,45 @@
 {
   "canonicalName": "AEC",
   "productType": "liquido",
-  "laboratory": "Laboratorio MCCM, España",
+  "laboratory": "Laboratorio MCCM",
   "activeIngredients": [
-    "Vitamina A (retinol)",
-    "Vitamina E (tocopherol)",
-    "Vitamina C (ácido ascórbico)"
+    "Vitamina A (Retinol)",
+    "Vitamina E (Tocopherol)",
+    "Vitamina C (Ácido Ascórbico)"
   ],
   "aliases": [
     {
+      "id": "6a72711b36363f699c7c022f",
       "term": "MCCM AEC"
     }
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
   "clinicalIndications": [
-    "Aumento de antioxidantes y vitaminas",
-    "Proteger la piel del sol",
-    "Promueve una piel más joven",
+    "Aumento de antioxidantes y vitaminas.",
+    "Proteger la piel del sol.",
+    "Promueve una piel más joven.",
     "Pieles fotoenvejecidas",
     "Pieles jóvenes que deseen retrasar el envejecimiento",
     "Nutrición de la piel"
   ],
   "contraindications": [
-    "Hipersensibilidad a cualquiera de los componentes",
+    "Hipersensibilidad a cualquiera de los componentes de la fórmula",
     "Embarazo y lactancia",
     "Trastornos de la coagulación",
     "Inmunosupresión",
     "Enfermedades crónico-degenerativas en descontrol (DM, HTA, etc.)",
     "Infección o inflamación local activa",
-    "No aplicar en heridas, úlceras, lesiones infectadas o dermatosis supurante"
+    "Heridas, úlceras, lesiones infectadas o dermatosis supurante"
   ],
   "adverseEffects": [
+    "Dolor leve en sitio de punción",
+    "Enrojecimiento leve",
+    "Prurito leve",
+    "Los efectos adversos mencionados deben desaparecer en las primeras 72 horas.",
     "Dolor leve",
     "Enrojecimiento en sitio de punción",
-    "Prurito leve",
-    "Hematomas",
+    "Hematoma",
     "Inflamación leve del sitio de punción"
   ],
   "postCareNotes": [
@@ -46,8 +50,9 @@
     "Protección solar estricta; evitar exposición prolongada al sol"
   ],
   "safetyWarnings": [
-    "Uso exclusivo por profesional sanitario",
-    "No aplicar o suspender tratamiento ante la intolerancia individual a cualquiera de los componentes"
+    "No aplicar en heridas, úlceras, lesiones infectadas o dermatosis supurante.",
+    "No aplicar o suspender tratamiento ante la intolerancia individual a cualquiera de los componentes.",
+    "Uso exclusivo por profesional sanitario"
   ],
   "presentations": [
     {
@@ -55,16 +60,15 @@
       "status": "activa",
       "aliases": [
         {
+          "id": "6a72196613e2a76af0757e89",
           "term": "Ampolleta 5ml"
         }
       ],
       "protocols": [
         {
-          "name": "Protocolo Mesoterapia Regenerativa AEC",
+          "name": "Protocolo Revitalizante y Antioxidante AEC",
           "zones": [
-            "Facial",
-            "Cuello",
-            "Escote"
+            "Facial"
           ],
           "routes": [
             "Intradérmica"
@@ -73,6 +77,10 @@
             "Mesoterapia",
             "Dermapen"
           ],
+          "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+          "effectDuration": "Según protocolo de mantenimiento",
+          "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-4 mm o 30G-13 mm, separación de 1-1.5 cm entre puntos).",
+          "injectionDepth": "Intradérmica",
           "sessionsMin": 4,
           "sessionsMax": 6,
           "frequency": "Cada 2 semanas"
@@ -85,7 +93,7 @@
       }
     }
   ],
-  "visibleEffectsOnset": "Progresivo según avance de las sesiones",
-  "effectDuration": "Según protocolo de mantenimiento",
-  "description": "AEC es un tratamiento de Mesoterapia Regenerativa, un complejo con Vitamina A, E y C que previene el envejecimiento, revierte las señales del fotoenvejecimiento y mejora la barrera protectora de la piel."
+  "visibleEffectsOnset": null,
+  "effectDuration": null,
+  "description": "AEC es un tratamiento de Mesoterapia Regenerativa, es un complejo con Vitamina A, E y C; que previene el envejecimiento, revierte las señales del fotoenvejecimiento y mejora la barrera protectora de la piel."
 }

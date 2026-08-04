@@ -477,7 +477,7 @@ async function run() {
               safetyWarnings: mergeIds(existingPres.safetyWarnings, newPres.safetyWarnings),
               adverseEffects: mergeIds(existingPres.adverseEffects, newPres.adverseEffects),
               clinicalIndications: mergeIds(existingPres.clinicalIndications, newPres.clinicalIndications),
-              protocols: mergeIds(existingPres.protocols, newPres.protocols),
+              protocols: newPres.protocols && newPres.protocols.length > 0 ? getIds(newPres.protocols) : getIds(existingPres.protocols),
             }
           })
         }

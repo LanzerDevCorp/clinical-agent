@@ -1,21 +1,27 @@
 {
   "canonicalName": "BELLATOXEL",
   "productType": "liofilizado",
-  "laboratory": "Bellatoxel, Corea del Sur",
+  "laboratory": "Laboratorio sin especificar (Toxina Botulínica)",
   "activeIngredients": [
-    "Toxina botulínica tipo A (100 U)",
-    "Albúmina sérica humana",
-    "Cloruro de sodio 0.9 mg"
+    "Clostridium Botulinum Tipo A 100 UI",
+    "Albúmina Sérica Humana 0.5 mg",
+    "Cloruro de Sodio 0.9 mg",
+    "Toxina Botulínica Tipo A 100 UI"
   ],
   "aliases": [
     {
+      "id": "6a7219cd13e2a76af0757ea0",
+      "term": "Bellatoxel 100 UI"
+    },
+    {
+      "id": "6a7271b436363f699c7c0239",
       "term": "Bellatoxel 100U"
     }
   ],
   "validationStatus": "PENDING",
-  "validationNotes": "Peso molecular: 900 kDa. Pureza: 99%. Origen: Corea del Sur. Caducidad: 24 meses. Duración del efecto: 4-6 meses.",
+  "validationNotes": "ALERTA CLÍNICA: BELLATOXEL no figura en la lista principal del índice de toxinas (catalogs/indices/toxinas.md). Requiere confirmación del laboratorio desarrollador/distribuidor exacto por la Dra. Sara.",
   "clinicalIndications": [
-    "Indicado para la mejora temporal de la apariencia de líneas glabelares moderadas a severas asociadas con la actividad de: músculo corrugador superciliar y músculo prócer",
+    "Indicado para la mejora temporal de la apariencia de líneas glabelares moderadas a severas asociadas con la actividad de: músculo corrugador superciliar y músculo prócer.",
     "Líneas faciales hiperfuncionantes",
     "Relajación muscular localizada facial",
     "Tratamiento de hiperhidrosis"
@@ -24,15 +30,20 @@
     "Hipersensibilidad a alguno de los componentes",
     "Trastornos neuromusculares (miastenia gravis, síndrome de Lambert-Eaton, ELA)",
     "Embarazo y lactancia",
+    "Infección en el sitio de inyección",
     "Infección o inflamación en el sitio de aplicación",
-    "Tratamiento con antibióticos aminoglucósidos o espectinomicina"
+    "Tratamiento con antibióticos, aminoglucósidos o espectinomicina."
   ],
   "adverseEffects": [
-    "Dolor local e inflamación en sitio de aplicación",
-    "Equimosis y hematomas",
-    "Cefalea leve-moderada",
+    "Dolor local",
+    "Hematoma",
+    "Inflamación",
     "Sensación de presión",
-    "Debilidad muscular localizada o cercana por difusión"
+    "Debilidad muscular localizada",
+    "Debilidad en músculos cercanos por difusión de la toxina",
+    "Dolor e inflamación en sitio de aplicación",
+    "Equimosis y hematomas",
+    "Cefalea leve-moderada"
   ],
   "postCareNotes": [
     "No recostarse ni agacharse durante 4 horas post-aplicación",
@@ -44,17 +55,22 @@
   ],
   "safetyWarnings": [
     "Requiere refrigeración de 2º a 8°C.",
+    "Lo ideal es aplicar todo el vial en 24 horas, pero se puede guardar de 7 a 10 días en refrigeración.",
+    "Uso médico especializado. Debe ser administrado únicamente por médicos con conocimiento de:\n\nAnatomía periocular.\nNervios faciales.\nTécnicas de electromiografía (cuando aplique).",
+    "No exceder dosis ni frecuencia recomendadas.",
+    "103",
     "Uso exclusivo por profesional médico capacitado",
     "Técnica aséptica e inyección intramuscular estricta",
-    "No exceder dosis ni frecuencia recomendadas"
+    "103"
   ],
   "presentations": [
     {
-      "canonicalName": "Vial 100 U",
+      "canonicalName": "Vial Liofilizado 100 UI",
       "status": "activa",
       "aliases": [
         {
-          "term": "Vial 100UI"
+          "id": "6a7219cd13e2a76af0757ea1",
+          "term": "Vial 100 UI"
         }
       ],
       "protocols": [
@@ -70,19 +86,23 @@
           "techniques": [
             "Inyección Punto a Punto"
           ],
+          "visibleEffectsOnset": "3 a 7 días post-aplicación",
+          "effectDuration": "4 a 6 meses",
+          "recommendedDose": "2 a 4 UI por punto (estético) / 2 UI por punción (hiperhidrosis). Aguja 30G-6 mm o 31G-6 mm.",
+          "injectionDepth": "Intramuscular",
           "sessionsMin": 1,
           "sessionsMax": 1,
           "frequency": "Cada 4 a 6 meses"
         }
       ],
       "reconstitution": {
-        "diluentType": "Solución Fisiológica 0.9%",
-        "volumeMl": 2,
-        "instructions": "Reconstituir suavemente con 2.0 mL de solución salina 0.9% (5 UI por 0.1 mL)."
+        "diluentType": "Solución Salina Estéril 0.9% sin conservadores (refrigerada)",
+        "volumeMl": 1,
+        "instructions": "Inyectar lentamente 1 mL de solución salina estéril al 0.9% refrigerada sin agitar para obtener 10 UI por cada 0.1 mL. Usar preferentemente en 24h (máximo 7-10 días en refrigeración)."
       }
     }
   ],
-  "visibleEffectsOnset": "3 a 7 días post-aplicación",
-  "effectDuration": "4 a 6 meses",
-  "description": "BELLATOXEL es un tratamiento de Toxina Botulínica tipo A (100 U) purificada a 900 kDa y 99% de pureza, indicada para la relajación muscular temporal de líneas faciales hiperfuncionantes e hiperhidrosis."
+  "visibleEffectsOnset": null,
+  "effectDuration": null,
+  "description": "FICHA TÉCNICA"
 }

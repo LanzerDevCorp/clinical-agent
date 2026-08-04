@@ -3,12 +3,13 @@
   "productType": "liquido",
   "laboratory": "Laboratorio MCCM",
   "activeIngredients": [
-    "Piridoxina (Vitamina B6)",
+    "Vitamina B6 (Piridoxina)",
     "Adenosín trifosfato disódico (ATP)",
     "Niacinamida (Vitamina B3)"
   ],
   "aliases": [
     {
+      "id": "6a72721c36363f699c7c023f",
       "term": "MCCM CELLESTABYL"
     }
   ],
@@ -34,7 +35,7 @@
     "Tomar abundante agua",
     "Evitar ingesta de carbohidratos los primeros 5 días post-aplicación",
     "No hacer ejercicio en las primeras 24 horas",
-    "Radiofrecuencia o aparatología después de 72 horas"
+    "Aparatología o radiofrecuencia después de 72 horas"
   ],
   "safetyWarnings": [
     "Uso exclusivo por profesional sanitario",
@@ -46,6 +47,7 @@
       "status": "activa",
       "aliases": [
         {
+          "id": "6a721a1c13e2a76af0757eb3",
           "term": "Ampolleta 1ml"
         }
       ],
@@ -63,15 +65,23 @@
           "techniques": [
             "Mesoterapia"
           ],
+          "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+          "effectDuration": "Según protocolo de mantenimiento",
+          "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-13 mm, separación de 1-1.5 cm entre puntos).",
+          "injectionDepth": "Subcutáneo / Tejido adiposo",
           "sessionsMin": 4,
           "sessionsMax": 6,
           "frequency": "Cada 2 semanas"
         }
       ],
-      "reconstitution": null
+      "reconstitution": {
+        "diluentType": "No requiere",
+        "volumeMl": null,
+        "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+      }
     }
   ],
-  "visibleEffectsOnset": "Progresivo según tratamiento de celulitis",
-  "effectDuration": "Según protocolo de mantenimiento",
+  "visibleEffectsOnset": null,
+  "effectDuration": null,
   "description": "CELLESTABYL es un tratamiento de Mesoterapia Lipolítica, tiene una combinación de activos eficaces para combatir la celulitis y depósitos pequeños de grasa localizada."
 }

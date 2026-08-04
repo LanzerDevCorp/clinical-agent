@@ -7,16 +7,18 @@
   ],
   "aliases": [
     {
+      "id": "6a72720836363f699c7c023d",
       "term": "MCCM CAFFEINE"
     },
     {
+      "id": "6a72720836363f699c7c023e",
       "term": "Cafeína"
     }
   ],
   "validationStatus": "PENDING",
   "validationNotes": null,
   "clinicalIndications": [
-    "Reducción de la retención de líquidos",
+    "Reducción de la retención de líquidos.",
     "Estimulación de la circulación sanguínea de retorno",
     "Reducción de grasa localizada y celulitis adiposa/edematosa"
   ],
@@ -35,7 +37,7 @@
     "Tomar abundante agua",
     "Evitar ingesta de carbohidratos los primeros 5 días post-aplicación",
     "No hacer ejercicio en las primeras 24 horas",
-    "Radiofrecuencia o aparatología después de 72 horas",
+    "Aparatología o radiofrecuencia después de 72 horas",
     "En caso de febrícula tomar paracetamol"
   ],
   "safetyWarnings": [
@@ -49,32 +51,19 @@
       "status": "activa",
       "aliases": [
         {
+          "id": "6a721a0f13e2a76af0757eb0",
           "term": "Ampolleta 1ml"
         }
       ],
-      "protocols": [
-        {
-          "name": "Protocolo Mesoterapia Lipolítica Cafeína",
-          "zones": [
-            "Corporal",
-            "Grasa Localizada",
-            "Celulitis"
-          ],
-          "routes": [
-            "Subcutánea"
-          ],
-          "techniques": [
-            "Mesoterapia"
-          ],
-          "sessionsMin": 4,
-          "sessionsMax": 6,
-          "frequency": "Cada 2 semanas"
-        }
-      ],
-      "reconstitution": null
+      "protocols": [],
+      "reconstitution": {
+        "diluentType": "No requiere",
+        "volumeMl": null,
+        "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+      }
     }
   ],
-  "visibleEffectsOnset": "Progresivo según protocolo de tratamiento",
-  "effectDuration": "Según protocolo de mantenimiento",
+  "visibleEffectsOnset": null,
+  "effectDuration": null,
   "description": "CAFFEINE es un tratamiento de Mesoterapia Lipolítica. Este producto contiene propiedades lipolíticas y su elevado poder de absorción promueve mejores resultados en tratamientos de pérdida de peso. Mejorando la circulación sanguínea, estimulando la circulación de retorno y consecuentemente drena los tejidos."
 }
