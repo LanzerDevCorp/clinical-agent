@@ -1,0 +1,63 @@
+{
+  "canonicalName": "CAFFEINE",
+  "productType": "liquido",
+  "laboratory": "Laboratorio MCCM",
+  "activeIngredients": [
+    "Cafeína"
+  ],
+  "aliases": [
+    {
+      "term": "MCCM CAFFEINE"
+    },
+    {
+      "term": "Cafeína"
+    }
+  ],
+  "validationStatus": "PENDING",
+  "validationNotes": null,
+  "contraindications": [
+    "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "Hipersensibilidad a cualquiera de los componentes de la fórmula",
+    "Pacientes hipertensos o con enfermedades crónicas en descontrol",
+    "Embarazo y lactancia"
+  ],
+  "adverseEffects": [
+    "Dolor leve en sitio de punción",
+    "Enrojecimiento en sitio de punción",
+    "Prurito leve"
+  ],
+  "presentations": [
+    {
+      "canonicalName": "Ampolleta 1 ml",
+      "status": "activa",
+      "aliases": [
+        {
+          "term": "Ampolleta 1ml"
+        }
+      ],
+      "protocols": [
+        {
+          "name": "Protocolo Mesoterapia Lipolítica Cafeína",
+          "zones": [
+            "Corporal",
+            "Grasa Localizada",
+            "Celulitis"
+          ],
+          "routes": [
+            "Subcutánea"
+          ],
+          "techniques": [
+            "Mesoterapia"
+          ],
+          "sessionsMin": 4,
+          "sessionsMax": 6,
+          "frequency": "Cada 2 semanas"
+        }
+      ],
+      "reconstitution": null
+    }
+  ],
+  "visibleEffectsOnset": "Progresivo según protocolo de tratamiento",
+  "effectDuration": "Según protocolo de mantenimiento",
+  "description": "CAFFEINE es un tratamiento de Mesoterapia Lipolítica. Este producto contiene propiedades lipolíticas y su elevado poder de absorción promueve mejores resultados en tratamientos de pérdida de peso. Mejorando la circulación sanguínea, estimulando la circulación de retorno y consecuentemente drena los tejidos."
+}

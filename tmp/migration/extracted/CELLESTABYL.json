@@ -1,0 +1,62 @@
+{
+  "canonicalName": "CELLESTABYL",
+  "productType": "liquido",
+  "laboratory": "Laboratorio MCCM",
+  "activeIngredients": [
+    "Piridoxina (Vitamina B6)",
+    "Adenosín trifosfato disódico (ATP)",
+    "Niacinamida (Vitamina B3)"
+  ],
+  "aliases": [
+    {
+      "term": "MCCM CELLESTABYL"
+    }
+  ],
+  "validationStatus": "PENDING",
+  "validationNotes": null,
+  "contraindications": [
+    "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "Hipersensibilidad a cualquiera de los componentes de la fórmula",
+    "Pacientes hipertensos o con enfermedades crónicas en descontrol",
+    "Embarazo y lactancia"
+  ],
+  "adverseEffects": [
+    "Dolor leve en sitio de punción",
+    "Enrojecimiento en sitio de punción",
+    "Prurito leve"
+  ],
+  "presentations": [
+    {
+      "canonicalName": "Ampolleta 1 ml",
+      "status": "activa",
+      "aliases": [
+        {
+          "term": "Ampolleta 1ml"
+        }
+      ],
+      "protocols": [
+        {
+          "name": "Protocolo Mesoterapia Lipolítica Cellestabyl",
+          "zones": [
+            "Corporal",
+            "Grasa Localizada",
+            "Celulitis"
+          ],
+          "routes": [
+            "Subcutánea"
+          ],
+          "techniques": [
+            "Mesoterapia"
+          ],
+          "sessionsMin": 4,
+          "sessionsMax": 6,
+          "frequency": "Cada 2 semanas"
+        }
+      ],
+      "reconstitution": null
+    }
+  ],
+  "visibleEffectsOnset": "Progresivo según tratamiento de celulitis",
+  "effectDuration": "Según protocolo de mantenimiento",
+  "description": "CELLESTABYL es un tratamiento de Mesoterapia Lipolítica, tiene una combinación de activos eficaces para combatir la celulitis y depósitos pequeños de grasa localizada."
+}

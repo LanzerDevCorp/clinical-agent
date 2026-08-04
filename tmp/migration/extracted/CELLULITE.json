@@ -1,0 +1,63 @@
+{
+  "canonicalName": "CELLULITE",
+  "productType": "liquido",
+  "laboratory": "Laboratorio MCCM",
+  "activeIngredients": [
+    "L-Carnitina",
+    "Cafeína",
+    "Silicio orgánico",
+    "Centella asiática"
+  ],
+  "aliases": [
+    {
+      "term": "MCCM CELLULITE"
+    }
+  ],
+  "validationStatus": "PENDING",
+  "validationNotes": "Inconsistencia detectada en la ficha técnica origen (real-products/CELLULITE.md): El párrafo descriptivo menciona 'L-CARNITINE' por error de copia en lugar de 'CELLULITE', aunque el título y los ingredientes corresponden a Cellulite.",
+  "contraindications": [
+    "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+    "Hipersensibilidad a cualquiera de los componentes de la fórmula",
+    "Pacientes hipertensos o con enfermedades crónicas en descontrol",
+    "Embarazo y lactancia"
+  ],
+  "adverseEffects": [
+    "Dolor leve en sitio de punción",
+    "Enrojecimiento en sitio de punción",
+    "Prurito leve"
+  ],
+  "presentations": [
+    {
+      "canonicalName": "Ampolleta 5 ml",
+      "status": "activa",
+      "aliases": [
+        {
+          "term": "Ampolleta 5ml"
+        }
+      ],
+      "protocols": [
+        {
+          "name": "Protocolo Mesoterapia Lipolítica Cellulite",
+          "zones": [
+            "Corporal",
+            "Grasa Localizada",
+            "Celulitis"
+          ],
+          "routes": [
+            "Subcutánea"
+          ],
+          "techniques": [
+            "Mesoterapia"
+          ],
+          "sessionsMin": 4,
+          "sessionsMax": 6,
+          "frequency": "Cada 2 semanas"
+        }
+      ],
+      "reconstitution": null
+    }
+  ],
+  "visibleEffectsOnset": "Progresivo según avance de sesiones",
+  "effectDuration": "Según protocolo de mantenimiento",
+  "description": "MCCM CELLULITE es un tratamiento de Mesoterapia Lipolítica con L-Carnitina, Cafeína, Silicio orgánico y Centella asiática. Su aplicación mejora la síntesis energética, aumenta la tolerancia al esfuerzo y transforma la grasa del organismo en energía, logrando una piel firme y suave."
+}
