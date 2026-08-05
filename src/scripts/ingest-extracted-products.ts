@@ -3,7 +3,7 @@ import { getPayload } from 'payload'
 import configPromise from '../payload.config'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, readdirSync, readFileSync } from 'fs'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -318,9 +318,8 @@ async function run() {
       const productData: ExtractedProduct = JSON.parse(content)
 
       const description = getOrExtractDescription(productData, file)
-      if (description && productData.description !== description) {
+      if (description && !productData.description) {
         productData.description = description
-        writeFileSync(filePath, JSON.stringify(productData, null, 2), 'utf-8')
       }
 
       // 1. Resolver Laboratorio

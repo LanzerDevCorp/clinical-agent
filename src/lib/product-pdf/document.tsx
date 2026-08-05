@@ -106,10 +106,7 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
           <Field label="Laboratorio" value={general.laboratory} />
           <Field label="Ingredientes activos" value={general.activeIngredients} />
           <Field label="Sinónimos" value={general.aliases} />
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.heading}>Especificaciones técnicas</Text>
-          <Field label="Certificaciones" value={specifications.certifications} />
+          <Field label="Certificaciones" value={general.certifications} />
         </View>
         <View style={styles.section}>
           <Text style={[styles.heading, { fontSize: 14, marginTop: 8 }]}>Presentaciones</Text>

@@ -30,10 +30,7 @@ export type ProductPdfViewModel = {
     createdAt: string
     updatedAt: string
   }
-  general: { description: string; productType: string; laboratory: string; activeIngredients: string[]; aliases: string[] }
-  specifications: {
-    certifications: string
-  }
+  general: { description: string; productType: string; laboratory: string; activeIngredients: string[]; aliases: string[]; certifications: string }
   presentations: Array<{
     canonicalName: string
     status: string
@@ -93,8 +90,6 @@ export function toProductPdfViewModel(product: Product): ProductPdfViewModel {
       laboratory: laboratory.name,
       activeIngredients: named(product.activeIngredients as (number | ActiveIngredient)[] | null | undefined, 'activeIngredients'),
       aliases: records(product.aliases, (alias) => alias.term),
-    },
-    specifications: {
       certifications: value((product.presentations?.[0] as any)?.certifications ?? (product as any).certifications),
     },
     presentations: (product.presentations ?? []).map((presentation, presentationIndex) => ({
