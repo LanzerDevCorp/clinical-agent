@@ -151,6 +151,11 @@ export const Products: CollectionConfig = {
                   defaultValue: 'activa',
                 },
                 {
+                  name: 'characteristics',
+                  label: 'Características',
+                  type: 'text',
+                },
+                {
                   name: 'aliases',
                   label: 'Sinónimos de la presentación',
                   type: 'array',

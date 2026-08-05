@@ -4,6 +4,7 @@ import * as migration_20260728_225658_init_payload from './20260728_225658_init_
 import * as migration_20260729_001929_init_payload from './20260729_001929_init_payload';
 import * as migration_20260729_003408_init_payload from './20260729_003408_init_payload';
 import * as migration_20260730_002716_init_payload from './20260730_002716_init_payload';
+import * as migration_20260805_093200_add_characteristics from './20260805_093200_add_characteristics';
 
 export const migrations = [
   {
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20260730_002716_init_payload.up,
     down: migration_20260730_002716_init_payload.down,
     name: '20260730_002716_init_payload'
+  },
+  {
+    up: migration_20260805_093200_add_characteristics.up,
+    down: migration_20260805_093200_add_characteristics.down,
+    name: '20260805_093200_add_characteristics'
   },
 ];

@@ -350,6 +350,7 @@ export interface Product {
     | {
         canonicalName: string;
         status?: ('activa' | 'descontinuada') | null;
+        characteristics?: string | null;
         aliases?:
           | {
               term: string;
@@ -894,6 +895,7 @@ export interface ProductsSelect<T extends boolean = true> {
     | {
         canonicalName?: T;
         status?: T;
+        characteristics?: T;
         aliases?:
           | T
           | {

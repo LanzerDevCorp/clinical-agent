@@ -88,7 +88,7 @@ function NoteGroupList({ label, items }: { label: string; items: string[] }) {
 }
 
 export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
-  const { traceability, general, specifications, presentations } = model
+  const { traceability, general, presentations } = model
   const pending = traceability.validationStatus === 'PENDING'
 
   return (
@@ -128,6 +128,7 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
                 <View key={`${presentation.canonicalName}-${index}`} style={styles.section}>
                   <Text style={styles.heading}>{presentation.canonicalName}</Text>
                   <Field label="Estado" value={formatLabel(presentation.status, presentationStatusLabels)} />
+                  <Field label="Características" value={presentation.characteristics} />
                   <Field label="Sinónimos" value={presentation.aliases} />
                   <View style={styles.section}>
                     <Text style={styles.heading}>Seguridad clínica</Text>

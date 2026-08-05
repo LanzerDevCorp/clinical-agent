@@ -34,6 +34,7 @@ export type ProductPdfViewModel = {
   presentations: Array<{
     canonicalName: string
     status: string
+    characteristics: string
     aliases: string[]
     contraindications: Array<{ type: Contraindication['type']; description: string }>
     adverseEffects: string[]
@@ -95,27 +96,25 @@ export function toProductPdfViewModel(product: Product): ProductPdfViewModel {
     presentations: (product.presentations ?? []).map((presentation, presentationIndex) => ({
       canonicalName: presentation.canonicalName,
       status: value(presentation.status),
+      characteristics: value((presentation as any).characteristics),
       aliases: records(presentation.aliases, (alias) => alias.term),
-      contraindications: ((presentation as any).contraindications ?? []).map((record: any, index: number) => {
-        const contraindication = populated(record, `presentations[${presentationIndex}].contraindications[${index}]`) as Contraindication
-        return { type: contraindication.type, description: contraindication.description }
-      }),
-      adverseEffects: records((presentation as any).adverseEffects, (record: any, index: number) =>
-        (populated(record, `presentations[${presentationIndex}].adverseEffects[${index}]`) as any).description,
+      contraindications: ((presentation as any).contraindications ?? [])
+        .filter((record: any) => typeof record === 'object' && record !== null)
+        .map((record: any) => ({ type: record.type, description: record.description })),
+      adverseEffects: records(
+        ((presentation as any).adverseEffects ?? []).filter((record: any) => typeof record === 'object' && record !== null),
+        (record: any) => record.description,
       ),
       clinicalNotes: [
-        ...((presentation as any).clinicalIndications ?? []).map((record: any, index: number) => {
-          const item = populated(record, `presentations[${presentationIndex}].clinicalIndications[${index}]`) as any
-          return { type: 'indicacion_clinica' as const, description: item.name || item.description || '' }
-        }),
-        ...((presentation as any).postCareNotes ?? []).map((record: any, index: number) => {
-          const item = populated(record, `presentations[${presentationIndex}].postCareNotes[${index}]`) as any
-          return { type: 'cuidado_post_aplicacion' as const, description: item.description || '' }
-        }),
-        ...((presentation as any).safetyWarnings ?? []).map((record: any, index: number) => {
-          const item = populated(record, `presentations[${presentationIndex}].safetyWarnings[${index}]`) as any
-          return { type: 'advertencia_seguridad' as const, description: item.description || '' }
-        }),
+        ...((presentation as any).clinicalIndications ?? [])
+          .filter((record: any) => typeof record === 'object' && record !== null)
+          .map((item: any) => ({ type: 'indicacion_clinica' as const, description: item.name || item.description || '' })),
+        ...((presentation as any).postCareNotes ?? [])
+          .filter((record: any) => typeof record === 'object' && record !== null)
+          .map((item: any) => ({ type: 'cuidado_post_aplicacion' as const, description: item.description || '' })),
+        ...((presentation as any).safetyWarnings ?? [])
+          .filter((record: any) => typeof record === 'object' && record !== null)
+          .map((item: any) => ({ type: 'advertencia_seguridad' as const, description: item.description || '' })),
       ],
       reconstitution: {
         diluentType: value(presentation.reconstitution?.diluentType),
