@@ -313,6 +313,7 @@ export interface SafetyWarning {
  */
 export interface Protocol {
   id: number;
+  clientShareable: boolean;
   name: string;
   zones: (number | ApplicationZone)[];
   routes: (number | AdministrationRoute)[];
@@ -858,6 +859,7 @@ export interface SafetyWarningsSelect<T extends boolean = true> {
  * via the `definition` "protocols_select".
  */
 export interface ProtocolsSelect<T extends boolean = true> {
+  clientShareable?: T;
   name?: T;
   zones?: T;
   routes?: T;

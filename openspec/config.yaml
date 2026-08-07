@@ -1,0 +1,53 @@
+schema: spec-driven
+
+context: |
+  Stack: Next.js 16, React 19, Payload CMS 3, TypeScript, pnpm.
+  Architecture: Payload-backed Next.js application with server-side product and clinical workflows.
+  Tests: Vitest integration tests in JSDOM and Playwright Chromium E2E tests.
+  Quality: ESLint and strict TypeScript; Prettier is installed without a project command.
+  Conventions: Keep Payload access controls and clinical-safety behavior explicit and covered.
+
+strict_tdd: true
+
+testing:
+  integration:
+    available: true
+    command: pnpm run test:int
+    framework: Vitest 4 with React Testing Library and JSDOM
+  e2e:
+    available: true
+    command: pnpm run test:e2e
+    framework: Playwright Chromium
+  coverage:
+    available: false
+    command: ""
+  quality:
+    lint_command: pnpm run lint
+    typecheck_command: pnpm exec tsc --noEmit
+    formatter_command: ""
+
+rules:
+  proposal:
+    - Include rollback plans for risky, clinical-safety, or data-affecting changes.
+    - State Payload access-control and migration effects explicitly when applicable.
+  specs:
+    - Use RFC 2119 keywords and Given/When/Then scenarios.
+    - Preserve clinical-safety behavior unless a change explicitly approves its modification.
+  design:
+    - Document authorization, persistence, and migration boundaries for Payload changes.
+    - Include sequence diagrams for complex request or tool flows.
+  tasks:
+    - Group work by phase with hierarchical numbering.
+    - Keep each task completable within one session.
+  apply:
+    guidelines:
+      - Follow existing Next.js and Payload patterns.
+      - Do not alter active OpenSpec changes outside the selected change scope.
+    tdd: true
+    test_command: pnpm run test:int
+  verify:
+    test_command: pnpm test
+    build_command: pnpm run build
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive delta specifications.

@@ -1,0 +1,364 @@
+import { describe, expect, it, vi } from 'vitest'
+import type { PayloadRequest } from 'payload'
+
+import type { Product } from '@/payload-types'
+import {
+  createClinicalProductRepository,
+  type ClinicalProductReader,
+} from '@/lib/clinical-agent/repository'
+
+const internalUser = {
+  id: 17,
+  collection: 'users',
+} as const
+
+const pendingProduct = {
+  id: 41,
+  canonicalName: 'RAW-PENDING-SENTINEL',
+  validationStatus: 'PENDING',
+  presentations: [{ id: 'pending-presentation', canonicalName: 'Pending', status: 'activa' }],
+} as Product
+
+const approvedWithoutActivePresentation = {
+  id: 42,
+  canonicalName: 'RAW-INACTIVE-SENTINEL',
+  validationStatus: 'APPROVED',
+  presentations: [{ id: 'inactive-presentation', canonicalName: 'Inactive', status: 'descontinuada' }],
+} as Product
+
+function approvedProduct(
+  id: number,
+  canonicalName: string,
+  presentations: Array<{ id: string; canonicalName: string; aliases?: { term: string }[] }>,
+  aliases: { term: string }[] = [],
+): Product {
+  return {
+    id,
+    canonicalName,
+    aliases,
+    validationStatus: 'APPROVED',
+    presentations: presentations.map((presentation) => ({ ...presentation, status: 'activa' })),
+  } as Product
+}
+
+function createHarness(options: {
+  docs?: Product[]
+  pages?: Product[][]
+  error?: Error
+  detail?: Product
+  detailError?: Error
+  user?: { collection: string; id?: number } | undefined
+} = {}) {
+  const { docs = [], pages = [docs], error, detail, detailError } = options
+  const user = 'user' in options ? options.user : internalUser
+  const find = error
+    ? vi.fn().mockRejectedValue(error)
+    : vi.fn().mockImplementation(({ page = 1 }: { page?: number }) => Promise.resolve({
+      docs: pages[page - 1] ?? [],
+      hasNextPage: page < pages.length,
+    }))
+  const findByID = detailError
+    ? vi.fn().mockRejectedValue(detailError)
+    : vi.fn().mockResolvedValue(detail)
+  const legacySource = vi.fn()
+  const reader = { find, findByID, legacySource } as unknown as ClinicalProductReader
+  const req = { payload: reader, user } as unknown as PayloadRequest
+
+  return {
+    find,
+    findByID,
+    legacySource,
+    repository: createClinicalProductRepository(req, reader),
+    req,
+  }
+}
+
+describe('ClinicalProductRepository safe contract', () => {
+  it.each([
+    ['missing', undefined],
+    ['non-string', 42],
+    ['empty', ''],
+    ['whitespace-only', '   '],
+  ])('rejects a %s query without reading clinical data', async (_scenario, query) => {
+    const { find, findByID, repository } = createHarness()
+
+    await expect(repository.searchProducts({ query } as never)).resolves.toEqual({
+      ok: false,
+      code: 'INVALID_REQUEST',
+    })
+    expect(find).not.toHaveBeenCalled()
+    expect(findByID).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['unauthenticated request', undefined],
+    ['non-user identity', { id: 9, collection: 'payload-mcp-api-keys' }],
+  ])('denies a %s without reading clinical data', async (_scenario, user) => {
+    const { find, findByID, repository } = createHarness({ user })
+
+    await expect(repository.searchProducts({ query: 'product' })).resolves.toEqual({
+      ok: false,
+      code: 'UNAUTHORIZED',
+    })
+    expect(find).not.toHaveBeenCalled()
+    expect(findByID).not.toHaveBeenCalled()
+  })
+
+  it('normalizes reader errors without exposing details or consulting a legacy source', async () => {
+    const { find, findByID, legacySource, repository } = createHarness({
+      error: new Error('DATABASE-URL-AND-STACK-SENTINEL'),
+    })
+
+    const result = await repository.searchProducts({ query: 'product' })
+
+    expect(result).toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
+    expect(JSON.stringify(result)).not.toContain('DATABASE-URL-AND-STACK-SENTINEL')
+    expect(find).toHaveBeenCalledOnce()
+    expect(findByID).not.toHaveBeenCalled()
+    expect(legacySource).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['pending product', pendingProduct],
+    ['approved product without an active presentation', approvedWithoutActivePresentation],
+  ])('maps an ineligible %s to UNAVAILABLE without returning raw data', async (_scenario, product) => {
+    const { find, repository, req } = createHarness({ docs: [product] })
+
+    const result = await repository.searchProducts({ query: 'product' })
+
+    expect(result).toEqual({ ok: false, code: 'UNAVAILABLE' })
+    expect(JSON.stringify(result)).not.toContain(product.canonicalName)
+    expect(find).toHaveBeenCalledWith(expect.objectContaining({
+      collection: 'products',
+      overrideAccess: false,
+      req,
+      user: internalUser,
+    }))
+  })
+})
+
+describe('ClinicalProductRepository discovery', () => {
+  it('matches canonical, alias, presentation, and partial names with bounded query options', async () => {
+    const cases = [
+      ['alp', approvedProduct(1, 'Alpha Product', [{ id: 'vial', canonicalName: 'Vial' }])],
+      ['skin alias', approvedProduct(2, 'Beta', [{ id: 'ampoule', canonicalName: 'Ampoule' }], [{ term: 'Skin Alias' }])],
+      ['syringe', approvedProduct(3, 'Gamma', [{ id: 'syringe', canonicalName: 'Syringe 1ml' }])],
+      ['presentation alias', approvedProduct(4, 'Delta', [{ id: 'box', canonicalName: 'Box', aliases: [{ term: 'Presentation Alias' }] }])],
+    ] as const
+    expect(cases).toHaveLength(4)
+
+    for (const [query, product] of cases) {
+      const { find, repository, req } = createHarness({ docs: [product] })
+      await expect(repository.searchProducts({ query })).resolves.toEqual({
+        ok: true,
+        data: {
+          kind: 'match',
+          product: { id: String(product.id), canonicalName: product.canonicalName },
+          presentation: { id: product.presentations![0].id, canonicalName: product.presentations![0].canonicalName },
+        },
+      })
+      expect(find).toHaveBeenCalledWith({
+        collection: 'products',
+        depth: 0,
+        limit: 21,
+        page: 1,
+        sort: 'id',
+        overrideAccess: false,
+        req,
+        user: internalUser,
+        where: {
+          and: [
+            { validationStatus: { equals: 'APPROVED' } },
+            { or: [
+              { canonicalName: { contains: query } },
+              { 'aliases.term': { contains: query } },
+              { 'presentations.canonicalName': { contains: query } },
+              { 'presentations.aliases.term': { contains: query } },
+            ] },
+          ],
+        },
+      })
+    }
+  })
+
+  it('returns deterministic clarification for ambiguous products and presentations', async () => {
+    const beta = approvedProduct(2, 'Beta', [{ id: 'beta-vial', canonicalName: 'Vial' }], [{ term: 'shared' }])
+    const alpha = approvedProduct(1, 'Alpha', [{ id: 'alpha-vial', canonicalName: 'Vial' }], [{ term: 'shared' }])
+    const products = createHarness({ docs: [beta, alpha] }).repository
+    await expect(products.searchProducts({ query: 'shared' })).resolves.toMatchObject({
+      ok: true, data: { kind: 'clarification', truncated: false, choices: [
+        { product: { id: '1', canonicalName: 'Alpha' } },
+        { product: { id: '2', canonicalName: 'Beta' } },
+      ] },
+    })
+
+    const multi = approvedProduct(3, 'Multi', [{ id: 'zeta', canonicalName: 'Zeta' }, { id: 'alpha', canonicalName: 'Alpha' }])
+    const presentations = createHarness({ docs: [multi] }).repository
+    await expect(presentations.searchProducts({ query: 'multi' })).resolves.toMatchObject({
+      ok: true, data: { kind: 'clarification', truncated: false, choices: [
+        { presentation: { id: 'alpha', canonicalName: 'Alpha' } },
+        { presentation: { id: 'zeta', canonicalName: 'Zeta' } },
+      ] },
+    })
+  })
+
+  it('reads beyond inactive first-page rows before deciding a match is unique', async () => {
+    const inactive = Array.from({ length: 20 }, (_, index) => ({
+      ...approvedWithoutActivePresentation,
+      id: index + 1,
+      canonicalName: `Shared inactive ${index + 1}`,
+      presentations: [{
+        id: `inactive-${index + 1}`,
+        canonicalName: 'Shared inactive',
+        status: 'descontinuada' as const,
+      }],
+    })) as Product[]
+    const firstMatch = approvedProduct(21, 'Shared Alpha', [{ id: 'alpha', canonicalName: 'Vial' }])
+    const laterMatch = approvedProduct(22, 'Shared Beta', [{ id: 'beta', canonicalName: 'Vial' }])
+    const { find, repository } = createHarness({ pages: [[...inactive, firstMatch], [laterMatch]] })
+
+    await expect(repository.searchProducts({ query: 'shared' })).resolves.toMatchObject({
+      ok: true,
+      data: {
+        kind: 'clarification',
+        truncated: false,
+        choices: [
+          { product: { id: '21', canonicalName: 'Shared Alpha' } },
+          { product: { id: '22', canonicalName: 'Shared Beta' } },
+        ],
+      },
+    })
+    expect(find).toHaveBeenCalledTimes(2)
+  })
+
+  it('caps discovery reads and marks a known match as uncertain when pages remain', async () => {
+    const match = approvedProduct(1, 'Shared match', [{ id: 'match', canonicalName: 'Vial' }])
+    const inactivePages = Array.from({ length: 10 }, (_, index) => [{
+      ...approvedWithoutActivePresentation,
+      id: index + 2,
+      canonicalName: `Shared inactive ${index + 2}`,
+    } as Product])
+    const { find, repository } = createHarness({ pages: [[match], ...inactivePages] })
+
+    await expect(repository.searchProducts({ query: 'shared' })).resolves.toMatchObject({
+      ok: true,
+      data: {
+        kind: 'clarification',
+        choices: [{ product: { id: '1', canonicalName: 'Shared match' } }],
+        truncated: true,
+      },
+    })
+    expect(find).toHaveBeenCalledTimes(10)
+  })
+
+  it('returns a stable empty result when Payload finds no eligible match', async () => {
+    const { repository } = createHarness()
+    await expect(repository.searchProducts({ query: 'missing' }))
+      .resolves.toEqual({ ok: true, data: { kind: 'empty' } })
+  })
+})
+
+describe('ClinicalProductRepository details and protocol sharing', () => {
+  const protocol = {
+    id: 70, clientShareable: true, name: 'Facial protocol',
+    recommendedDose: 'RAW-INSTRUCTIONS-SENTINEL',
+    zones: [{ id: 71, name: 'Face' }],
+    routes: [{ id: 72, name: 'Intradermal' }],
+    techniques: [{ id: 73, name: 'Papule' }],
+  }
+  const detail = {
+    ...approvedProduct(7, 'Detailed Product', [{ id: 'active', canonicalName: 'Active Presentation' }]),
+    description: 'Bounded description', validationNotes: 'RAW-NOTES-SENTINEL', createdAt: 'RAW-CREATED-SENTINEL',
+  } as Product
+  detail.presentations![0].protocols = [protocol as never]
+
+  it.each([
+    ['missing product ID', { presentationId: 'active' }],
+    ['whitespace product ID', { productId: '   ', presentationId: 'active' }],
+    ['non-finite product ID', { productId: Number.NaN, presentationId: 'active' }],
+    ['empty presentation ID', { productId: 7, presentationId: '' }],
+    ['non-string presentation ID', { productId: 7, presentationId: 70 }],
+  ])('rejects details with a %s without reading clinical data', async (_scenario, input) => {
+    const { find, findByID, repository } = createHarness({ detail })
+
+    await expect(repository.getProductDetails(input as never)).resolves.toEqual({
+      ok: false,
+      code: 'INVALID_REQUEST',
+    })
+    expect(find).not.toHaveBeenCalled()
+    expect(findByID).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['missing protocol ID', { productId: 7, presentationId: 'active' }],
+    ['whitespace protocol ID', { productId: 7, presentationId: 'active', protocolId: '   ' }],
+    ['non-finite protocol ID', { productId: 7, presentationId: 'active', protocolId: Number.NaN }],
+    ['empty presentation ID', { productId: 7, presentationId: '', protocolId: 70 }],
+    ['non-string presentation ID', { productId: 7, presentationId: 70, protocolId: 70 }],
+  ])('rejects protocol sharing with a %s without reading clinical data', async (_scenario, input) => {
+    const { find, findByID, repository } = createHarness({ detail })
+
+    await expect(repository.canShareProtocol(input as never)).resolves.toEqual({
+      ok: false,
+      code: 'INVALID_REQUEST',
+    })
+    expect(find).not.toHaveBeenCalled()
+    expect(findByID).not.toHaveBeenCalled()
+  })
+
+  it('returns bounded details through a depth-2 projected request-bound read', async () => {
+    const { findByID, repository, req } = createHarness({ detail })
+    const result = await repository.getProductDetails({ productId: 7, presentationId: 'active' })
+
+    expect(result).toMatchObject({
+      ok: true, data: {
+        product: { id: '7', canonicalName: 'Detailed Product', description: 'Bounded description' },
+        presentation: {
+          id: 'active', canonicalName: 'Active Presentation',
+          protocols: [{ id: '70', name: 'Facial protocol', zones: ['Face'], routes: ['Intradermal'], techniques: ['Papule'] }],
+        },
+      },
+    })
+    const serialized = JSON.stringify(result)
+    expect(serialized).not.toContain('RAW-NOTES-SENTINEL')
+    expect(serialized).not.toContain('RAW-CREATED-SENTINEL')
+    expect(findByID).toHaveBeenCalledWith(expect.objectContaining({
+      collection: 'products', depth: 2, id: 7, overrideAccess: false,
+      populate: expect.objectContaining({ protocols: expect.any(Object) }),
+      req, user: internalUser,
+      select: expect.objectContaining({ presentations: expect.any(Object) }),
+    }))
+  })
+
+  it('returns UNAVAILABLE for an ID-only required relationship without follow-up reads', async () => {
+    const idOnly = structuredClone(detail)
+    ;(idOnly.presentations![0].protocols![0] as typeof protocol).zones = [71] as never
+    const { find, findByID, repository } = createHarness({ detail: idOnly })
+
+    await expect(repository.getProductDetails({ productId: 7, presentationId: 'active' })).resolves
+      .toEqual({ ok: false, code: 'UNAVAILABLE' })
+    expect(findByID).toHaveBeenCalledOnce()
+    expect(find).not.toHaveBeenCalled()
+  })
+
+  it('allows only the exact explicitly shareable protocol', async () => {
+    const { repository } = createHarness({ detail })
+    await expect(repository.canShareProtocol({ productId: 7, presentationId: 'active', protocolId: 70 }))
+      .resolves.toEqual({ ok: true, data: { shareable: true } })
+  })
+
+  it('returns indistinguishable instruction-free false decisions', async () => {
+    const unshareable = structuredClone(detail)
+    ;(unshareable.presentations![0].protocols![0] as typeof protocol).clientShareable = false
+    const scenarios = [
+      createHarness({ detail }).repository.canShareProtocol({ productId: 7, presentationId: 'active', protocolId: 999 }),
+      createHarness({ detail: unshareable }).repository.canShareProtocol({ productId: 7, presentationId: 'active', protocolId: 70 }),
+      createHarness({ detailError: new Error('INACCESSIBLE-INSTRUCTIONS-SENTINEL') }).repository.canShareProtocol({
+        productId: 7, presentationId: 'active', protocolId: 70,
+      }),
+    ]
+    const results = await Promise.all(scenarios)
+    expect(results).toEqual(Array(3).fill({ ok: true, data: { shareable: false } }))
+    expect(JSON.stringify(results)).not.toContain('INSTRUCTIONS-SENTINEL')
+  })
+})

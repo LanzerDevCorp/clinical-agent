@@ -275,6 +275,7 @@ async function getOrCreateProtocol(
   const created = await payload.create({
     collection: 'protocols',
     data: {
+      clientShareable: false,
       name: protoData.name.trim(),
       zones: zoneIds,
       routes: routeIds,

@@ -1,8 +1,12 @@
 import type { CollectionConfig } from 'payload'
+import { internalUsersOnly } from '../access/internalUsersOnly'
 import { syncProductToJson } from '../hooks/syncProductToJson'
 
 export const Products: CollectionConfig = {
   slug: 'products',
+  access: {
+    read: internalUsersOnly,
+  },
   labels: {
     singular: {
       es: 'Producto',

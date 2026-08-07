@@ -28,6 +28,7 @@ const completeProduct: Product = {
     clinicalIndications: [{ id: 99005, name: 'Uso profesional', createdAt: 'NOTE-CREATED-SENTINEL', updatedAt: 'NOTE-UPDATED-SENTINEL' } as any],
     protocols: [{
       id: 99006,
+      clientShareable: false,
       name: 'Protocolo facial',
       visibleEffectsOnset: '5 a 7 días',
       effectDuration: '4 a 6 meses',
@@ -60,6 +61,13 @@ function renderedText(node: ReactNode): Array<{ text: string; fixed: boolean }> 
   return children.flatMap((child) => renderedText(child,)).map((entry) => ({
     ...entry,
     fixed: Boolean(element.props.fixed) || entry.fixed,
+  }))
+}
+
+function renderedFieldValues(entries: Array<{ text: string }>): Record<string, string> {
+  return Object.fromEntries(entries.flatMap((entry, index) => {
+    if (entries[index + 1]?.text !== ': ' || !entries[index + 2]) return []
+    return [[entry.text, entries[index + 2].text]]
   }))
 }
 
@@ -185,7 +193,14 @@ describe('Product PDF document', () => {
     expect(text).toContain('Hipersensibilidad')
     expect(text).toContain('Advertencias de seguridad')
     expect(text).toContain('Reconstitución / Dilución')
-    expect(text.match(/No informado/g)).toHaveLength(5)
+    expect(renderedFieldValues(tree)).toMatchObject({
+      Descripción: 'No informado',
+      Certificaciones: 'No informado',
+      Características: 'No informado',
+      'Tipo de diluyente': 'No informado',
+      'Volumen (mL)': 'No informado',
+      Instrucciones: 'No informado',
+    })
     expect(text).not.toContain('PENDIENTE DE VALIDACIÓN — NO APROBADO')
   })
 })

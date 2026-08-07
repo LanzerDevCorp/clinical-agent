@@ -1,7 +1,11 @@
 import type { CollectionConfig } from 'payload'
+import { internalUsersOnly } from '../access/internalUsersOnly'
 
 export const Protocols: CollectionConfig = {
   slug: 'protocols',
+  access: {
+    read: internalUsersOnly,
+  },
   labels: {
     singular: {
       es: 'Protocolo de Aplicación',
@@ -21,6 +25,16 @@ export const Protocols: CollectionConfig = {
     defaultColumns: ['name', 'frequency'],
   },
   fields: [
+    {
+      name: 'clientShareable',
+      label: 'Autorizado para compartir con clientes',
+      type: 'checkbox',
+      required: true,
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
     {
       name: 'name',
       label: 'Nombre del protocolo',
