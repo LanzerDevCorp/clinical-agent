@@ -2,7 +2,11 @@
 
 ## Execution State
 
-- Status: `success` — all 14 apply tasks are complete and ready for `sdd-verify`.
+- Status: `success` — all 14 apply tasks are complete. One post-apply correction was applied and verified
+  directly against the spec; see Safe-Outcome Correction Evidence.
+- Phase `sdd-verify` never ran and is natively blocked: `gentle-ai sdd-status` reports
+  `verify: blocked`, `archive: blocked`, `next: resolve-review`, blocked reason
+  `path-bound compact authority contains a foreign OpenSpec path`.
 - Mode: Strict TDD
 - Delivery strategy: `exception-ok`
 - Chain strategy: `size-exception`
@@ -126,6 +130,31 @@ The first invocation was interrupted and settled without candidate changes. The 
 | Migration | `20260806_122450_add_protocol_client_shareable` remains registered with both `up` and `down`; prior runtime down/up evidence retained, with no destructive rerun. |
 | Rollback boundary | Final apply changed no production/test behavior; revert only tasks/apply-progress completion marks if this verification record must be removed. |
 
+## Safe-Outcome Correction Evidence (post-apply, 2026-08-07)
+
+Direct verification against `specs/clinical-product-query/spec.md` found one deviation from the
+`Safe query outcomes` requirement: only `searchProducts` returned `TEMPORARY_FAILURE` on a transient
+source failure. `getProductDetails` returned `UNAVAILABLE` and `canShareProtocol` returned
+`{ ok: true, shareable: false }`, so a caller could not distinguish a real negative decision from one
+that could not be verified. The correction was authorized by the maintainer and applied under Strict TDD.
+
+| Evidence | Result |
+|---|---|
+| RED | `pnpm run test:int -- tests/int/clinical-product-repository.int.spec.ts` — exit 1; exactly the 4 new/updated expectations failed; 52 passed. |
+| GREEN — focused | Same command — exit 0. |
+| Full integration | `pnpm run test:int` — exit 0; 5 files passed; **56 tests passed, 0 failed** (51 before this correction). |
+| Type-check | `pnpm exec tsc --noEmit` — exit 0, no diagnostics. |
+| Lint | `pnpm run lint` — exit 0; 0 errors, 85 pre-existing warnings (count unchanged). |
+| Runtime harness | N/A — the correction changes only in-process error mapping; no new external boundary was introduced. Postgres coverage in the full suite is unchanged and still passes. |
+| Rollback boundary | Revert `d11622e` only. It touches `src/lib/clinical-agent/repository.ts` and `tests/int/clinical-product-repository.int.spec.ts` only. Units 1–3, the migration, and the tooling-hygiene commit `9200a5f` remain intact. |
+
+Root cause and mechanism: `findByID` threw on missing and access-denied documents, routing those cases
+through the same `catch` that had to report failures. Passing `disableErrors: true` makes both return
+`null` instead (verified in `node_modules/payload/dist/collections/operations/findByID.js`: access
+`false` and absent document both return `null` when errors are disabled). An explicit `if (!product || …)`
+guard preserves `Invalid or stale identity → UNAVAILABLE` and `absent or inaccessible protocol →
+indistinguishable negative decision`, leaving `catch` for genuine failures only.
+
 ## Completed Tasks
 
 - [x] 1.1–1.3 Access, schema, migration, and PDF regression.
@@ -148,8 +177,38 @@ None — all 14 apply tasks are complete.
 - The maintainer accepted the native authority's reported 546-line Unit 3 overage and authorized lint remediation as a separate objective.
 - The remediation changed only `eslint.config.mjs` and did not clean up the 85 pre-existing warnings.
 - Final verification was check-only; no source-mutating formatter or normalizer was run.
-- No AI, persistence, advanced UI, RAG, branch, commit, PR, or adversarial-review work was performed.
+- No AI, persistence, advanced UI, RAG, or PR work was performed. Superseded on branch/commit: the apply
+  phase itself created no commits, but three commits now exist on `dev-lucy` (see Delivery State below).
+- Resolved deviation: the `Safe query outcomes` gap is closed by `d11622e`. All three catch paths now
+  return `TEMPORARY_FAILURE`; see Safe-Outcome Correction Evidence above.
+- Behavior change accepted with that correction: an ID-only required relationship
+  (`ID_ONLY_RELATION` / `ID_ONLY_PROTOCOL`) now reports `TEMPORARY_FAILURE` instead of `UNAVAILABLE`.
+  Rationale: an unpopulated required relation is a broken `populate` — an internal invariant violation —
+  not absent or ineligible clinical data, so the transient-failure outcome describes it correctly. The
+  covering test was renamed accordingly. This is the only intentional outcome change for a
+  non-transient trigger; every other path keeps its previous code.
+
+## Delivery State (2026-08-07)
+
+- Receipt-driven review is `off` for this clone (`clone_local`), so delivery follows ordinary repository
+  policy. `gentle-ai review validate --gate pre-commit` reports `delivery: disabled/unmanaged` with
+  `allowed: false` and no governing receipt. No approval was recorded or implied.
+- Commits on `dev-lucy`, none pushed: `13bfbd0` (apply Units 1–3, collapsed into a single commit),
+  `d11622e` (safe-outcome correction), `9200a5f` (agent-tooling gitignore hygiene).
+- `13bfbd0` did not preserve the Unit 1 → Unit 2 → Unit 3 rollback boundaries in history; the two later
+  commits are separate reviewable work units.
+- The approved review receipt for `13bfbd0` exists at
+  `.git/gentle-ai/review-transactions/v2/review-188423b80e0ff5d0/review-receipt.json`
+  (`terminal_state: approved`, high risk, four lenses, evidence passed). Its `base_tree` and
+  `final_candidate_tree` match `13bfbd0^{tree}` and `13bfbd0`'s tree exactly, and its path set matches
+  that commit's 26 files. It no longer resolves through `review status` because the workspace projection
+  it was keyed to disappeared when the work was committed; `review recover --release-scope` is refused
+  and `inspect-authority` reports `sanctioned_exits: []`. Upstream issue
+  `Gentleman-Programming/gentle-ai#2361` remains open with no fix in an installed stable release.
+- `d11622e` and `9200a5f` were never submitted to a native review.
 
 ## Workload Boundary
 
-Apply is complete with deterministic discovery, bounded details/protocol sharing, and reproducible full integration/lint/type-check/diff gates. The single future PR retains the accepted `size:exception` and autonomous Unit 1 → Unit 2 → Unit 3 boundaries. Next recommended phase: `sdd-verify`.
+Apply is complete with deterministic discovery, bounded details/protocol sharing, and reproducible full integration/lint/type-check/diff gates. The single future PR retains the accepted `size:exception`. The Unit 1 → Unit 2 → Unit 3 boundaries survive only in this record, not in git history, because `13bfbd0` collapsed them into one commit.
+
+Native `nextRecommended` is `resolve-review`, not `sdd-verify`. The requirement-by-requirement check recorded above was run directly rather than through the `sdd-verify` phase agent, so no signed verification report exists and `archive` remains blocked. Independent verification through `sdd-verify` is still owed once the authority blocker is resolved.
