@@ -142,9 +142,9 @@ export function createClinicalProductRepository(
   async function readEligible({ productId, presentationId }: ProductIdentityInput) {
     const product = await reader.findByID({
       collection: 'products', id: productId, depth: 2, select: detailSelect,
-      populate: detailPopulate, overrideAccess: false, req, user: req.user,
+      populate: detailPopulate, overrideAccess: false, disableErrors: true, req, user: req.user,
     })
-    if (product.validationStatus !== 'APPROVED') return null
+    if (!product || product.validationStatus !== 'APPROVED') return null
     const presentation = product.presentations?.find((item) =>
       item.id === presentationId && item.status === 'activa')
     return presentation ? { product, presentation } : null
@@ -222,7 +222,7 @@ export function createClinicalProductRepository(
           },
         } }
       } catch {
-        return safeFailure('UNAVAILABLE')
+        return safeFailure('TEMPORARY_FAILURE')
       }
     },
     async canShareProtocol(input) {
@@ -237,7 +237,7 @@ export function createClinicalProductRepository(
           protocol && typeof protocol !== 'number' && protocol.clientShareable,
         ) } }
       } catch {
-        return { ok: true, data: { shareable: false } }
+        return safeFailure('TEMPORARY_FAILURE')
       }
     },
   }

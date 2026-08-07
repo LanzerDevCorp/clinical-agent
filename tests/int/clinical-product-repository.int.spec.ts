@@ -330,15 +330,52 @@ describe('ClinicalProductRepository details and protocol sharing', () => {
     }))
   })
 
-  it('returns UNAVAILABLE for an ID-only required relationship without follow-up reads', async () => {
+  it('returns TEMPORARY_FAILURE for an ID-only required relationship without follow-up reads', async () => {
     const idOnly = structuredClone(detail)
     ;(idOnly.presentations![0].protocols![0] as typeof protocol).zones = [71] as never
     const { find, findByID, repository } = createHarness({ detail: idOnly })
 
     await expect(repository.getProductDetails({ productId: 7, presentationId: 'active' })).resolves
-      .toEqual({ ok: false, code: 'UNAVAILABLE' })
+      .toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
     expect(findByID).toHaveBeenCalledOnce()
     expect(find).not.toHaveBeenCalled()
+  })
+
+  it('reads details with errors disabled so a missing or forbidden document never throws', async () => {
+    const { findByID, repository } = createHarness({ detail })
+    await repository.getProductDetails({ productId: 7, presentationId: 'active' })
+
+    expect(findByID).toHaveBeenCalledWith(expect.objectContaining({ disableErrors: true }))
+  })
+
+  it.each([
+    ['an absent document', undefined],
+    ['a forbidden document', null],
+  ])('maps %s to UNAVAILABLE instead of a transient failure', async (_scenario, document) => {
+    const { repository } = createHarness({ detail: document as never })
+
+    await expect(repository.getProductDetails({ productId: 7, presentationId: 'active' }))
+      .resolves.toEqual({ ok: false, code: 'UNAVAILABLE' })
+  })
+
+  it('maps a details reader failure to TEMPORARY_FAILURE without exposing internals', async () => {
+    const { repository } = createHarness({ detailError: new Error('DETAILS-STACK-SENTINEL') })
+
+    const result = await repository.getProductDetails({ productId: 7, presentationId: 'active' })
+
+    expect(result).toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
+    expect(JSON.stringify(result)).not.toContain('DETAILS-STACK-SENTINEL')
+  })
+
+  it('maps a protocol-sharing reader failure to TEMPORARY_FAILURE without exposing internals', async () => {
+    const { repository } = createHarness({ detailError: new Error('SHARE-STACK-SENTINEL') })
+
+    const result = await repository.canShareProtocol({
+      productId: 7, presentationId: 'active', protocolId: 70,
+    })
+
+    expect(result).toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
+    expect(JSON.stringify(result)).not.toContain('SHARE-STACK-SENTINEL')
   })
 
   it('allows only the exact explicitly shareable protocol', async () => {
@@ -353,7 +390,7 @@ describe('ClinicalProductRepository details and protocol sharing', () => {
     const scenarios = [
       createHarness({ detail }).repository.canShareProtocol({ productId: 7, presentationId: 'active', protocolId: 999 }),
       createHarness({ detail: unshareable }).repository.canShareProtocol({ productId: 7, presentationId: 'active', protocolId: 70 }),
-      createHarness({ detailError: new Error('INACCESSIBLE-INSTRUCTIONS-SENTINEL') }).repository.canShareProtocol({
+      createHarness({ detail: null as never }).repository.canShareProtocol({
         productId: 7, presentationId: 'active', protocolId: 70,
       }),
     ]
