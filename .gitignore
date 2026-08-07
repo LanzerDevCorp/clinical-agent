@@ -51,3 +51,7 @@ node_modules/
 
 # Agent-local registry cache
 /.atl/
+
+# Agent tooling generated locally
+/.agents/
+/.codex/
