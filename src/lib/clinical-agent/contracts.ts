@@ -41,13 +41,31 @@ export type ProtocolSummary = {
   zones: string[]
   routes: string[]
   techniques: string[]
+  visibleEffectsOnset?: string
+  effectDuration?: string
+  recommendedDose?: string
+  injectionDepth?: string
+  sessionsMin?: number
+  sessionsMax?: number
+  frequency?: string
 }
 
 export type ProductDetails = {
-  product: ProductSummary & { description: string | null; productType: string | null }
+  product: ProductSummary & {
+    description: string | null
+    productType: string | null
+    laboratory: string
+    activeIngredients?: string[]
+  }
   presentation: PresentationSummary & {
     characteristics: string | null
     certifications: string | null
+    contraindications?: Array<{ description: string; type: 'absoluta' | 'relativa' }>
+    adverseEffects?: string[]
+    clinicalIndications?: string[]
+    postCareNotes?: string[]
+    safetyWarnings?: string[]
+    reconstitution?: { diluentType?: string; volumeMl?: number; instructions?: string }
     protocols: ProtocolSummary[]
   }
 }

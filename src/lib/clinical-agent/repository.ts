@@ -113,12 +113,26 @@ function discoveryCandidates(products: Product[], query: string) {
 
 const detailSelect = {
   canonicalName: true, description: true, productType: true, validationStatus: true,
+  laboratory: true, activeIngredients: true,
   presentations: {
-    canonicalName: true, status: true, characteristics: true, certifications: true, protocols: true,
+    canonicalName: true, status: true, characteristics: true, certifications: true,
+    contraindications: true, adverseEffects: true, clinicalIndications: true,
+    postCareNotes: true, safetyWarnings: true, protocols: true, reconstitution: true,
   },
 } as const
 const detailPopulate = {
-  protocols: { clientShareable: true, name: true, zones: true, routes: true, techniques: true },
+  laboratories: { name: true },
+  'active-ingredients': { name: true },
+  contraindications: { description: true, type: true },
+  'adverse-effects': { description: true },
+  'clinical-indications': { name: true },
+  'post-care-notes': { description: true },
+  'safety-warnings': { description: true },
+  protocols: {
+    clientShareable: true, name: true, zones: true, routes: true, techniques: true,
+    visibleEffectsOnset: true, effectDuration: true, recommendedDose: true,
+    injectionDepth: true, sessionsMin: true, sessionsMax: true, frequency: true,
+  },
 } as const
 
 function relationNames(records: Protocol['zones']): string[] {
@@ -132,7 +146,34 @@ function protocolSummary(record: number | Protocol) {
     id: String(record.id), name: record.name,
     zones: relationNames(record.zones), routes: relationNames(record.routes),
     techniques: relationNames(record.techniques),
+    ...(record.visibleEffectsOnset == null ? {} : { visibleEffectsOnset: record.visibleEffectsOnset }),
+    ...(record.effectDuration == null ? {} : { effectDuration: record.effectDuration }),
+    ...(record.recommendedDose == null ? {} : { recommendedDose: record.recommendedDose }),
+    ...(record.injectionDepth == null ? {} : { injectionDepth: record.injectionDepth }),
+    ...(record.sessionsMin == null ? {} : { sessionsMin: record.sessionsMin }),
+    ...(record.sessionsMax == null ? {} : { sessionsMax: record.sessionsMax }),
+    ...(record.frequency == null ? {} : { frequency: record.frequency }),
   }
+}
+
+function optionalRelationshipValues<T, R>(
+  records: (number | T)[] | null | undefined,
+  map: (record: T) => R,
+): R[] | undefined {
+  if (!records?.length || records.some((record) => typeof record === 'number')) return undefined
+  return records.map((record) => map(record as T))
+}
+
+type ProductPresentation = NonNullable<Product['presentations']>[number]
+
+function boundedReconstitution(value: ProductPresentation['reconstitution']) {
+  if (!value) return undefined
+  const result = {
+    ...(value.diluentType == null ? {} : { diluentType: value.diluentType }),
+    ...(value.volumeMl == null ? {} : { volumeMl: value.volumeMl }),
+    ...(value.instructions == null ? {} : { instructions: value.instructions }),
+  }
+  return Object.keys(result).length ? result : undefined
 }
 
 export function createClinicalProductRepository(
@@ -209,15 +250,33 @@ export function createClinicalProductRepository(
         const eligible = await readEligible(input)
         if (!eligible) return safeFailure('UNAVAILABLE')
         const { product, presentation } = eligible
+        if (typeof product.laboratory === 'number') throw new Error('ID_ONLY_LABORATORY')
+        const activeIngredients = optionalRelationshipValues(product.activeIngredients, (record) => record.name)
+        const contraindications = optionalRelationshipValues(presentation.contraindications, (record) => ({
+          description: record.description, type: record.type,
+        }))
+        const adverseEffects = optionalRelationshipValues(presentation.adverseEffects, (record) => record.description)
+        const clinicalIndications = optionalRelationshipValues(presentation.clinicalIndications, (record) => record.name)
+        const postCareNotes = optionalRelationshipValues(presentation.postCareNotes, (record) => record.description)
+        const safetyWarnings = optionalRelationshipValues(presentation.safetyWarnings, (record) => record.description)
+        const reconstitution = boundedReconstitution(presentation.reconstitution)
         return { ok: true, data: {
           product: {
             id: String(product.id), canonicalName: product.canonicalName,
             description: product.description ?? null, productType: product.productType ?? null,
+            laboratory: product.laboratory.name,
+            ...(activeIngredients ? { activeIngredients } : {}),
           },
           presentation: {
             id: presentation.id!, canonicalName: presentation.canonicalName,
             characteristics: presentation.characteristics ?? null,
             certifications: presentation.certifications ?? null,
+            ...(contraindications ? { contraindications } : {}),
+            ...(adverseEffects ? { adverseEffects } : {}),
+            ...(clinicalIndications ? { clinicalIndications } : {}),
+            ...(postCareNotes ? { postCareNotes } : {}),
+            ...(safetyWarnings ? { safetyWarnings } : {}),
+            ...(reconstitution ? { reconstitution } : {}),
             protocols: (presentation.protocols ?? []).map(protocolSummary),
           },
         } }

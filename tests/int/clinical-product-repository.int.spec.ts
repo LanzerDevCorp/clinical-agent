@@ -261,7 +261,9 @@ describe('ClinicalProductRepository discovery', () => {
 describe('ClinicalProductRepository details and protocol sharing', () => {
   const protocol = {
     id: 70, clientShareable: true, name: 'Facial protocol',
-    recommendedDose: 'RAW-INSTRUCTIONS-SENTINEL',
+    visibleEffectsOnset: '48 hours', effectDuration: '6 months',
+    recommendedDose: '0.1 mL per point', injectionDepth: 'Intradermal',
+    sessionsMin: 2, sessionsMax: 4, frequency: 'Monthly',
     zones: [{ id: 71, name: 'Face' }],
     routes: [{ id: 72, name: 'Intradermal' }],
     techniques: [{ id: 73, name: 'Papule' }],
@@ -269,8 +271,18 @@ describe('ClinicalProductRepository details and protocol sharing', () => {
   const detail = {
     ...approvedProduct(7, 'Detailed Product', [{ id: 'active', canonicalName: 'Active Presentation' }]),
     description: 'Bounded description', validationNotes: 'RAW-NOTES-SENTINEL', createdAt: 'RAW-CREATED-SENTINEL',
+    laboratory: { id: 74, name: 'Approved Laboratory' },
+    activeIngredients: [{ id: 75, name: 'Hyaluronic Acid' }],
   } as Product
-  detail.presentations![0].protocols = [protocol as never]
+  Object.assign(detail.presentations![0], {
+    contraindications: [{ id: 76, description: 'Pregnancy', type: 'absoluta' }],
+    adverseEffects: [{ id: 77, description: 'Temporary redness' }],
+    clinicalIndications: [{ id: 78, name: 'Hydration' }],
+    postCareNotes: [{ id: 79, description: 'Avoid heat for 24 hours' }],
+    safetyWarnings: [{ id: 80, description: 'Professional use only' }],
+    protocols: [protocol],
+    reconstitution: { diluentType: 'Saline', volumeMl: 2, instructions: 'Mix gently' },
+  })
 
   it.each([
     ['missing product ID', { presentationId: 'active' }],
@@ -285,6 +297,15 @@ describe('ClinicalProductRepository details and protocol sharing', () => {
       ok: false,
       code: 'INVALID_REQUEST',
     })
+    expect(find).not.toHaveBeenCalled()
+    expect(findByID).not.toHaveBeenCalled()
+  })
+
+  it('denies unauthorized details without reading or disclosing clinical data', async () => {
+    const { find, findByID, repository } = createHarness({ detail, user: undefined })
+
+    await expect(repository.getProductDetails({ productId: 7, presentationId: 'active' }))
+      .resolves.toEqual({ ok: false, code: 'UNAUTHORIZED' })
     expect(find).not.toHaveBeenCalled()
     expect(findByID).not.toHaveBeenCalled()
   })
@@ -306,16 +327,27 @@ describe('ClinicalProductRepository details and protocol sharing', () => {
     expect(findByID).not.toHaveBeenCalled()
   })
 
-  it('returns bounded details through a depth-2 projected request-bound read', async () => {
+  it('returns only approved present extended fields through a depth-2 request-bound read', async () => {
     const { findByID, repository, req } = createHarness({ detail })
     const result = await repository.getProductDetails({ productId: 7, presentationId: 'active' })
 
-    expect(result).toMatchObject({
+    expect(result).toEqual({
       ok: true, data: {
-        product: { id: '7', canonicalName: 'Detailed Product', description: 'Bounded description' },
+        product: {
+          id: '7', canonicalName: 'Detailed Product', description: 'Bounded description',
+          productType: null, laboratory: 'Approved Laboratory', activeIngredients: ['Hyaluronic Acid'],
+        },
         presentation: {
-          id: 'active', canonicalName: 'Active Presentation',
-          protocols: [{ id: '70', name: 'Facial protocol', zones: ['Face'], routes: ['Intradermal'], techniques: ['Papule'] }],
+          id: 'active', canonicalName: 'Active Presentation', characteristics: null, certifications: null,
+          contraindications: [{ description: 'Pregnancy', type: 'absoluta' }],
+          adverseEffects: ['Temporary redness'], clinicalIndications: ['Hydration'],
+          postCareNotes: ['Avoid heat for 24 hours'], safetyWarnings: ['Professional use only'],
+          reconstitution: { diluentType: 'Saline', volumeMl: 2, instructions: 'Mix gently' },
+          protocols: [{
+            id: '70', name: 'Facial protocol', zones: ['Face'], routes: ['Intradermal'], techniques: ['Papule'],
+            visibleEffectsOnset: '48 hours', effectDuration: '6 months', recommendedDose: '0.1 mL per point',
+            injectionDepth: 'Intradermal', sessionsMin: 2, sessionsMax: 4, frequency: 'Monthly',
+          }],
         },
       },
     })
@@ -328,6 +360,37 @@ describe('ClinicalProductRepository details and protocol sharing', () => {
       req, user: internalUser,
       select: expect.objectContaining({ presentations: expect.any(Object) }),
     }))
+  })
+
+  it('omits absent and unresolved approved fields without inference or relationship IDs', async () => {
+    const sparse = structuredClone(detail)
+    sparse.activeIngredients = [75]
+    Object.assign(sparse.presentations![0], {
+      contraindications: undefined, adverseEffects: null, clinicalIndications: [78],
+      postCareNotes: undefined, safetyWarnings: null, reconstitution: {},
+    })
+    Object.assign(sparse.presentations![0].protocols![0], {
+      visibleEffectsOnset: null, effectDuration: null, recommendedDose: null,
+      injectionDepth: null, sessionsMin: null, sessionsMax: null, frequency: null,
+    })
+
+    const result = await createHarness({ detail: sparse }).repository
+      .getProductDetails({ productId: 7, presentationId: 'active' })
+
+    expect(result).toEqual({ ok: true, data: {
+      product: {
+        id: '7', canonicalName: 'Detailed Product', description: 'Bounded description',
+        productType: null, laboratory: 'Approved Laboratory',
+      },
+      presentation: {
+        id: 'active', canonicalName: 'Active Presentation', characteristics: null, certifications: null,
+        protocols: [{
+          id: '70', name: 'Facial protocol', zones: ['Face'], routes: ['Intradermal'], techniques: ['Papule'],
+        }],
+      },
+    } })
+    expect(JSON.stringify(result)).not.toContain('75')
+    expect(JSON.stringify(result)).not.toContain('78')
   })
 
   it('returns TEMPORARY_FAILURE for an ID-only required relationship without follow-up reads', async () => {
