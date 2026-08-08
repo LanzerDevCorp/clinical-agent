@@ -8,6 +8,7 @@ import {
 } from './contracts'
 import { clinicalAgentModel, isRetryableGatewayFailure, type ClinicalGateway } from './gateway'
 import { buildClinicalAgentPrompt } from './prompt'
+import type { ClinicalUserMessage } from './gateway'
 
 export { clinicalAgentLimits }
 export type { ClinicalAgentEvent }
@@ -28,6 +29,7 @@ type OrchestratorOptions = {
 type RunOptions = {
   onEvent(event: ClinicalAgentEvent): void
   abortSignal?: AbortSignal
+  messages?: readonly ClinicalUserMessage[]
 }
 
 function defaultTimers(): OrchestratorTimers {
@@ -46,7 +48,7 @@ export function createClinicalOrchestrator({
   createRequestId = () => crypto.randomUUID(),
 }: OrchestratorOptions) {
   return {
-    async run({ onEvent, abortSignal }: RunOptions): Promise<{ ok: true } | { ok: false; code: 'TEMPORARY_FAILURE' }> {
+    async run({ onEvent, abortSignal, messages = [] }: RunOptions): Promise<{ ok: true } | { ok: false; code: 'TEMPORARY_FAILURE' }> {
       const requestId = createRequestId()
       const controller = new AbortController()
       let rejectExternalAbort: ((error: Error) => void) | undefined
@@ -83,6 +85,7 @@ export function createClinicalOrchestrator({
             const stream = gateway.stream({
               model: clinicalAgentModel,
               prompt: buildClinicalAgentPrompt(),
+              messages,
               tools,
               limits: clinicalAgentLimits,
               abortSignal: controller.signal,
