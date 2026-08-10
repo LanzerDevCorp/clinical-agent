@@ -52,12 +52,48 @@ Regla para cualquier test nuevo: el proveedor se inyecta, siempre. Ningún test 
 
 | Área | Estado | Notas |
 |---|---|---|
-| Frontend del agente | **Sin tests y sin código** | No existe UI del agente todavía. Solo está la plantilla de Payload en `src/app/(frontend)/` |
+| Frontend del agente | **Sin tests** | La UI existe en `src/app/(frontend)/agent/` y funciona, pero no tiene ninguna prueba |
 | E2E del agente | **Inexistente** | Los dos specs en `tests/e2e/` son de la plantilla de Payload |
 | Cobertura | **Sin herramienta instalada** | No hay ninguna dependencia de coverage en `package.json`. No se puede medir |
+| Camino de aclaración | **Sin test** | La rama `kind: 'clarification'` solo está cubierta por instrucción de prompt, no por una prueba |
 
 Los dos e2e existentes además están rotos de fábrica: `frontend.e2e.spec.ts` verifica el título
 `Payload Blank Template`, que ya no corresponde a este proyecto.
+
+---
+
+## Divergencias del spec acumuladas
+
+El agente funciona, pero llegar ahí exigió cambios que **contradicen artefactos SDD congelados**.
+No se editaron esos artefactos a propósito: son evidencia de qué se especificó. Todo esto entra
+en el cambio SDD nuevo, junto con la migración a Supabase.
+
+| Divergencia | Spec que contradice | Motivo |
+|---|---|---|
+| Modelo `openai/gpt-4o-mini` | `spec.md:27`, `proposal.md:10`, `design.md:5` nombran `deepseek/deepseek-v4-flash` | DeepSeek no soporta salida estructurada nativa; cumplía el schema solo a veces |
+| `ClinicalToolset` devuelve `factId` | Contrato de herramientas del diseño | El modelo no puede referenciar IDs que nunca recibió |
+| `canShareProtocol` ya no es herramienta | *Bounded streaming execution* lo lista como una de las tres | Costaba O(protocolos) y agotaba el presupuesto; se plegó dentro de `getProductDetails` |
+| `testTimeout: 20_000` en Vitest | Evidencia de verificación con el default de 5 s | Los specs de integración corren contra Postgres remoto |
+
+### Deuda de diseño descubierta al depurar
+
+- **El artifact no puede expresar ambigüedad.** `ClinicalArtifact` solo tiene `internalFactIds` y
+  `clientFactIds`. Cuando la búsqueda devuelve `kind: 'clarification'`, el modelo no tiene forma
+  legal de pedir una aclaración, así que intentaba resolverla cargando todos los candidatos y
+  agotaba `maxDetailCalls: 4`. Mitigado por prompt; el flujo real de aclaración es cambio de contrato.
+- **`renderClinicalArtifact` emite JSON crudo** (`agent/contracts.ts`), con etiquetas en inglés
+  dentro de una UI en español. Los paneles muestran `JSON.stringify` en vez de campos formateados.
+- **El `Reference: <uuid>` del error opaco no se loguea en ningún lado.** Se le entrega al usuario
+  un identificador que no sirve para rastrear nada. Los diagnósticos temporales que se usaron para
+  depurar esto ya se removieron; una observabilidad permanente y segura queda pendiente.
+- **`search:${facts.length}` es un ID posicional.** Hoy no rompe porque el modelo lo recibe en el
+  resultado, pero depende del orden de registro y es frágil ante cualquier cambio de flujo.
+
+### Datos, no código
+
+`client_shareable = true` en **0 de 13** protocolos. El panel del paciente aparece vacío porque
+nadie autorizó nada todavía — el sistema falla cerrado como corresponde. Se habilita marcando
+protocolos en el admin de Payload.
 
 ---
 
