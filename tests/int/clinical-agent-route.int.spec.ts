@@ -321,6 +321,25 @@ describe('clinical agent route boundary', () => {
     expect(exactLimit.calls).toEqual(['authenticate', 'admission', 'gateway', 'tools', 'orchestrator', 'release'])
   })
 
+  it('accepts an otherwise-valid request body totaling exactly 256 KiB', async () => {
+    const emptyBody = JSON.stringify({
+      messages: [{ id: 'one', role: 'user', parts: [{ type: 'text', text: '' }] }],
+    })
+    const exactBody = JSON.stringify({
+      messages: [{
+        id: 'one', role: 'user',
+        parts: [{ type: 'text', text: 'x'.repeat((256 * 1024) - Buffer.byteLength(emptyBody)) }],
+      }],
+    })
+    const exactBodyRoute = routeHarness()
+
+    expect(Buffer.byteLength(exactBody)).toBe(256 * 1024)
+    const response = await exactBodyRoute.POST(request(exactBody))
+    await response.text()
+    expect(response.status).toBe(200)
+    expect(exactBodyRoute.calls).toEqual(['authenticate', 'admission', 'gateway', 'tools', 'orchestrator', 'release'])
+  })
+
   it('maps admission limits and unavailability to redacted 429 and 503 responses before provider or tool construction', async () => {
     const rateLimited = routeHarness({ admission: { ok: false, code: 'RATE_LIMITED' } })
     const rateLimitedResponse = await rateLimited.POST(request(messages()))

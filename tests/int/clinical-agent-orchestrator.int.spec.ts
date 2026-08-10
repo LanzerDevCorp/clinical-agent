@@ -25,12 +25,14 @@ const details: ProductDetails = {
 
 function fakeTimers() {
   let nextId = 0
-  const callbacks = new Map<number, { callback: () => void; delayMs: number }>()
+  let nowMs = 0
+  const callbacks = new Map<number, { callback: () => void; delayMs: number; dueAt: number }>()
   return {
+    now: () => nowMs,
     timers: {
       setTimeout(callback: () => void, delayMs: number) {
         const id = ++nextId
-        callbacks.set(id, { callback, delayMs })
+        callbacks.set(id, { callback, delayMs, dueAt: nowMs + delayMs })
         return id
       },
       clearTimeout(id: number) {
@@ -40,6 +42,15 @@ function fakeTimers() {
     fire(delayMs: number) {
       for (const [id, timer] of [...callbacks]) {
         if (timer.delayMs === delayMs) {
+          timer.callback()
+          callbacks.delete(id)
+        }
+      }
+    },
+    advanceTo(nextMs: number) {
+      nowMs = nextMs
+      for (const [id, timer] of [...callbacks]) {
+        if (timer.dueAt <= nowMs) {
           timer.callback()
           callbacks.delete(id)
         }
@@ -111,6 +122,7 @@ function setup(options: {
   gateway: ClinicalGateway
   reader?: ReturnType<typeof reader>
   timers?: ReturnType<typeof fakeTimers>['timers']
+  now?: () => number
   abortSignal?: AbortSignal
 }): { output: ClinicalAgentEvent[]; run: () => Promise<unknown> } {
   const req = { user: { id: 'internal-user', collection: 'users' } } as never
@@ -123,7 +135,7 @@ function setup(options: {
   const orchestrator = createClinicalOrchestrator({
     gateway: options.gateway,
     tools,
-    now: () => 0,
+    now: options.now ?? (() => 0),
     timers: options.timers,
     createRequestId: () => 'opaque-request-id',
   })
@@ -384,5 +396,39 @@ describe('clinical agent typed orchestration', () => {
     const postStart = setup({ gateway: postStartGateway })
     await expect(postStart.run()).resolves.toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
     expect(postStartAttempts).toBe(1)
+  })
+
+  it('enforces the first-part deadline across the optional retry', async () => {
+    const clock = fakeTimers()
+    let attempts = 0
+    const delayedRetry = gateway(async function* () {
+      attempts += 1
+      if (attempts === 1) {
+        clock.advanceTo(44_000)
+        throw { retryable: true }
+      }
+      clock.advanceTo(80_000)
+      yield { type: 'part' }
+      yield { type: 'final', steps: 1, outputTokens: 1, artifact: { internalFactIds: [], clientFactIds: [] } }
+    })
+    const delayed = setup({ gateway: delayedRetry, timers: clock.timers, now: clock.now })
+
+    await expect(delayed.run()).resolves.toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
+    expect(attempts).toBe(2)
+    expect(delayed.output).toEqual([{ type: 'error', message: 'Unable to complete the clinical response. Reference: opaque-request-id' }])
+  })
+
+  it('returns a safe structured failure after two retryable pre-stream failures', async () => {
+    let attempts = 0
+    const exhaustedGateway = gateway(() => {
+      attempts += 1
+      throw { retryable: true, providerDetail: `private-provider-detail-${attempts}` }
+    })
+    const exhausted = setup({ gateway: exhaustedGateway })
+
+    await expect(exhausted.run()).resolves.toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
+    expect(attempts).toBe(2)
+    expect(exhausted.output).toEqual([{ type: 'error', message: 'Unable to complete the clinical response. Reference: opaque-request-id' }])
+    expect(JSON.stringify(exhausted.output)).not.toContain('private-provider-detail')
   })
 })

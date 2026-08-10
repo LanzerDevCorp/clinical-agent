@@ -72,6 +72,13 @@ export function createClinicalOrchestrator({
           resolve()
         }, clinicalAgentLimits.totalTimeoutMs)
       })
+      const firstPartDeadline = new Promise<void>((resolve) => {
+        firstPartTimer = timers.setTimeout(() => {
+          firstPartExpired = true
+          controller.abort()
+          resolve()
+        }, clinicalAgentLimits.firstPartTimeoutMs)
+      })
 
       try {
         if (abortSignal?.aborted) {
@@ -91,14 +98,6 @@ export function createClinicalOrchestrator({
               abortSignal: controller.signal,
             })
             iterator = stream[Symbol.asyncIterator]()
-            const firstPartDeadline = new Promise<void>((resolve) => {
-              firstPartTimer = timers.setTimeout(() => {
-                firstPartExpired = true
-                controller.abort()
-                resolve()
-              }, clinicalAgentLimits.firstPartTimeoutMs)
-            })
-
             while (true) {
               if (now() - startedAt >= clinicalAgentLimits.totalTimeoutMs) {
                 totalExpired = true
@@ -139,7 +138,6 @@ export function createClinicalOrchestrator({
             }
             throw error
           } finally {
-            timers.clearTimeout(firstPartTimer)
             if (controller.signal.aborted) {
               try {
                 void iterator?.return?.().catch(() => undefined)
@@ -154,6 +152,7 @@ export function createClinicalOrchestrator({
         onEvent(errorEvent(requestId))
         return { ok: false, code: 'TEMPORARY_FAILURE' }
       } finally {
+        timers.clearTimeout(firstPartTimer)
         timers.clearTimeout(totalTimer)
         abortSignal?.removeEventListener('abort', abort)
       }
