@@ -3,7 +3,9 @@ import { z } from 'zod'
 
 import type { ClinicalArtifact, ClinicalToolset } from './contracts'
 
-export const clinicalAgentModel = 'deepseek/deepseek-v4-flash' as const
+// Requires native JSON-schema structured output: `Output.object` below constrains
+// the artifact, and a model without it satisfies the schema only intermittently.
+export const clinicalAgentModel = 'openai/gpt-4o-mini' as const
 
 export type GatewayRequest = {
   model: typeof clinicalAgentModel
@@ -60,14 +62,11 @@ function createAiSdkTools(tools: ClinicalToolset) {
       execute: ({ query }) => tools.searchProducts({ query }),
     }),
     getProductDetails: tool({
-      description: 'Load approved details for one explicit product presentation.',
+      description:
+        'Load approved details for one explicit product presentation. Returns `factId` for the details, and'
+        + ' `clientShareableProtocols` listing every protocol authorized for sharing with its own `factId`.',
       inputSchema: z.object({ productId: productIdSchema, presentationId: z.string().min(1) }),
       execute: ({ productId, presentationId }) => tools.getProductDetails({ productId, presentationId }),
-    }),
-    canShareProtocol: tool({
-      description: 'Check whether one explicit product protocol is client-shareable.',
-      inputSchema: z.object({ productId: productIdSchema, presentationId: z.string().min(1), protocolId: productIdSchema }),
-      execute: ({ productId, presentationId, protocolId }) => tools.canShareProtocol({ productId, presentationId, protocolId }),
     }),
   }
 }

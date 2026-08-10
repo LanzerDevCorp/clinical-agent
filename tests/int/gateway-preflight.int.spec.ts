@@ -25,13 +25,12 @@ describe('AI Gateway adapter', () => {
     })
     const abortController = new AbortController()
     const gatewayStream = adapter.stream({
-      model: 'deepseek/deepseek-v4-flash',
+      model: 'openai/gpt-4o-mini',
       prompt: 'safe system prompt',
       messages: [{ id: 'message-1', role: 'user', parts: [{ type: 'text', text: 'Question' }] }],
       tools: {
-        searchProducts: async () => ({ ok: true, data: { kind: 'empty' } }),
+        searchProducts: async () => ({ ok: true, data: { factId: 'search:0', search: { kind: 'empty' } } }),
         getProductDetails: async () => ({ ok: false, code: 'UNAVAILABLE' }),
-        canShareProtocol: async () => ({ ok: false, code: 'UNAVAILABLE' }),
       },
       limits: { maxOutputTokens: 4096, maxSteps: 12, maxToolCalls: 8, maxDetailCalls: 4 },
       abortSignal: abortController.signal,
@@ -53,7 +52,7 @@ describe('AI Gateway adapter', () => {
 
     expect(calls).toHaveLength(1)
     expect(calls[0]).toMatchObject({
-      model: { id: 'deepseek/deepseek-v4-flash' },
+      model: { id: 'openai/gpt-4o-mini' },
       system: 'safe system prompt',
       maxOutputTokens: 4096,
       maxRetries: 0,
@@ -62,7 +61,6 @@ describe('AI Gateway adapter', () => {
     expect(calls[0].tools).toEqual(expect.objectContaining({
       searchProducts: expect.any(Object),
       getProductDetails: expect.any(Object),
-      canShareProtocol: expect.any(Object),
     }))
     expect(calls[0].messages).toEqual([{ role: 'user', content: 'Question' }])
   })
@@ -74,7 +72,7 @@ describe('gateway catalog preflight', () => {
     const result = await runGatewayModelPreflight({
       fetch: async (input) => {
         requests.push(String(input))
-        return new Response(JSON.stringify({ data: [{ id: 'deepseek/deepseek-v4-flash' }] }), { status: 200 })
+        return new Response(JSON.stringify({ data: [{ id: 'openai/gpt-4o-mini' }] }), { status: 200 })
       },
     })
 

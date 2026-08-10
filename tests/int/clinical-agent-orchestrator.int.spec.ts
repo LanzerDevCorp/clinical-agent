@@ -158,7 +158,7 @@ describe('clinical agent typed orchestration', () => {
       } as never,
     })
 
-    await expect(tools.searchProducts({ query: 'product' })).resolves.toEqual({ ok: true, data: { kind: 'empty' } })
+    await expect(tools.searchProducts({ query: 'product' })).resolves.toEqual({ ok: true, data: { factId: 'search:0', search: { kind: 'empty' } } })
     expect(calls).toEqual([expect.objectContaining({ overrideAccess: false, req, user })])
   })
 
@@ -181,7 +181,7 @@ describe('clinical agent typed orchestration', () => {
       },
     } as never)
 
-    await expect(tools.searchProducts({ query: 'product' })).resolves.toEqual({ ok: true, data: { kind: 'empty' } })
+    await expect(tools.searchProducts({ query: 'product' })).resolves.toEqual({ ok: true, data: { factId: 'search:0', search: { kind: 'empty' } } })
     expect(bypassCalls).toEqual([])
   })
 
@@ -190,7 +190,6 @@ describe('clinical agent typed orchestration', () => {
 
     await expect(tools.searchProducts({ query: 'product' })).resolves.toEqual({ ok: false, code: 'UNAUTHORIZED' })
     await expect(tools.getProductDetails({ productId: 'product-1', presentationId: 'presentation-1' })).resolves.toEqual({ ok: false, code: 'UNAUTHORIZED' })
-    await expect(tools.canShareProtocol({ productId: 'product-1', presentationId: 'presentation-1', protocolId: 'protocol-private' })).resolves.toEqual({ ok: false, code: 'UNAUTHORIZED' })
     expect(tools.ledger.snapshot()).toEqual([])
   })
 
@@ -204,8 +203,6 @@ describe('clinical agent typed orchestration', () => {
     })
     const fakeGateway = gateway(async function* (request) {
       await request.tools.getProductDetails({ productId: 'product-1', presentationId: 'presentation-1' })
-      await request.tools.canShareProtocol({ productId: 'product-1', presentationId: 'presentation-1', protocolId: 'protocol-shareable' })
-      await request.tools.canShareProtocol({ productId: 'product-1', presentationId: 'presentation-1', protocolId: 'protocol-private' })
       yield { type: 'part' }
       yield {
         type: 'final', steps: 3, outputTokens: 4096,
@@ -218,7 +215,7 @@ describe('clinical agent typed orchestration', () => {
     const { output, run } = setup({ gateway: fakeGateway, reader: source })
 
     await expect(run()).resolves.toEqual({ ok: true })
-    expect(fakeGateway.requests[0]).toMatchObject({ model: 'deepseek/deepseek-v4-flash', limits: clinicalAgentLimits })
+    expect(fakeGateway.requests[0]).toMatchObject({ model: 'openai/gpt-4o-mini', limits: clinicalAgentLimits })
     expect(output).toEqual([
       { type: 'status', status: 'processing' },
       {

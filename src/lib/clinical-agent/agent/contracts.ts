@@ -10,10 +10,22 @@ export const clinicalAgentLimits = {
   toolTimeoutMs: 30_000,
 } as const
 
+/**
+ * Every successful result carries the `factId` under which the payload was recorded
+ * in the ledger. Those exact strings are the only values a ClinicalArtifact may
+ * reference — the model cannot derive them, so the tools must hand them back.
+ *
+ * Shareability resolves inside `getProductDetails` rather than through a separate
+ * tool, which keeps the tool budget flat regardless of how many protocols a
+ * presentation has.
+ */
 export type ClinicalToolset = {
-  searchProducts(input: { query: string }): Promise<SafeResult<SearchData>>
-  getProductDetails(input: { productId: string | number; presentationId: string }): Promise<SafeResult<ProductDetails>>
-  canShareProtocol(input: { productId: string | number; presentationId: string; protocolId: string | number }): Promise<SafeResult<{ shareable: boolean }>>
+  searchProducts(input: { query: string }): Promise<SafeResult<{ factId: string; search: SearchData }>>
+  getProductDetails(input: { productId: string | number; presentationId: string }): Promise<SafeResult<{
+    factId: string
+    details: ProductDetails
+    clientShareableProtocols: readonly { protocolId: string; factId: string }[]
+  }>>
 }
 
 export type ClinicalFact = {
