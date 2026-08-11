@@ -112,14 +112,126 @@
   color: rgb(255 255 255 / 0.6);
 }
 
-.panelBody {
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.factBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.factTitle {
   margin: 0;
-  font-family: var(--font-mono, ui-monospace, monospace);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.factSubtitle {
   font-size: 0.8rem;
-  line-height: 1.55;
-  white-space: pre-wrap;
+  font-weight: 400;
+  color: rgb(255 255 255 / 0.55);
+}
+
+.sectionHeading {
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.5);
+}
+
+.fields {
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.field {
+  display: grid;
+  grid-template-columns: minmax(7rem, 9rem) 1fr;
+  gap: 0.75rem;
+  align-items: baseline;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 620px) {
+  .field {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}
+
+.fieldLabel {
+  margin: 0;
+  color: rgb(255 255 255 / 0.55);
   overflow-wrap: anywhere;
-  overflow-x: auto;
+}
+
+.fieldValue {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.badgeAbsolute,
+.badgeRelative {
+  display: inline-block;
+  margin-right: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 0.3rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badgeAbsolute {
+  border: 1px solid rgb(248 113 113 / 0.5);
+  color: rgb(252 165 165);
+}
+
+.badgeRelative {
+  border: 1px solid rgb(251 191 36 / 0.45);
+  color: rgb(253 224 71);
+}
+
+.protocol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  min-width: 0;
+}
+
+.protocolName {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgb(255 255 255 / 0.7);
 }
 
 .share {

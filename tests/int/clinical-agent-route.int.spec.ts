@@ -3,6 +3,7 @@ import { getPayload, type Payload } from 'payload'
 
 import { createClinicalAgentRoute } from '@/app/api/chat/route'
 import { createPostgresAdmission, hashAdmissionSubject, type AdmissionPool } from '@/lib/clinical-agent/agent/admission'
+import type { ClinicalFact } from '@/lib/clinical-agent/agent/contracts'
 import * as admissionMigration from '@/migrations/20260807_140000_clinical_agent_admission'
 import { migrations } from '@/migrations'
 import config from '@/payload.config'
@@ -170,7 +171,7 @@ describe('clinical agent Postgres admission', () => {
 
 type RouteEvent =
   | { type: 'status'; status: 'processing' }
-  | { type: 'artifact'; internal: string; client: string }
+  | { type: 'artifact'; internal: readonly ClinicalFact[]; client: readonly ClinicalFact[] }
   | { type: 'error'; message: string }
 
 function request(body: BodyInit, signal?: AbortSignal) {
@@ -232,7 +233,11 @@ function routeHarness(options: {
         calls.push('orchestrator')
         if (options.run) return options.run({ onEvent, abortSignal, messages: routeMessages })
         onEvent({ type: 'status', status: 'processing' })
-        onEvent({ type: 'artifact', internal: 'Internal clinical facts:', client: 'Client-shareable facts:' })
+        onEvent({
+          type: 'artifact',
+          internal: [{ id: 'search:0', audience: 'internal', kind: 'search', value: { kind: 'empty' } }],
+          client: [],
+        })
         return { ok: true }
       },
     }),
@@ -365,7 +370,7 @@ describe('clinical agent route boundary', () => {
     const finishedResponse = await finished.POST(request(messages()))
     const finishedPayload = await finishedResponse.text()
     expect(finishedPayload).toContain('processing')
-    expect(finishedPayload).toContain('Internal clinical facts:')
+    expect(finishedPayload).toContain('search:0')
     expect(finished.releases()).toBe(1)
 
     const failed = routeHarness({
