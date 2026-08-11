@@ -35,6 +35,17 @@ export type ClinicalFact = {
   value: SearchData | ProductDetails | ProtocolSummary
 }
 
+/**
+ * What the model submits. It chooses only the client side — which protocols are safe
+ * to show a patient — because that is the sole judgement call. Which internal facts
+ * were gathered is not a decision: the ledger already knows, and asking a model to
+ * copy that list back is clerical work it does incompletely.
+ */
+export type SubmittedArtifact = {
+  clientFactIds: string[]
+}
+
+/** The validated artifact: client ids checked, internal ids derived from the ledger. */
 export type ClinicalArtifact = {
   internalFactIds: string[]
   clientFactIds: string[]
@@ -51,24 +62,28 @@ export type ClinicalAgentEvent =
   | { type: 'artifact'; internal: readonly ClinicalFact[]; client: readonly ClinicalFact[] }
   | { type: 'error'; message: string }
 
-function isArtifact(value: unknown): value is ClinicalArtifact {
+function isSubmittedArtifact(value: unknown): value is SubmittedArtifact {
   if (!value || typeof value !== 'object') return false
   const artifact = value as Record<string, unknown>
-  return Array.isArray(artifact.internalFactIds)
-    && Array.isArray(artifact.clientFactIds)
-    && artifact.internalFactIds.every((id) => typeof id === 'string')
+  return Array.isArray(artifact.clientFactIds)
     && artifact.clientFactIds.every((id) => typeof id === 'string')
 }
 
 export function validateClinicalArtifact(value: unknown, facts: readonly ClinicalFact[]): ClinicalArtifact | undefined {
-  if (!isArtifact(value)) return undefined
+  if (!isSubmittedArtifact(value)) return undefined
+
+  // Derived, not requested: everything the tools actually recorded for this request.
+  const internalFactIds = facts.filter((fact) => fact.audience === 'internal').map((fact) => fact.id)
+  // A run that gathered nothing is not an answer. Without this guard it would reach
+  // the UI as a successful response with no content.
+  if (internalFactIds.length === 0) return undefined
+
   const byId = new Map(facts.map((fact) => [fact.id, fact]))
-  const internalValid = value.internalFactIds.every((id) => byId.get(id)?.audience === 'internal')
   const clientValid = value.clientFactIds.every((id) => {
     const fact = byId.get(id)
     return fact?.audience === 'client' && fact.kind === 'protocol'
   })
-  return internalValid && clientValid ? value : undefined
+  return clientValid ? { internalFactIds, clientFactIds: [...new Set(value.clientFactIds)] } : undefined
 }
 
 export function selectClinicalArtifactFacts(artifact: ClinicalArtifact, facts: readonly ClinicalFact[]): ClinicalAgentEvent {

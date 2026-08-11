@@ -7,6 +7,7 @@ import {
   type ClinicalAgentEvent,
 } from '@/lib/clinical-agent/agent/orchestrator'
 import type { ClinicalGateway, GatewayRequest } from '@/lib/clinical-agent/agent/gateway'
+import type { ClinicalFailureReport } from '@/lib/clinical-agent/agent/diagnostics'
 import { createClinicalTools } from '@/lib/clinical-agent/agent/tools'
 
 const details: ProductDetails = {
@@ -124,7 +125,7 @@ function setup(options: {
   timers?: ReturnType<typeof fakeTimers>['timers']
   now?: () => number
   abortSignal?: AbortSignal
-}): { output: ClinicalAgentEvent[]; run: () => Promise<unknown> } {
+}): { output: ClinicalAgentEvent[]; failures: ClinicalFailureReport[]; run: () => Promise<unknown> } {
   const req = { user: { id: 'internal-user', collection: 'users' } } as never
   const tools = createClinicalTools({
     req,
@@ -132,14 +133,16 @@ function setup(options: {
     timers: options.timers,
   })
   const output: ClinicalAgentEvent[] = []
+  const failures: ClinicalFailureReport[] = []
   const orchestrator = createClinicalOrchestrator({
     gateway: options.gateway,
     tools,
     now: options.now ?? (() => 0),
     timers: options.timers,
     createRequestId: () => 'opaque-request-id',
+    diagnostics: { recordFailure: (report) => { failures.push(report) } },
   })
-  return { output, run: () => orchestrator.run({ onEvent: (event) => output.push(event), abortSignal: options.abortSignal }) }
+  return { output, failures, run: () => orchestrator.run({ onEvent: (event) => output.push(event), abortSignal: options.abortSignal }) }
 }
 
 describe('clinical agent typed orchestration', () => {
@@ -207,7 +210,6 @@ describe('clinical agent typed orchestration', () => {
       yield {
         type: 'final', steps: 3, outputTokens: 4096,
         artifact: {
-          internalFactIds: ['details:product-1:presentation-1'],
           clientFactIds: ['protocol:product-1:presentation-1:protocol-shareable'],
         },
       }
@@ -215,7 +217,7 @@ describe('clinical agent typed orchestration', () => {
     const { output, run } = setup({ gateway: fakeGateway, reader: source })
 
     await expect(run()).resolves.toEqual({ ok: true })
-    expect(fakeGateway.requests[0]).toMatchObject({ model: 'openai/gpt-4o-mini', limits: clinicalAgentLimits })
+    expect(fakeGateway.requests[0]).toMatchObject({ model: 'deepseek/deepseek-v4-flash', limits: clinicalAgentLimits })
     expect(output[0]).toEqual({ type: 'status', status: 'processing' })
     const artifact = output[1] as Extract<ClinicalAgentEvent, { type: 'artifact' }>
     expect(artifact.type).toBe('artifact')
@@ -233,15 +235,24 @@ describe('clinical agent typed orchestration', () => {
   it('rejects partial artifacts and emits no clinical content before final validation', async () => {
     const fakeGateway = gateway(() => events(
       { type: 'part' },
-      { type: 'final', steps: 1, outputTokens: 1, artifact: { internalFactIds: ['missing'] } },
+      { type: 'final', steps: 1, outputTokens: 1, artifact: {} },
     ))
-    const { output, run } = setup({ gateway: fakeGateway })
+    const { output, run, failures } = setup({ gateway: fakeGateway })
 
     await expect(run()).resolves.toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
     expect(output).toEqual([
       { type: 'status', status: 'processing' },
       { type: 'error', message: 'Unable to complete the clinical response. Reference: opaque-request-id' },
     ])
+    // The opaque reference the caller sees is traceable server-side.
+    expect(failures).toEqual([{
+      requestId: 'opaque-request-id',
+      reason: 'INVALID_ARTIFACT',
+      attempts: 1,
+      toolLimitExceeded: false,
+      ledgerFactIds: [],
+      requestedClientFactIds: undefined,
+    }])
   })
 
   it('enforces exact execution, detail, and token limits without network waits', async () => {
@@ -251,16 +262,19 @@ describe('clinical agent typed orchestration', () => {
         await request.tools.getProductDetails({ productId: 'product-1', presentationId: 'presentation-1' })
       }
       yield { type: 'part' }
-      yield { type: 'final', steps: 12, outputTokens: 4096, artifact: { internalFactIds: [], clientFactIds: [] } }
+      yield {
+        type: 'final', steps: 12, outputTokens: 4096,
+        artifact: { clientFactIds: [] },
+      }
     })
-    const { output, run } = setup({ gateway: fakeGateway, reader: source })
+    const { run } = setup({ gateway: fakeGateway, reader: source })
     await expect(run()).resolves.toEqual({ ok: true })
 
     const overLimitGateway = gateway(async function* (request) {
       for (let index = 0; index < 5; index += 1) {
         await request.tools.getProductDetails({ productId: 'product-1', presentationId: 'presentation-1' })
       }
-      yield { type: 'final', steps: 12, outputTokens: 4096, artifact: { internalFactIds: [], clientFactIds: [] } }
+      yield { type: 'final', steps: 12, outputTokens: 4096, artifact: { clientFactIds: [] } }
     })
     const rejected = setup({ gateway: overLimitGateway, reader: source })
     await expect(rejected.run()).resolves.toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
@@ -268,7 +282,7 @@ describe('clinical agent typed orchestration', () => {
 
     const toolLimitGateway = gateway(async function* (request) {
       for (let index = 0; index < 9; index += 1) await request.tools.searchProducts({ query: 'product' })
-      yield { type: 'final', steps: 12, outputTokens: 4096, artifact: { internalFactIds: [], clientFactIds: [] } }
+      yield { type: 'final', steps: 12, outputTokens: 4096, artifact: { clientFactIds: [] } }
     })
     const toolRejected = setup({ gateway: toolLimitGateway, reader: reader() })
     await expect(toolRejected.run()).resolves.toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
@@ -280,7 +294,7 @@ describe('clinical agent typed orchestration', () => {
   it('rejects non-compliant final artifacts that report 13 steps or 4097 output tokens', async () => {
     const tooManySteps = setup({
       gateway: gateway(() => events({
-        type: 'final', steps: 13, outputTokens: 1, artifact: { internalFactIds: [], clientFactIds: [] },
+        type: 'final', steps: 13, outputTokens: 1, artifact: { clientFactIds: [] },
       })),
     })
     await expect(tooManySteps.run()).resolves.toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
@@ -288,7 +302,7 @@ describe('clinical agent typed orchestration', () => {
 
     const tooManyTokens = setup({
       gateway: gateway(() => events({
-        type: 'final', steps: 1, outputTokens: 4097, artifact: { internalFactIds: [], clientFactIds: [] },
+        type: 'final', steps: 1, outputTokens: 4097, artifact: { clientFactIds: [] },
       })),
     })
     await expect(tooManyTokens.run()).resolves.toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
@@ -375,12 +389,14 @@ describe('clinical agent typed orchestration', () => {
 
   it('retries exactly once only for retryable failures before the first provider part', async () => {
     let attempts = 0
-    const transientGateway = gateway(() => {
+    const transientGateway = gateway((request) => (async function* () {
       attempts += 1
       if (attempts === 1) throw { retryable: true }
-      return events({ type: 'part' }, { type: 'final', steps: 1, outputTokens: 1, artifact: { internalFactIds: [], clientFactIds: [] } })
-    })
-    const transient = setup({ gateway: transientGateway })
+      await request.tools.searchProducts({ query: 'product' })
+      yield { type: 'part' }
+      yield { type: 'final', steps: 1, outputTokens: 1, artifact: { clientFactIds: [] } }
+    })())
+    const transient = setup({ gateway: transientGateway, reader: reader() })
     await expect(transient.run()).resolves.toEqual({ ok: true })
     expect(attempts).toBe(2)
 
@@ -411,7 +427,7 @@ describe('clinical agent typed orchestration', () => {
       }
       clock.advanceTo(80_000)
       yield { type: 'part' }
-      yield { type: 'final', steps: 1, outputTokens: 1, artifact: { internalFactIds: [], clientFactIds: [] } }
+      yield { type: 'final', steps: 1, outputTokens: 1, artifact: { clientFactIds: [] } }
     })
     const delayed = setup({ gateway: delayedRetry, timers: clock.timers, now: clock.now })
 

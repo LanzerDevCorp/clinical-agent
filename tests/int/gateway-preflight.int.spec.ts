@@ -1,23 +1,22 @@
 import { describe, expect, it } from 'vitest'
 
-import { createAiSdkClinicalGateway } from '@/lib/clinical-agent/agent/gateway'
+import { createAiSdkClinicalGateway, SUBMIT_ARTIFACT_TOOL } from '@/lib/clinical-agent/agent/gateway'
 import { GATEWAY_MODEL_CATALOG_URL, runGatewayModelPreflight } from '@/scripts/check-gateway-model'
-
-async function* stream(...parts: unknown[]) {
-  for (const part of parts) yield part
-}
 
 describe('AI Gateway adapter', () => {
   it('uses only the fixed model with zero provider retries, forwarding cancellation, tools, and only the completed structured artifact', async () => {
     const calls: Array<Record<string, unknown>> = []
-    let resolveArtifact: ((artifact: unknown) => void) | undefined
     const adapter = createAiSdkClinicalGateway({
       model: (id) => ({ id }),
       streamText: (options) => {
         calls.push(options as Record<string, unknown>)
+        const submit = (options.tools as Record<string, { execute(input: unknown): Promise<unknown> }>)[SUBMIT_ARTIFACT_TOOL]
         return {
-          fullStream: stream({ type: 'text-delta', text: 'unvalidated content' }),
-          output: new Promise((resolve) => { resolveArtifact = resolve }),
+          // The model streams text, then delivers its answer through the tool.
+          fullStream: (async function* () {
+            yield { type: 'text-delta', text: 'unvalidated content' }
+            await submit.execute({ internalFactIds: ['search:0'], clientFactIds: [] })
+          })(),
           steps: Promise.resolve([{}]),
           totalUsage: Promise.resolve({ outputTokens: 1 }),
         }
@@ -25,7 +24,7 @@ describe('AI Gateway adapter', () => {
     })
     const abortController = new AbortController()
     const gatewayStream = adapter.stream({
-      model: 'openai/gpt-4o-mini',
+      model: 'deepseek/deepseek-v4-flash',
       prompt: 'safe system prompt',
       messages: [{ id: 'message-1', role: 'user', parts: [{ type: 'text', text: 'Question' }] }],
       tools: {
@@ -37,22 +36,21 @@ describe('AI Gateway adapter', () => {
     })[Symbol.asyncIterator]()
 
     expect(await gatewayStream.next()).toEqual({ done: false, value: { type: 'part' } })
-    let finalResolved = false
-    const final = gatewayStream.next().then((value) => {
-      finalResolved = true
-      return value
-    })
-    await Promise.resolve()
-    expect(finalResolved).toBe(false)
-    resolveArtifact?.({ internalFactIds: [], clientFactIds: [] })
-    await expect(final).resolves.toEqual({
+    // The artifact is only what the submit tool received, never streamed text.
+    await expect(gatewayStream.next()).resolves.toEqual({
       done: false,
-      value: { type: 'final', artifact: { internalFactIds: [], clientFactIds: [] }, steps: 1, outputTokens: 1 },
+      value: {
+        type: 'final',
+        artifact: { internalFactIds: ['search:0'], clientFactIds: [] },
+        steps: 1,
+        outputTokens: 1,
+      },
     })
 
     expect(calls).toHaveLength(1)
+    expect(calls[0].output).toBeUndefined()
     expect(calls[0]).toMatchObject({
-      model: { id: 'openai/gpt-4o-mini' },
+      model: { id: 'deepseek/deepseek-v4-flash' },
       system: 'safe system prompt',
       maxOutputTokens: 4096,
       maxRetries: 0,
@@ -61,6 +59,7 @@ describe('AI Gateway adapter', () => {
     expect(calls[0].tools).toEqual(expect.objectContaining({
       searchProducts: expect.any(Object),
       getProductDetails: expect.any(Object),
+      [SUBMIT_ARTIFACT_TOOL]: expect.any(Object),
     }))
     expect(calls[0].messages).toEqual([{ role: 'user', content: 'Question' }])
   })
@@ -72,7 +71,7 @@ describe('gateway catalog preflight', () => {
     const result = await runGatewayModelPreflight({
       fetch: async (input) => {
         requests.push(String(input))
-        return new Response(JSON.stringify({ data: [{ id: 'openai/gpt-4o-mini' }] }), { status: 200 })
+        return new Response(JSON.stringify({ data: [{ id: 'deepseek/deepseek-v4-flash' }] }), { status: 200 })
       },
     })
 

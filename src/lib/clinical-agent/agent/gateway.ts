@@ -1,11 +1,15 @@
-import { Output, gateway, stepCountIs, streamText, tool } from 'ai'
+import { gateway, stepCountIs, streamText, tool } from 'ai'
 import { z } from 'zod'
 
 import type { ClinicalArtifact, ClinicalToolset } from './contracts'
 
-// Requires native JSON-schema structured output: `Output.object` below constrains
-// the artifact, and a model without it satisfies the schema only intermittently.
+// This model has tool calling but no native JSON-schema response format, so the
+// artifact is collected through a dedicated tool rather than `Output.object`:
+// tool inputs are schema-validated by the provider, response formats are not.
 export const clinicalAgentModel = 'deepseek/deepseek-v4-flash' as const
+
+/** The tool the model must call to deliver its answer. */
+export const SUBMIT_ARTIFACT_TOOL = 'submitClinicalArtifact' as const
 
 export type GatewayRequest = {
   model: typeof clinicalAgentModel
@@ -37,7 +41,6 @@ export type ClinicalGateway = {
 
 type AiSdkStreamResult = {
   fullStream: AsyncIterable<unknown>
-  output: PromiseLike<unknown>
   steps: PromiseLike<unknown[]>
   totalUsage: PromiseLike<{ outputTokens?: number }>
 }
@@ -48,7 +51,6 @@ type AiSdkGatewayDependencies = {
 }
 
 const artifactSchema = z.object({
-  internalFactIds: z.array(z.string()),
   clientFactIds: z.array(z.string()),
 })
 
@@ -57,7 +59,10 @@ const productIdSchema = z.union([z.string().min(1), z.number()])
 function createAiSdkTools(tools: ClinicalToolset) {
   return {
     searchProducts: tool({
-      description: 'Search the approved clinical product registry.',
+      description:
+        'Search the approved clinical product registry. `query` is matched as a literal'
+        + ' substring against product and presentation names and their aliases, so pass a'
+        + ' product name or a single distinctive term — not a sentence.',
       inputSchema: z.object({ query: z.string().min(1) }),
       execute: ({ query }) => tools.searchProducts({ query }),
     }),
@@ -88,6 +93,9 @@ export function createAiSdkClinicalGateway(dependencies = defaultAiSdkGatewayDep
   return {
     async *stream(request) {
       try {
+        // Only the last submission counts, and an absent one leaves this undefined so
+        // artifact validation rejects the run instead of reporting an empty success.
+        let submitted: unknown
         const result = dependencies.streamText({
           model: dependencies.model(request.model),
           system: request.prompt,
@@ -95,8 +103,21 @@ export function createAiSdkClinicalGateway(dependencies = defaultAiSdkGatewayDep
             role: 'user',
             content: message.parts.map((part) => part.text).join('\n'),
           })),
-          tools: createAiSdkTools(request.tools),
-          output: Output.object({ schema: artifactSchema }),
+          tools: {
+            ...createAiSdkTools(request.tools),
+            [SUBMIT_ARTIFACT_TOOL]: tool({
+              description:
+                'Deliver the final answer. Call this exactly once, last. Pass clientFactIds:'
+                + ' the factId values from clientShareableProtocols that are safe to show the'
+                + ' patient, or an empty array if none are. Everything you looked up is recorded'
+                + ' automatically. This ends the task.',
+              inputSchema: artifactSchema,
+              execute: async (input) => {
+                submitted = input
+                return { received: true }
+              },
+            }),
+          },
           stopWhen: stepCountIs(request.limits.maxSteps),
           maxOutputTokens: request.limits.maxOutputTokens,
           maxRetries: 0,
@@ -109,10 +130,10 @@ export function createAiSdkClinicalGateway(dependencies = defaultAiSdkGatewayDep
             yield { type: 'part' }
           }
         }
-        const [artifact, steps, usage] = await Promise.all([result.output, result.steps, result.totalUsage])
+        const [steps, usage] = await Promise.all([result.steps, result.totalUsage])
         yield {
           type: 'final',
-          artifact,
+          artifact: submitted,
           steps: steps.length,
           outputTokens: usage.outputTokens ?? 0,
         }

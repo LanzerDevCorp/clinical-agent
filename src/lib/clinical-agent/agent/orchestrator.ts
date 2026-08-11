@@ -6,6 +6,7 @@ import {
   type ClinicalFact,
   type ClinicalToolset,
 } from './contracts'
+import { createConsoleDiagnostics, failureReasonOf, type ClinicalDiagnostics } from './diagnostics'
 import { clinicalAgentModel, isRetryableGatewayFailure, type ClinicalGateway } from './gateway'
 import { buildClinicalAgentPrompt } from './prompt'
 import type { ClinicalUserMessage } from './gateway'
@@ -24,6 +25,7 @@ type OrchestratorOptions = {
   now?: () => number
   timers?: OrchestratorTimers
   createRequestId?: () => string
+  diagnostics?: ClinicalDiagnostics
 }
 
 type RunOptions = {
@@ -46,10 +48,13 @@ export function createClinicalOrchestrator({
   now = Date.now,
   timers = defaultTimers(),
   createRequestId = () => crypto.randomUUID(),
+  diagnostics = createConsoleDiagnostics(),
 }: OrchestratorOptions) {
   return {
     async run({ onEvent, abortSignal, messages = [] }: RunOptions): Promise<{ ok: true } | { ok: false; code: 'TEMPORARY_FAILURE' }> {
       const requestId = createRequestId()
+      let attempts = 0
+      let submittedClientFactIds: readonly string[] | undefined
       const controller = new AbortController()
       let rejectExternalAbort: ((error: Error) => void) | undefined
       const externalAbort = abortSignal && !abortSignal.aborted
@@ -86,6 +91,7 @@ export function createClinicalOrchestrator({
           throw new Error('ABORTED')
         }
         for (let attempt = 0; attempt < 2; attempt += 1) {
+          attempts += 1
           let receivedPart = false
           let iterator: AsyncIterator<import('./gateway').GatewayPart> | undefined
           try {
@@ -127,6 +133,10 @@ export function createClinicalOrchestrator({
               if (tools.hasLimitExceeded() || part.steps > clinicalAgentLimits.maxSteps || part.outputTokens > clinicalAgentLimits.maxOutputTokens) {
                 throw new Error('LIMIT_EXCEEDED')
               }
+              const submitted = part.artifact as { clientFactIds?: unknown } | undefined
+              if (Array.isArray(submitted?.clientFactIds)) {
+                submittedClientFactIds = submitted.clientFactIds.filter((id): id is string => typeof id === 'string')
+              }
               const artifact = validateClinicalArtifact(part.artifact, tools.ledger.snapshot())
               if (!artifact) throw new Error('INVALID_ARTIFACT')
               onEvent(selectClinicalArtifactFacts(artifact, tools.ledger.snapshot()))
@@ -148,7 +158,15 @@ export function createClinicalOrchestrator({
           }
         }
         throw new Error('RETRY_EXHAUSTED')
-      } catch {
+      } catch (error) {
+        diagnostics.recordFailure({
+          requestId,
+          reason: failureReasonOf(error),
+          attempts,
+          toolLimitExceeded: tools.hasLimitExceeded(),
+          ledgerFactIds: tools.ledger.snapshot().map((fact) => fact.id),
+          requestedClientFactIds: submittedClientFactIds,
+        })
         onEvent(errorEvent(requestId))
         return { ok: false, code: 'TEMPORARY_FAILURE' }
       } finally {

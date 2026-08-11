@@ -1,5 +1,5 @@
 export const GATEWAY_MODEL_CATALOG_URL = 'https://ai-gateway.vercel.sh/v1/models'
-export const GATEWAY_MODEL_ID = 'openai/gpt-4o-mini'
+export const GATEWAY_MODEL_ID = 'deepseek/deepseek-v4-flash'
 
 type PreflightTimers = {
   setTimeout(callback: () => void, delayMs: number): unknown
