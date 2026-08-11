@@ -216,15 +216,18 @@ describe('clinical agent typed orchestration', () => {
 
     await expect(run()).resolves.toEqual({ ok: true })
     expect(fakeGateway.requests[0]).toMatchObject({ model: 'openai/gpt-4o-mini', limits: clinicalAgentLimits })
-    expect(output).toEqual([
-      { type: 'status', status: 'processing' },
-      {
-        type: 'artifact',
-        internal: expect.stringContaining('Private protocol'),
-        client: expect.not.stringContaining('Private protocol'),
-      },
-    ])
-    expect(output[1]).toMatchObject({ client: expect.stringContaining('Shareable protocol') })
+    expect(output[0]).toEqual({ type: 'status', status: 'processing' })
+    const artifact = output[1] as Extract<ClinicalAgentEvent, { type: 'artifact' }>
+    expect(artifact.type).toBe('artifact')
+
+    // The details fact carries every protocol, private ones included.
+    expect(JSON.stringify(artifact.internal)).toContain('Private protocol')
+
+    // The client side is allowlisted: only shareable protocol facts, never the private one.
+    expect(artifact.client.map((fact) => fact.id)).toEqual(['protocol:product-1:presentation-1:protocol-shareable'])
+    expect(artifact.client.every((fact) => fact.audience === 'client' && fact.kind === 'protocol')).toBe(true)
+    expect(JSON.stringify(artifact.client)).not.toContain('Private protocol')
+    expect(JSON.stringify(artifact.client)).toContain('Shareable protocol')
   })
 
   it('rejects partial artifacts and emits no clinical content before final validation', async () => {
@@ -269,7 +272,9 @@ describe('clinical agent typed orchestration', () => {
     })
     const toolRejected = setup({ gateway: toolLimitGateway, reader: reader() })
     await expect(toolRejected.run()).resolves.toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
-    expect(output.at(-1)).toEqual({ type: 'artifact', internal: 'Internal clinical facts:\n', client: 'Client-shareable facts:\n' })
+    // Asserts the nine-tool-call run itself: exceeding the budget fails the request
+    // rather than emitting an artifact. Previously this read an earlier setup's output.
+    expect(toolRejected.output).toEqual([{ type: 'error', message: 'Unable to complete the clinical response. Reference: opaque-request-id' }])
   })
 
   it('rejects non-compliant final artifacts that report 13 steps or 4097 output tokens', async () => {

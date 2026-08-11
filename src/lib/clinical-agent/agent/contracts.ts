@@ -40,9 +40,15 @@ export type ClinicalArtifact = {
   clientFactIds: string[]
 }
 
+/**
+ * The artifact carries the validated facts themselves, not rendered text: presenting
+ * clinical data is the UI's job, and a pre-rendered string cannot be laid out,
+ * styled per field, or partially copied. Only facts the artifact allowlisted are
+ * included, so the audience boundary still holds at this edge.
+ */
 export type ClinicalAgentEvent =
   | { type: 'status'; status: 'processing' }
-  | { type: 'artifact'; internal: string; client: string }
+  | { type: 'artifact'; internal: readonly ClinicalFact[]; client: readonly ClinicalFact[] }
   | { type: 'error'; message: string }
 
 function isArtifact(value: unknown): value is ClinicalArtifact {
@@ -65,12 +71,14 @@ export function validateClinicalArtifact(value: unknown, facts: readonly Clinica
   return internalValid && clientValid ? value : undefined
 }
 
-export function renderClinicalArtifact(artifact: ClinicalArtifact, facts: readonly ClinicalFact[]): ClinicalAgentEvent {
+export function selectClinicalArtifactFacts(artifact: ClinicalArtifact, facts: readonly ClinicalFact[]): ClinicalAgentEvent {
   const byId = new Map(facts.map((fact) => [fact.id, fact]))
-  const render = (ids: readonly string[], label: string) => `${label}\n${ids.map((id) => JSON.stringify(byId.get(id)?.value)).join('\n')}`
+  const select = (ids: readonly string[]) => ids
+    .map((id) => byId.get(id))
+    .filter((fact): fact is ClinicalFact => fact !== undefined)
   return {
     type: 'artifact',
-    internal: render(artifact.internalFactIds, 'Internal clinical facts:'),
-    client: render(artifact.clientFactIds, 'Client-shareable facts:'),
+    internal: select(artifact.internalFactIds),
+    client: select(artifact.clientFactIds),
   }
 }

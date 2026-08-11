@@ -2,19 +2,16 @@
 
 import { useCallback, useRef, useState } from 'react'
 
-import styles from './clinical-chat.module.css'
+import type { ClinicalAgentEvent, ClinicalFact } from '@/lib/clinical-agent/agent/contracts'
 
-/** Mirrors ClinicalAgentEvent in src/lib/clinical-agent/agent/contracts.ts. */
-type ClinicalAgentEvent =
-  | { type: 'status'; status: 'processing' }
-  | { type: 'artifact'; internal: string; client: string }
-  | { type: 'error'; message: string }
+import { ClinicalFacts, factsToText } from './ClinicalFacts'
+import styles from './clinical-chat.module.css'
 
 type Turn = {
   id: string
   question: string
   state: 'processing' | 'done' | 'failed'
-  artifact?: { internal: string; client: string }
+  artifact?: { internal: readonly ClinicalFact[]; client: readonly ClinicalFact[] }
   error?: string
 }
 
@@ -208,19 +205,24 @@ export function ClinicalChat({ userEmail }: { userEmail: string }) {
               <div className={styles.panels}>
                 <section className={styles.panel} aria-label="Datos clínicos internos">
                   <h2 className={styles.panelTitle}>Datos internos</h2>
-                  <pre className={styles.panelBody}>{turn.artifact.internal}</pre>
+                  <ClinicalFacts facts={turn.artifact.internal} emptyLabel="Sin datos internos." />
                 </section>
 
                 <section className={`${styles.panel} ${styles.clientPanel}`} aria-label="Versión para el paciente">
                   <h2 className={styles.panelTitle}>Para el paciente</h2>
-                  <pre className={styles.panelBody}>{turn.artifact.client}</pre>
-                  <button
-                    type="button"
-                    className={styles.share}
-                    onClick={() => navigator.clipboard?.writeText(turn.artifact!.client)}
-                  >
-                    Copiar
-                  </button>
+                  <ClinicalFacts
+                    facts={turn.artifact.client}
+                    emptyLabel="Ningún protocolo está autorizado para compartir con el paciente."
+                  />
+                  {turn.artifact.client.length > 0 && (
+                    <button
+                      type="button"
+                      className={styles.share}
+                      onClick={() => navigator.clipboard?.writeText(factsToText(turn.artifact!.client))}
+                    >
+                      Copiar
+                    </button>
+                  )}
                 </section>
               </div>
             )}

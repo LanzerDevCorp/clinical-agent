@@ -74,6 +74,7 @@ en el cambio SDD nuevo, junto con la migración a Supabase.
 | `ClinicalToolset` devuelve `factId` | Contrato de herramientas del diseño | El modelo no puede referenciar IDs que nunca recibió |
 | `canShareProtocol` ya no es herramienta | *Bounded streaming execution* lo lista como una de las tres | Costaba O(protocolos) y agotaba el presupuesto; se plegó dentro de `getProductDetails` |
 | `testTimeout: 20_000` en Vitest | Evidencia de verificación con el default de 5 s | Los specs de integración corren contra Postgres remoto |
+| `ClinicalAgentEvent.artifact` lleva facts, no strings | El evento especificado transporta texto renderizado | La presentación pertenece a la UI; un string no se puede maquetar ni copiar por partes |
 
 ### Deuda de diseño descubierta al depurar
 
@@ -81,8 +82,9 @@ en el cambio SDD nuevo, junto con la migración a Supabase.
   `clientFactIds`. Cuando la búsqueda devuelve `kind: 'clarification'`, el modelo no tiene forma
   legal de pedir una aclaración, así que intentaba resolverla cargando todos los candidatos y
   agotaba `maxDetailCalls: 4`. Mitigado por prompt; el flujo real de aclaración es cambio de contrato.
-- **`renderClinicalArtifact` emite JSON crudo** (`agent/contracts.ts`), con etiquetas en inglés
-  dentro de una UI en español. Los paneles muestran `JSON.stringify` en vez de campos formateados.
+- ~~`renderClinicalArtifact` emite JSON crudo~~ — **resuelto**. El evento `artifact` ahora lleva los
+  facts estructurados (`selectClinicalArtifactFacts`) y la UI los renderiza por `kind`. Esto suma
+  otra divergencia del spec: cambió la forma de `ClinicalAgentEvent`.
 - **El `Reference: <uuid>` del error opaco no se loguea en ningún lado.** Se le entrega al usuario
   un identificador que no sirve para rastrear nada. Los diagnósticos temporales que se usaron para
   depurar esto ya se removieron; una observabilidad permanente y segura queda pendiente.

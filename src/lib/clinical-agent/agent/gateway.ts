@@ -5,7 +5,7 @@ import type { ClinicalArtifact, ClinicalToolset } from './contracts'
 
 // Requires native JSON-schema structured output: `Output.object` below constrains
 // the artifact, and a model without it satisfies the schema only intermittently.
-export const clinicalAgentModel = 'openai/gpt-4o-mini' as const
+export const clinicalAgentModel = 'deepseek/deepseek-v4-flash' as const
 
 export type GatewayRequest = {
   model: typeof clinicalAgentModel

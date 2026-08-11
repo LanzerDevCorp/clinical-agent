@@ -1,6 +1,6 @@
 import {
   clinicalAgentLimits,
-  renderClinicalArtifact,
+  selectClinicalArtifactFacts,
   validateClinicalArtifact,
   type ClinicalAgentEvent,
   type ClinicalFact,
@@ -129,7 +129,7 @@ export function createClinicalOrchestrator({
               }
               const artifact = validateClinicalArtifact(part.artifact, tools.ledger.snapshot())
               if (!artifact) throw new Error('INVALID_ARTIFACT')
-              onEvent(renderClinicalArtifact(artifact, tools.ledger.snapshot()))
+              onEvent(selectClinicalArtifactFacts(artifact, tools.ledger.snapshot()))
               return { ok: true }
             }
           } catch (error) {
