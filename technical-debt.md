@@ -76,6 +76,55 @@ en el cambio SDD nuevo, junto con la migración a Supabase.
 | `testTimeout: 20_000` en Vitest | Evidencia de verificación con el default de 5 s | Los specs de integración corren contra Postgres remoto |
 | `ClinicalAgentEvent.artifact` lleva facts, no strings | El evento especificado transporta texto renderizado | La presentación pertenece a la UI; un string no se puede maquetar ni copiar por partes |
 
+### Defecto abierto: el agente re-responde el historial completo
+
+Cada consulta re-ejecuta las búsquedas de **todas las preguntas anteriores** de la sesión.
+Los paneles acumulan productos que no se preguntaron esta vez y el presupuesto de
+herramientas se agota antes de atender la pregunta actual.
+
+Causa, verificada por lectura de código: `requestBody()` en `ClinicalChat.tsx:44-53` envía
+todo el historial (hasta 40 mensajes) y la ruta **solo acepta `role: 'user'`**
+(`route.ts:69`). El modelo recibe una lista de preguntas **sin respuestas intercaladas** y
+concluye, razonablemente, que están todas pendientes.
+
+Observado el 2026-08-10: consultando "BOTULAX", la card interna mostró ASIAN CENTELLA,
+ARTICHOKE, BOTULAX y ASIAN CENTELLA otra vez — el orden reproduce el historial de la sesión.
+
+Derivar `internalFactIds` del ledger **no causó esto**; lo hizo visible. Antes el re-trabajo
+consumía presupuesto en silencio.
+
+Direcciones sin decidir: enviar solo la pregunta actual; o marcar en el prompt que solo el
+último mensaje está vigente; o admitir turnos de assistant en la ruta, que es cambio de spec.
+
+### Defecto abierto: la búsqueda es sensible a tildes
+
+`discoveryWhere` en `repository.ts` filtra con `contains`, que Postgres resuelve como
+`ILIKE '%query%'` — **sensible a acentos**. Verificado contra la base:
+
+| Consulta | Resultado |
+|---|---|
+| `Centella Asiática` | ASIAN CENTELLA |
+| `Centella Asiatica` (sin tilde) | **sin resultados** |
+
+El código tiene una función `normalized()` que quita tildes y pasa a minúsculas, pero se
+aplica solo al **ordenar** los candidatos, después de que el filtro de base ya descartó la
+fila. En la práctica esa normalización nunca se ejerce sobre lo que importa.
+
+Para un catálogo clínico en español es serio: *Ácido Hialurónico*, *Vitamina C (Ácido
+Ascórbico)*, *Centella Asiática*. Quien escriba sin tilde no encuentra nada.
+
+**Mitigación actual, no arreglo:** el prompt le sugiere al modelo reintentar con la variante
+acentuada cuando la búsqueda vuelve vacía. Depende de que el modelo adivine la forma
+almacenada.
+
+**Arreglo real:** normalizar de ambos lados en la base — extensión `unaccent` de Postgres, o
+una columna normalizada mantenida por hook. Toca `repository.ts`, que es Flow 1 especificado
+y con 35 tests, así que va al cambio SDD nuevo.
+
+Relacionado y también sin arreglar: la búsqueda es de **subcadena literal, no de palabras**,
+así que `"Asian Centella protocolo"` no encuentra nada aunque `"Asian Centella"` sí. Hoy se
+mitiga por prompt (pasar solo el nombre del producto).
+
 ### Deuda de diseño descubierta al depurar
 
 - **El artifact no puede expresar ambigüedad.** `ClinicalArtifact` solo tiene `internalFactIds` y
