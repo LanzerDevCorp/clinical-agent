@@ -15,26 +15,48 @@
 #
 # Usage:
 #   bash scripts/db/migrate-data.sh <SOURCE_URL> <TARGET_URL>
+#   SRC_URL=... DST_URL=... bash scripts/db/migrate-data.sh
+#
+# Prefer the second form when either side holds a real credential: positional
+# arguments land in shell history and in `docker inspect` output. Set PGNETWORK
+# when neither database is reachable through the default one; it still points at
+# the phase 2 probe container for backwards compatibility.
 
 set -euo pipefail
 
-SRC="${1:?source connection string required}"
-DST="${2:?target connection string required}"
+SRC="${1:-${SRC_URL:-}}"
+DST="${2:-${DST_URL:-}}"
+[[ -n "${SRC}" ]] || { printf 'ERROR: source connection string required (argument 1 or SRC_URL).\n' >&2; exit 1; }
+[[ -n "${DST}" ]] || { printf 'ERROR: target connection string required (argument 2 or DST_URL).\n' >&2; exit 1; }
 IMAGE="postgres:18-alpine"
 NETWORK="${PGNETWORK:-container:pg17probe}"
 
-psql_src() { docker run --rm --network "${NETWORK}" -e U="${SRC}" "${IMAGE}" psql "${SRC}" "$@"; }
-psql_dst() { docker run --rm --network "${NETWORK}" -e U="${DST}" "${IMAGE}" psql "${DST}" "$@"; }
+# psql reads each URL from the container's own environment. `docker run -e VAR`
+# with no value forwards the host's value, so the string never enters argv.
+export PGSRC="${SRC}" PGDST="${DST}"
+
+psql_src() { docker run --rm --network "${NETWORK}" -e PGSRC "${IMAGE}" sh -c 'exec psql "$PGSRC" "$@"' -- "$@"; }
+psql_dst() { docker run --rm --network "${NETWORK}" -e PGDST "${IMAGE}" sh -c 'exec psql "$PGDST" "$@"' -- "$@"; }
 
 SKIP_TABLES="'payload_migrations'"
 
 echo "==> Discovering tables present in BOTH databases"
-mapfile -t TABLES < <(
-  psql_dst -tAc "SELECT table_name FROM information_schema.tables
-                 WHERE table_schema='public' AND table_type='BASE TABLE'
-                   AND table_name NOT IN (${SKIP_TABLES})
-                 ORDER BY table_name;" | tr -d '\r'
-)
+# Plain assignment, not `mapfile < <(cmd)`: process substitution throws away the
+# exit status, so a failed lookup used to read as "no tables" and the whole load
+# became a silent no-op that still announced Done.
+TABLES_RAW="$(psql_dst -tAc "SELECT table_name FROM information_schema.tables
+                             WHERE table_schema='public' AND table_type='BASE TABLE'
+                               AND table_name NOT IN (${SKIP_TABLES})
+                             ORDER BY table_name;" | tr -d '\r')" \
+  || { printf 'ERROR: could not list the tables of the target database.\n' >&2; exit 1; }
+
+mapfile -t TABLES < <(printf '%s\n' "${TABLES_RAW}" | sed '/^$/d')
+
+[[ "${#TABLES[@]}" -gt 0 ]] || {
+  printf 'ERROR: the target has no tables in schema public, so there is nothing to load into.\n' >&2
+  printf '       Run `payload migrate` against it first.\n' >&2
+  exit 1
+}
 echo "    ${#TABLES[@]} candidate tables"
 
 echo "==> Loading (foreign keys deferred)"
@@ -69,12 +91,13 @@ for T in "${TABLES[@]}"; do
   # session_replication_role must be set in the SAME psql session as the \copy,
   # so both -c options go on one invocation. Otherwise foreign keys fire and the
   # alphabetical table order breaks the load.
-  docker run --rm -i --network "${NETWORK}" "${IMAGE}" \
-    psql "${SRC}" -q -c "\copy (SELECT ${COLS} FROM public.\"${T}\") TO STDOUT" \
-  | docker run --rm -i --network "${NETWORK}" "${IMAGE}" \
-    psql "${DST}" -q \
-      -c "SET session_replication_role = 'replica';" \
-      -c "\copy public.\"${T}\" (${COLS}) FROM STDIN"
+  docker run --rm -i --network "${NETWORK}" -e PGSRC "${IMAGE}" \
+    sh -c 'exec psql "$PGSRC" -q -c "$1"' -- \
+      "\copy (SELECT ${COLS} FROM public.\"${T}\") TO STDOUT" \
+  | docker run --rm -i --network "${NETWORK}" -e PGDST "${IMAGE}" \
+    sh -c 'exec psql "$PGDST" -q -c "$1" -c "$2"' -- \
+      "SET session_replication_role = 'replica';" \
+      "\copy public.\"${T}\" (${COLS}) FROM STDIN"
 
   N=$(psql_dst -tAc "SELECT count(*) FROM public.\"${T}\";" | tr -d '\r')
   printf '    %-34s %s rows\n' "${T}" "${N}"
