@@ -1,0 +1,9 @@
+# Shell scripts and SQL files are fed to tools that reject carriage returns.
+# core.autocrlf is true on this repo's Windows checkouts, so the next checkout
+# would hand bash a CRLF copy of scripts/db/*.sh, and bash fails on the first
+# meaningful line with "$'\r': command not found". Pin them to LF everywhere.
+#
+# Deliberately narrow. A repo-wide `* text=auto` would govern normalization for
+# all 380 tracked files, and src/collections/** must stay byte-identical.
+*.sh  text eol=lf
+*.sql text eol=lf
