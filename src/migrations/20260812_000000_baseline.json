@@ -848,8 +848,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.clinical_notes": {
-      "name": "clinical_notes",
+    "public.clinical_indications": {
+      "name": "clinical_indications",
       "schema": "",
       "columns": {
         "id": {
@@ -858,11 +858,89 @@
           "primaryKey": true,
           "notNull": true
         },
-        "type": {
-          "name": "type",
-          "type": "enum_clinical_notes_type",
-          "typeSchema": "public",
+        "name": {
+          "name": "name",
+          "type": "varchar",
           "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "clinical_indications_name_idx": {
+          "name": "clinical_indications_name_idx",
+          "columns": [
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "clinical_indications_updated_at_idx": {
+          "name": "clinical_indications_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "clinical_indications_created_at_idx": {
+          "name": "clinical_indications_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.post_care_notes": {
+      "name": "post_care_notes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
           "notNull": true
         },
         "description": {
@@ -887,8 +965,23 @@
         }
       },
       "indexes": {
-        "clinical_notes_updated_at_idx": {
-          "name": "clinical_notes_updated_at_idx",
+        "post_care_notes_description_idx": {
+          "name": "post_care_notes_description_idx",
+          "columns": [
+            {
+              "expression": "description",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "post_care_notes_updated_at_idx": {
+          "name": "post_care_notes_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -902,8 +995,93 @@
           "method": "btree",
           "with": {}
         },
-        "clinical_notes_created_at_idx": {
-          "name": "clinical_notes_created_at_idx",
+        "post_care_notes_created_at_idx": {
+          "name": "post_care_notes_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.safety_warnings": {
+      "name": "safety_warnings",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "safety_warnings_description_idx": {
+          "name": "safety_warnings_description_idx",
+          "columns": [
+            {
+              "expression": "description",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "safety_warnings_updated_at_idx": {
+          "name": "safety_warnings_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "safety_warnings_created_at_idx": {
+          "name": "safety_warnings_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -935,23 +1113,42 @@
           "primaryKey": true,
           "notNull": true
         },
+        "client_shareable": {
+          "name": "client_shareable",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
         "name": {
           "name": "name",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
-        "route_id": {
-          "name": "route_id",
-          "type": "integer",
+        "visible_effects_onset": {
+          "name": "visible_effects_onset",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
-        "technique_id": {
-          "name": "technique_id",
-          "type": "integer",
+        "effect_duration": {
+          "name": "effect_duration",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "recommended_dose": {
+          "name": "recommended_dose",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "injection_depth": {
+          "name": "injection_depth",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "sessions_min": {
           "name": "sessions_min",
@@ -987,36 +1184,6 @@
         }
       },
       "indexes": {
-        "protocols_route_idx": {
-          "name": "protocols_route_idx",
-          "columns": [
-            {
-              "expression": "route_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "protocols_technique_idx": {
-          "name": "protocols_technique_idx",
-          "columns": [
-            {
-              "expression": "technique_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
         "protocols_updated_at_idx": {
           "name": "protocols_updated_at_idx",
           "columns": [
@@ -1048,34 +1215,7 @@
           "with": {}
         }
       },
-      "foreignKeys": {
-        "protocols_route_id_administration_routes_id_fk": {
-          "name": "protocols_route_id_administration_routes_id_fk",
-          "tableFrom": "protocols",
-          "tableTo": "administration_routes",
-          "columnsFrom": [
-            "route_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "protocols_technique_id_application_techniques_id_fk": {
-          "name": "protocols_technique_id_application_techniques_id_fk",
-          "tableFrom": "protocols",
-          "tableTo": "application_techniques",
-          "columnsFrom": [
-            "technique_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -1112,6 +1252,18 @@
         },
         "application_zones_id": {
           "name": "application_zones_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "administration_routes_id": {
+          "name": "administration_routes_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "application_techniques_id": {
+          "name": "application_techniques_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1177,6 +1329,36 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "protocols_rels_administration_routes_id_idx": {
+          "name": "protocols_rels_administration_routes_id_idx",
+          "columns": [
+            {
+              "expression": "administration_routes_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "protocols_rels_application_techniques_id_idx": {
+          "name": "protocols_rels_application_techniques_id_idx",
+          "columns": [
+            {
+              "expression": "application_techniques_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -1199,6 +1381,32 @@
           "tableTo": "application_zones",
           "columnsFrom": [
             "application_zones_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "protocols_rels_administration_routes_fk": {
+          "name": "protocols_rels_administration_routes_fk",
+          "tableFrom": "protocols_rels",
+          "tableTo": "administration_routes",
+          "columnsFrom": [
+            "administration_routes_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "protocols_rels_application_techniques_fk": {
+          "name": "protocols_rels_application_techniques_fk",
+          "tableFrom": "protocols_rels",
+          "tableTo": "application_techniques",
+          "columnsFrom": [
+            "application_techniques_id"
           ],
           "columnsTo": [
             "id"
@@ -1413,6 +1621,18 @@
           "notNull": false,
           "default": "'activa'"
         },
+        "characteristics": {
+          "name": "characteristics",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "certifications": {
+          "name": "certifications",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "reconstitution_diluent_type": {
           "name": "reconstitution_diluent_type",
           "type": "varchar",
@@ -1514,6 +1734,12 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "product_type": {
           "name": "product_type",
@@ -1657,8 +1883,20 @@
           "primaryKey": false,
           "notNull": false
         },
-        "clinical_notes_id": {
-          "name": "clinical_notes_id",
+        "clinical_indications_id": {
+          "name": "clinical_indications_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "post_care_notes_id": {
+          "name": "post_care_notes_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "safety_warnings_id": {
+          "name": "safety_warnings_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1761,11 +1999,41 @@
           "method": "btree",
           "with": {}
         },
-        "products_rels_clinical_notes_id_idx": {
-          "name": "products_rels_clinical_notes_id_idx",
+        "products_rels_clinical_indications_id_idx": {
+          "name": "products_rels_clinical_indications_id_idx",
           "columns": [
             {
-              "expression": "clinical_notes_id",
+              "expression": "clinical_indications_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "products_rels_post_care_notes_id_idx": {
+          "name": "products_rels_post_care_notes_id_idx",
+          "columns": [
+            {
+              "expression": "post_care_notes_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "products_rels_safety_warnings_id_idx": {
+          "name": "products_rels_safety_warnings_id_idx",
+          "columns": [
+            {
+              "expression": "safety_warnings_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -1845,12 +2113,38 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "products_rels_clinical_notes_fk": {
-          "name": "products_rels_clinical_notes_fk",
+        "products_rels_clinical_indications_fk": {
+          "name": "products_rels_clinical_indications_fk",
           "tableFrom": "products_rels",
-          "tableTo": "clinical_notes",
+          "tableTo": "clinical_indications",
           "columnsFrom": [
-            "clinical_notes_id"
+            "clinical_indications_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "products_rels_post_care_notes_fk": {
+          "name": "products_rels_post_care_notes_fk",
+          "tableFrom": "products_rels",
+          "tableTo": "post_care_notes",
+          "columnsFrom": [
+            "post_care_notes_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "products_rels_safety_warnings_fk": {
+          "name": "products_rels_safety_warnings_fk",
+          "tableFrom": "products_rels",
+          "tableTo": "safety_warnings",
+          "columnsFrom": [
+            "safety_warnings_id"
           ],
           "columnsTo": [
             "id"
@@ -2074,22 +2368,64 @@
           "notNull": false,
           "default": false
         },
-        "clinical_notes_find": {
-          "name": "clinical_notes_find",
+        "clinical_indications_find": {
+          "name": "clinical_indications_find",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
           "default": false
         },
-        "clinical_notes_create": {
-          "name": "clinical_notes_create",
+        "clinical_indications_create": {
+          "name": "clinical_indications_create",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
           "default": false
         },
-        "clinical_notes_update": {
-          "name": "clinical_notes_update",
+        "clinical_indications_update": {
+          "name": "clinical_indications_update",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "post_care_notes_find": {
+          "name": "post_care_notes_find",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "post_care_notes_create": {
+          "name": "post_care_notes_create",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "post_care_notes_update": {
+          "name": "post_care_notes_update",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "safety_warnings_find": {
+          "name": "safety_warnings_find",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "safety_warnings_create": {
+          "name": "safety_warnings_create",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "safety_warnings_update": {
+          "name": "safety_warnings_update",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
@@ -2452,8 +2788,20 @@
           "primaryKey": false,
           "notNull": false
         },
-        "clinical_notes_id": {
-          "name": "clinical_notes_id",
+        "clinical_indications_id": {
+          "name": "clinical_indications_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "post_care_notes_id": {
+          "name": "post_care_notes_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "safety_warnings_id": {
+          "name": "safety_warnings_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -2658,11 +3006,41 @@
           "method": "btree",
           "with": {}
         },
-        "payload_locked_documents_rels_clinical_notes_id_idx": {
-          "name": "payload_locked_documents_rels_clinical_notes_id_idx",
+        "payload_locked_documents_rels_clinical_indications_id_idx": {
+          "name": "payload_locked_documents_rels_clinical_indications_id_idx",
           "columns": [
             {
-              "expression": "clinical_notes_id",
+              "expression": "clinical_indications_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_post_care_notes_id_idx": {
+          "name": "payload_locked_documents_rels_post_care_notes_id_idx",
+          "columns": [
+            {
+              "expression": "post_care_notes_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_safety_warnings_id_idx": {
+          "name": "payload_locked_documents_rels_safety_warnings_id_idx",
+          "columns": [
+            {
+              "expression": "safety_warnings_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -2850,12 +3228,38 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_clinical_notes_fk": {
-          "name": "payload_locked_documents_rels_clinical_notes_fk",
+        "payload_locked_documents_rels_clinical_indications_fk": {
+          "name": "payload_locked_documents_rels_clinical_indications_fk",
           "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "clinical_notes",
+          "tableTo": "clinical_indications",
           "columnsFrom": [
-            "clinical_notes_id"
+            "clinical_indications_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_post_care_notes_fk": {
+          "name": "payload_locked_documents_rels_post_care_notes_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "post_care_notes",
+          "columnsFrom": [
+            "post_care_notes_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_safety_warnings_fk": {
+          "name": "payload_locked_documents_rels_safety_warnings_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "safety_warnings",
+          "columnsFrom": [
+            "safety_warnings_id"
           ],
           "columnsTo": [
             "id"
@@ -3251,15 +3655,6 @@
         "relativa"
       ]
     },
-    "public.enum_clinical_notes_type": {
-      "name": "enum_clinical_notes_type",
-      "schema": "public",
-      "values": [
-        "indicacion_clinica",
-        "cuidado_post_aplicacion",
-        "advertencia_seguridad"
-      ]
-    },
     "public.enum_products_presentations_status": {
       "name": "enum_products_presentations_status",
       "schema": "public",
@@ -3299,6 +3694,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "43204d79-38e0-46a9-8187-a270ab79470d",
+  "id": "fd870690-fd0e-459e-9dc3-fc2586a5b6a6",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

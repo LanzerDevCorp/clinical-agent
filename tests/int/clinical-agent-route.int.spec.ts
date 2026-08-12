@@ -4,7 +4,7 @@ import { getPayload, type Payload } from 'payload'
 import { createClinicalAgentRoute } from '@/app/api/chat/route'
 import { createPostgresAdmission, hashAdmissionSubject, type AdmissionPool } from '@/lib/clinical-agent/agent/admission'
 import type { ClinicalFact } from '@/lib/clinical-agent/agent/contracts'
-import * as admissionMigration from '@/migrations/20260807_140000_clinical_agent_admission'
+import * as admissionMigration from '@/migrations/20260812_000001_clinical_agent_admission'
 import { migrations } from '@/migrations'
 import config from '@/payload.config'
 
@@ -48,7 +48,7 @@ afterAll(async () => {
 
 describe('clinical agent Postgres admission', () => {
   it('registers a reversible private admission migration', async () => {
-    expect(migrations.some((migration) => migration.name === '20260807_140000_clinical_agent_admission')).toBe(true)
+    expect(migrations.some((migration) => migration.name === '20260812_000001_clinical_agent_admission')).toBe(true)
 
     const created = await pool.query<{ event_table: string | null; lease_table: string | null }>(
       "SELECT to_regclass('clinical_agent_admission_events') AS event_table, to_regclass('clinical_agent_admission_leases') AS lease_table",
