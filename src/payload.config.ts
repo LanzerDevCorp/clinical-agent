@@ -24,6 +24,42 @@ import { Products } from './collections/Products'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+/**
+ * Supabase signs its Postgres certificate with a private CA, so verifying the
+ * server needs that CA. Locally it is a file and `sslrootcert=<path>` in
+ * DATABASE_URL is enough. A deploy has no such file, so the certificate travels
+ * as SUPABASE_CA_CERT instead and is handed to the driver directly.
+ *
+ * The two cannot be mixed. pg resolves its options as
+ * `Object.assign({}, config, parse(connectionString))`, so any ssl parameter in
+ * the URL overrides what is set here — `?sslmode=verify-full` alone parses to an
+ * empty `ssl: {}` and would silently discard the CA below, leaving the
+ * connection unverifiable. Stripping those parameters keeps a stray one in a
+ * deployment variable from quietly weakening the connection.
+ */
+const SSL_URL_PARAMETERS = ['ssl', 'sslmode', 'sslrootcert', 'sslcert', 'sslkey']
+
+function databasePoolOptions() {
+  const connectionString = process.env.DATABASE_URL || ''
+  const caCertificate = process.env.SUPABASE_CA_CERT
+
+  if (!caCertificate) return { connectionString }
+
+  const separator = connectionString.indexOf('?')
+  if (separator === -1) {
+    return { connectionString, ssl: { ca: caCertificate, rejectUnauthorized: true } }
+  }
+
+  const parameters = new URLSearchParams(connectionString.slice(separator + 1))
+  for (const parameter of SSL_URL_PARAMETERS) parameters.delete(parameter)
+  const query = parameters.toString()
+
+  return {
+    connectionString: connectionString.slice(0, separator) + (query ? `?${query}` : ''),
+    ssl: { ca: caCertificate, rejectUnauthorized: true },
+  }
+}
+
 import { es } from 'payload/i18n/es'
 import { en } from 'payload/i18n/en'
 
@@ -68,9 +104,7 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
-    pool: {
-      connectionString: process.env.DATABASE_URL || '',
-    },
+    pool: databasePoolOptions(),
     push: false,
   }),
   sharp,
