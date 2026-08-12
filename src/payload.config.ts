@@ -39,15 +39,33 @@ const dirname = path.dirname(filename)
  */
 const SSL_URL_PARAMETERS = ['ssl', 'sslmode', 'sslrootcert', 'sslcert', 'sslkey']
 
+/**
+ * node-postgres defaults to 10 connections per pool, which is a sensible number
+ * for one long-lived server and a dangerous one here: every serverless instance
+ * builds its own pool, so two concurrent instances alone can exhaust Supabase's
+ * session pooler and the admin panel dies with
+ * `(EMAXCONNSESSION) max clients reached in session mode`.
+ *
+ * Five keeps a single page's parallel queries genuinely parallel while leaving
+ * room for other instances. Idle connections are returned quickly because a
+ * serverless instance that is between requests should not be holding any.
+ */
+const POOL_MAX_CONNECTIONS = 5
+const POOL_IDLE_TIMEOUT_MS = 10_000
+
 function databasePoolOptions() {
   const connectionString = process.env.DATABASE_URL || ''
   const caCertificate = process.env.SUPABASE_CA_CERT
+  const limits = {
+    max: POOL_MAX_CONNECTIONS,
+    idleTimeoutMillis: POOL_IDLE_TIMEOUT_MS,
+  }
 
-  if (!caCertificate) return { connectionString }
+  if (!caCertificate) return { connectionString, ...limits }
 
   const separator = connectionString.indexOf('?')
   if (separator === -1) {
-    return { connectionString, ssl: { ca: caCertificate, rejectUnauthorized: true } }
+    return { connectionString, ...limits, ssl: { ca: caCertificate, rejectUnauthorized: true } }
   }
 
   const parameters = new URLSearchParams(connectionString.slice(separator + 1))
@@ -56,6 +74,7 @@ function databasePoolOptions() {
 
   return {
     connectionString: connectionString.slice(0, separator) + (query ? `?${query}` : ''),
+    ...limits,
     ssl: { ca: caCertificate, rejectUnauthorized: true },
   }
 }
