@@ -11,6 +11,7 @@
 # Steps:
 #   check   (default)  Read-only. Probes both databases and prints what it found.
 #   schema             `payload migrate` against Supabase. Creates the schema there.
+#   status             Read-only. `payload migrate:status` against Supabase.
 #   load               Copies the rows. Writes to Supabase only.
 #   verify             Hashes every shared column on both sides and compares.
 #
@@ -33,8 +34,8 @@ log() { printf '  %s\n' "$*"; }
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
 
 case "${STEP}" in
-  check|schema|load|verify) ;;
-  *) die "Unknown step '${STEP}'. Use check (default), schema, load or verify." ;;
+  check|schema|status|load|verify) ;;
+  *) die "Unknown step '${STEP}'. Use check (default), schema, status, load or verify." ;;
 esac
 
 # --- Resolve both connection strings ----------------------------------------
@@ -111,8 +112,36 @@ CA_DIR="$(cd "$(dirname "${CA_FILE}")" && pwd)"
 CA_NAME="$(basename "${CA_FILE}")"
 export PGCERT_DIR="${CA_DIR}"
 
+# The same certificate needs two spellings. psql runs inside a container and
+# sees the file on its mount point; `payload migrate` runs on the host under
+# Node and needs a native path. Handing Node the container path made it look for
+# C:\certs\<name> and fail with ENOENT before it reached the database.
+CA_HOST_PATH="$(cd "${CA_DIR}" && { pwd -W 2>/dev/null || pwd; })/${CA_NAME}"
+
+SRC_RAW="${SRC}"
+DST_RAW="${DST}"
+
+# `payload migrate` reads its URL through @next/env, whose expand() step runs
+# dotenv-expand over process.env values - including ones set in the shell - and
+# writes the result back. A literal $ in a credential is read as a variable
+# reference and silently disappears: a 17-character password reached Postgres as
+# 8, which surfaces only as "password authentication failed". psql never sees it
+# because it reads the URL directly, so every check here would pass while the
+# migration failed.
+for pair in "DATABASE_URL=${SRC_RAW}" "SUPABASE_DATABASE_URL=${DST_RAW}"; do
+  case "${pair#*=}" in
+    *'$'*)
+      printf 'ERROR: %s contains a literal $.\n' "${pair%%=*}" >&2
+      printf '       @next/env expands it as a variable reference and truncates the value\n' >&2
+      printf '       before Payload connects, while psql is unaffected.\n' >&2
+      printf '       Percent-encode it in .env: $ becomes %%24, the way @ becomes %%40.\n' >&2
+      exit 1 ;;
+  esac
+done
+
 SRC="$(normalise "${SRC}")"
-DST="$(normalise "${DST}" "/certs/${CA_NAME}")"
+DST="$(normalise "${DST_RAW}" "/certs/${CA_NAME}")"
+DST_FOR_NODE="$(normalise "${DST_RAW}" "${CA_HOST_PATH}")"
 
 SRC_HOST="$(host_of "${SRC}")"
 DST_HOST="$(host_of "${DST}")"
@@ -177,11 +206,18 @@ if [[ "${STEP}" == "schema" ]]; then
   echo "==> Applying the Payload schema to Supabase"
   echo "    (DATABASE_URL is overridden for this command only; .env is not touched,"
   echo "     and a shell variable wins over .env under @next/env.)"
-  ( cd "${REPO_ROOT}" && DATABASE_URL="${DST}" pnpm payload migrate )
+  ( cd "${REPO_ROOT}" && DATABASE_URL="${DST_FOR_NODE}" pnpm payload migrate )
   echo
-  echo "Now confirm both migrations report Ran: Yes on the target:"
-  echo "  DATABASE_URL=\"\$SUPABASE_DATABASE_URL\" pnpm payload migrate:status"
+  echo "Confirm it took:     bash scripts/db/phase3-load-supabase.sh status"
   echo "Then load the rows:  bash scripts/db/phase3-load-supabase.sh load"
+  exit 0
+fi
+
+# --- status ------------------------------------------------------------------
+
+if [[ "${STEP}" == "status" ]]; then
+  echo "==> Migration status on Supabase"
+  ( cd "${REPO_ROOT}" && DATABASE_URL="${DST_FOR_NODE}" pnpm payload migrate:status )
   exit 0
 fi
 
