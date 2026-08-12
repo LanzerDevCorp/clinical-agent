@@ -54,6 +54,8 @@ node_modules/
 
 # Agent tooling generated locally
 /.agents/
+/.claude/
+/.codegraph/
 /.codex/
 
 # Database backups — contain clinical data, never commit

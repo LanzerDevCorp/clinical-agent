@@ -1,6 +1,0 @@
-{
-  "enabledPlugins": {
-    "vercel@claude-plugins-official": true,
-    "vercel-plugin@vercel": true
-  }
-}
