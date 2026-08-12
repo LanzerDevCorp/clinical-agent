@@ -53,8 +53,41 @@ const SSL_URL_PARAMETERS = ['ssl', 'sslmode', 'sslrootcert', 'sslcert', 'sslkey'
 const POOL_MAX_CONNECTIONS = 5
 const POOL_IDLE_TIMEOUT_MS = 10_000
 
+const LOCAL_DATABASE_HOSTS = ['localhost', '127.0.0.1', '::1', 'host.docker.internal']
+
+/**
+ * Refuse to reach a remote database from a developer machine.
+ *
+ * Convention is not enough here: the clinical data is real, and an editor left
+ * pointing at production writes to it without ever announcing that it did. The
+ * signal is VERCEL rather than NODE_ENV because a local production build also
+ * sets NODE_ENV=production, which would open exactly the case this closes.
+ *
+ * The escape hatch is deliberate and per-command — ALLOW_REMOTE_DATABASE=1 has
+ * to be typed on the line that needs it, so reaching production stays possible
+ * but never accidental.
+ */
+function assertDatabaseIsReachable(connectionString: string) {
+  if (!connectionString) return
+  if (process.env.VERCEL) return
+  if (process.env.ALLOW_REMOTE_DATABASE === '1') return
+
+  const authority = connectionString.replace(/^[^:]+:\/\//, '').split('@').pop() ?? ''
+  const host = authority.split('/')[0]?.split('?')[0]?.replace(/:\d+$/, '') ?? ''
+  if (LOCAL_DATABASE_HOSTS.includes(host)) return
+
+  throw new Error(
+    `Refusing to connect: DATABASE_URL points at "${host}", which is not a local database.\n` +
+      `This machine is not a deployment, so a remote host here is almost certainly production.\n` +
+      `Point DATABASE_URL at the local Supabase instance, or prefix the command with ` +
+      `ALLOW_REMOTE_DATABASE=1 if you genuinely mean to reach it.`,
+  )
+}
+
 function databasePoolOptions() {
   const connectionString = process.env.DATABASE_URL || ''
+  assertDatabaseIsReachable(connectionString)
+
   const caCertificate = process.env.SUPABASE_CA_CERT
   const limits = {
     max: POOL_MAX_CONNECTIONS,
