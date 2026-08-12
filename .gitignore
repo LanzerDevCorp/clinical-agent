@@ -58,3 +58,7 @@ node_modules/
 
 # Database backups — contain clinical data, never commit
 /backups/
+
+# CA certificates downloaded from a database provider's dashboard. Public, but
+# they rotate and belong to whoever runs the migration, not to the repository.
+/certs/

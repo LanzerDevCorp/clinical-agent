@@ -29,8 +29,15 @@ NETWORK="${PGNETWORK:-container:pg17probe}"
 # with no value forwards the host's value, so the string never enters argv.
 export PGSRC="${SRC}" PGDST="${DST}"
 
-psql_src() { docker run --rm --network "${NETWORK}" -e PGSRC "${IMAGE}" sh -c 'exec psql "$PGSRC" "$@"' -- "$@"; }
-psql_dst() { docker run --rm --network "${NETWORK}" -e PGDST "${IMAGE}" sh -c 'exec psql "$PGDST" "$@"' -- "$@"; }
+# A provider whose certificate is not in the image's trust store needs its CA
+# mounted. PGCERT_DIR is the host directory holding it; it lands on /certs and
+# the connection string refers to it from there. Unset means no mount, which is
+# the phase 2 behaviour.
+CERT_MOUNT=()
+[[ -n "${PGCERT_DIR:-}" ]] && CERT_MOUNT=(-v "${PGCERT_DIR}:/certs:ro")
+
+psql_src() { MSYS_NO_PATHCONV=1 docker run --rm --network "${NETWORK}" "${CERT_MOUNT[@]}" -e PGSRC "${IMAGE}" sh -c 'exec psql "$PGSRC" "$@"' -- "$@"; }
+psql_dst() { MSYS_NO_PATHCONV=1 docker run --rm --network "${NETWORK}" "${CERT_MOUNT[@]}" -e PGDST "${IMAGE}" sh -c 'exec psql "$PGDST" "$@"' -- "$@"; }
 
 # The table list has to arrive through a plain assignment. `mapfile < <(cmd)`
 # discards cmd's exit status, so an unreachable database produced an empty list,

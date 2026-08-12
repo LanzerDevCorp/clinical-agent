@@ -35,8 +35,15 @@ NETWORK="${PGNETWORK:-container:pg17probe}"
 # with no value forwards the host's value, so the string never enters argv.
 export PGSRC="${SRC}" PGDST="${DST}"
 
-psql_src() { docker run --rm --network "${NETWORK}" -e PGSRC "${IMAGE}" sh -c 'exec psql "$PGSRC" "$@"' -- "$@"; }
-psql_dst() { docker run --rm --network "${NETWORK}" -e PGDST "${IMAGE}" sh -c 'exec psql "$PGDST" "$@"' -- "$@"; }
+# A provider whose certificate is not in the image's trust store needs its CA
+# mounted. PGCERT_DIR is the host directory holding it; it lands on /certs and
+# the connection string refers to it from there. Unset means no mount, which is
+# the phase 2 behaviour.
+CERT_MOUNT=()
+[[ -n "${PGCERT_DIR:-}" ]] && CERT_MOUNT=(-v "${PGCERT_DIR}:/certs:ro")
+
+psql_src() { MSYS_NO_PATHCONV=1 docker run --rm --network "${NETWORK}" "${CERT_MOUNT[@]}" -e PGSRC "${IMAGE}" sh -c 'exec psql "$PGSRC" "$@"' -- "$@"; }
+psql_dst() { MSYS_NO_PATHCONV=1 docker run --rm --network "${NETWORK}" "${CERT_MOUNT[@]}" -e PGDST "${IMAGE}" sh -c 'exec psql "$PGDST" "$@"' -- "$@"; }
 
 SKIP_TABLES="'payload_migrations'"
 
@@ -91,10 +98,10 @@ for T in "${TABLES[@]}"; do
   # session_replication_role must be set in the SAME psql session as the \copy,
   # so both -c options go on one invocation. Otherwise foreign keys fire and the
   # alphabetical table order breaks the load.
-  docker run --rm -i --network "${NETWORK}" -e PGSRC "${IMAGE}" \
+  MSYS_NO_PATHCONV=1 docker run --rm -i --network "${NETWORK}" "${CERT_MOUNT[@]}" -e PGSRC "${IMAGE}" \
     sh -c 'exec psql "$PGSRC" -q -c "$1"' -- \
       "\copy (SELECT ${COLS} FROM public.\"${T}\") TO STDOUT" \
-  | docker run --rm -i --network "${NETWORK}" -e PGDST "${IMAGE}" \
+  | MSYS_NO_PATHCONV=1 docker run --rm -i --network "${NETWORK}" "${CERT_MOUNT[@]}" -e PGDST "${IMAGE}" \
     sh -c 'exec psql "$PGDST" -q -c "$1" -c "$2"' -- \
       "SET session_replication_role = 'replica';" \
       "\copy public.\"${T}\" (${COLS}) FROM STDIN"

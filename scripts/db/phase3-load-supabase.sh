@@ -51,14 +51,22 @@ read_env_key() {
   printf '%s' "${value}"
 }
 
-# Direct endpoint, TLS, and a trust store the container actually has.
+# The two TLS settings are decided together, never independently. libpq 18
+# rejects a root certificate paired with a non-verifying sslmode outright:
+#   weak sslmode "require" may not be used with sslrootcert=system
+# so a URL that arrives without a query string gets verify-full and a root,
+# never require plus a root.
+#
+# $2 is what sslrootcert should point at: "system" for a provider whose CA the
+# image already trusts, which is Neon, or a path inside the container for one
+# whose CA it does not, which is Supabase's pooler.
 normalise() {
-  local url="${1/-pooler./.}"
+  local url="${1/-pooler./.}" root="${2:-system}"
   if [[ "${url}" != *"sslmode="* ]]; then
-    if [[ "${url}" == *"?"* ]]; then url="${url}&sslmode=require"; else url="${url}?sslmode=require"; fi
+    if [[ "${url}" == *"?"* ]]; then url="${url}&sslmode=verify-full"; else url="${url}?sslmode=verify-full"; fi
   fi
-  if [[ "${url}" != *"sslrootcert="* ]]; then
-    if [[ "${url}" == *"?"* ]]; then url="${url}&sslrootcert=system"; else url="${url}?sslrootcert=system"; fi
+  if [[ "${url}" != *"sslrootcert="* && "${url}" == *"sslmode=verify"* ]]; then
+    if [[ "${url}" == *"?"* ]]; then url="${url}&sslrootcert=${root}"; else url="${url}?sslrootcert=${root}"; fi
   fi
   printf '%s' "${url}"
 }
@@ -77,8 +85,34 @@ DST="${SUPABASE_DATABASE_URL:-$(read_env_key SUPABASE_DATABASE_URL)}"
 [[ -n "${SRC}" ]] || die "DATABASE_URL resolved to an empty value."
 [[ -n "${DST}" ]] || die "SUPABASE_DATABASE_URL resolved to an empty value. Add it to ${ENV_FILE}."
 
+# Supabase signs its pooler certificate with a CA that no image trust store
+# carries, and the pooler offers no SCRAM channel binding either, so verify-full
+# against the downloaded CA is the only setting that authenticates the server.
+# Both were measured, not assumed: with sslrootcert=system the handshake fails
+# with "certificate verify failed", and channel_binding=require is refused by
+# the server.
+CA_FILE="${SUPABASE_CA_CERT:-}"
+if [[ -z "${CA_FILE}" ]]; then
+  # Browsers rename a downloaded certificate freely, so accept the usual spellings.
+  for candidate in "${REPO_ROOT}"/certs/*.crt "${REPO_ROOT}"/certs/*.pem \
+                   "${REPO_ROOT}"/certs/*.cer "${REPO_ROOT}"/certs/*.txt; do
+    [[ -f "${candidate}" ]] && { CA_FILE="${candidate}"; break; }
+  done
+fi
+if [[ -z "${CA_FILE}" || ! -f "${CA_FILE}" ]]; then
+  printf 'ERROR: no CA certificate found for the target.\n' >&2
+  printf '       Supabase dashboard -> Settings -> Database -> SSL Configuration\n' >&2
+  printf '       -> Download certificate, then save it under %s/certs/\n' "${REPO_ROOT}" >&2
+  printf '       or point SUPABASE_CA_CERT at the file.\n' >&2
+  exit 1
+fi
+
+CA_DIR="$(cd "$(dirname "${CA_FILE}")" && pwd)"
+CA_NAME="$(basename "${CA_FILE}")"
+export PGCERT_DIR="${CA_DIR}"
+
 SRC="$(normalise "${SRC}")"
-DST="$(normalise "${DST}")"
+DST="$(normalise "${DST}" "/certs/${CA_NAME}")"
 
 SRC_HOST="$(host_of "${SRC}")"
 DST_HOST="$(host_of "${DST}")"
@@ -91,11 +125,17 @@ export PGSRC="${SRC}" PGDST="${DST}" SRC_URL="${SRC}" DST_URL="${DST}"
 # container's network namespace does not apply.
 export PGNETWORK="${PGNETWORK:-bridge}"
 
-psql_src() { docker run --rm --network "${PGNETWORK}" -e PGSRC "${IMAGE}" sh -c 'exec psql "$PGSRC" "$@"' -- "$@"; }
-psql_dst() { docker run --rm --network "${PGNETWORK}" -e PGDST "${IMAGE}" sh -c 'exec psql "$PGDST" "$@"' -- "$@"; }
+CERT_MOUNT=(-v "${PGCERT_DIR}:/certs:ro")
 
+psql_src() { MSYS_NO_PATHCONV=1 docker run --rm --network "${PGNETWORK}" "${CERT_MOUNT[@]}" -e PGSRC "${IMAGE}" sh -c 'exec psql "$PGSRC" "$@"' -- "$@"; }
+psql_dst() { MSYS_NO_PATHCONV=1 docker run --rm --network "${PGNETWORK}" "${CERT_MOUNT[@]}" -e PGDST "${IMAGE}" sh -c 'exec psql "$PGDST" "$@"' -- "$@"; }
+
+# Only the query string is printed. Everything before it is a credential.
 echo "==> Source (Neon):     ${SRC_HOST}"
+echo "    TLS:               ${SRC#*\?}"
 echo "==> Target (Supabase): ${DST_HOST}"
+echo "    TLS:               ${DST#*\?}"
+echo "==> CA certificate:    ${CA_NAME}"
 echo "==> Docker network:    ${PGNETWORK}"
 echo
 
