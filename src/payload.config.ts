@@ -82,14 +82,50 @@ function databasePoolOptions() {
 import { es } from 'payload/i18n/es'
 import { en } from 'payload/i18n/en'
 
-export default buildConfig({
-  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || '',
-  cors: '*',
-  csrf: [
+/**
+ * Payload reads the auth cookie only when the request's Origin appears on this
+ * list, and skips it silently otherwise (`config.csrf.includes(origin)` in
+ * payload/dist/auth/extractJWT.js). The list is never empty because of the
+ * localhost entries, so a deployment whose own domain is missing answers every
+ * browser-side request with 403 while server-rendered pages keep working. That
+ * combination does not look like an auth failure: the admin panel renders, and
+ * relationship fields quietly fall back to showing `ID: 12` instead of titles.
+ *
+ * Vercel publishes its hostnames without a scheme, and every preview deployment
+ * gets its own, so they are derived here instead of being pasted into a variable
+ * that can only ever match one environment.
+ */
+function trustedOrigins(): string[] {
+  const vercelOrigins = [
+    process.env.VERCEL_PROJECT_PRODUCTION_URL,
+    process.env.VERCEL_BRANCH_URL,
+    process.env.VERCEL_URL,
+  ]
+    .filter((host): host is string => Boolean(host))
+    .map((host) => `https://${host}`)
+
+  const origins = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    process.env.PAYLOAD_PUBLIC_SERVER_URL || '',
-  ].filter(Boolean),
+    process.env.PAYLOAD_PUBLIC_SERVER_URL,
+    ...vercelOrigins,
+  ].filter((origin): origin is string => Boolean(origin))
+
+  return [...new Set(origins)]
+}
+
+// An empty serverURL makes Payload build same-origin relative URLs, which is
+// correct for a deployment that was never told its own address.
+const serverURL =
+  process.env.PAYLOAD_PUBLIC_SERVER_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : '')
+
+export default buildConfig({
+  serverURL,
+  cors: '*',
+  csrf: trustedOrigins(),
   i18n: {
     supportedLanguages: { es, en },
     fallbackLanguage: 'es',
