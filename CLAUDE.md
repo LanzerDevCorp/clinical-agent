@@ -6,6 +6,20 @@ The Payload CMS reference lives at `.claude/skills/payload/SKILL.md`, with detai
 under `.claude/skills/payload/reference/`. Note that `.claude/` is gitignored, so
 a fresh clone does not have it — it is local tooling, not part of the project.
 
+## Branches
+
+Work happens on `dev`. `main` is what production runs, and it moves only when a
+change is ready to deploy — pushing to it triggers a deployment.
+
+```
+git checkout dev            # where commits go
+git checkout main && git merge --ff-only dev && git push origin main
+```
+
+Committing straight to `main` and syncing `dev` afterwards is how they drifted
+apart four times in a single day, and a branch that only ever catches up is a
+branch that costs attention and returns nothing.
+
 ## The database
 
 Development runs against a local Supabase instance, never against production.
