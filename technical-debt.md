@@ -2,9 +2,14 @@
 
 Registro de lo que **no** está testeado y de lo que **no** está validado.
 
-**Decisión vigente (2026-08-10):** se baja deliberadamente el esfuerzo de testing hasta completar la
-migración de Neon a Supabase. El objetivo actual es terminar el frontend del agente y ponerlo en uso.
-Nada de lo listado acá es un descuido: es deuda asumida a conciencia, para saldarse después de la migración.
+**Decisión del 2026-08-10:** se bajó deliberadamente el esfuerzo de testing hasta completar la
+migración de Neon a Supabase. Nada de lo listado acá es un descuido: es deuda asumida a conciencia,
+para saldarse después de la migración.
+
+**La migración terminó el 2026-08-12, así que esa deuda venció.** El plazo que la justificaba se
+cumplió, y además desapareció el obstáculo que la hacía cara de pagar: ya existe una base local
+descartable contra la cual correr las suites sin tocar datos clínicos. Lo de abajo dejó de ser
+deuda diferida y pasó a ser trabajo pendiente.
 
 ---
 
@@ -12,18 +17,31 @@ Nada de lo listado acá es un descuido: es deuda asumida a conciencia, para sald
 
 Estas dos reglas mandan sobre cualquier decisión de testing que aparezca abajo.
 
-### 1. No tocar la base de Neon ni los datos de Payload
+### 1. No tocar los datos clínicos de producción
 
-La base tiene **13 productos aprobados por la doctora**. Es información validada clínicamente y no
-reproducible automáticamente. No se modifica, no se borra, no se sobrescribe.
+La base de producción tiene **13 productos aprobados por la doctora**. Es información validada
+clínicamente y no reproducible automáticamente. No se modifica, no se borra, no se sobrescribe.
 
-En consecuencia, **hoy no debe ejecutarse ninguna suite que escriba en la base**:
+**Actualizado el 2026-08-12:** producción dejó de ser Neon y pasó a Supabase, y el desarrollo
+dejó de apuntar a producción. La regla ya no depende de que alguien se acuerde:
+`payload.config.ts` **aborta el arranque** si `DATABASE_URL` apunta a un host no local fuera de
+un deployment, y `.env` local ya no contiene credenciales de producción.
+
+Eso cambia el estado de las suites. Siguen escribiendo en la base, pero ahora escriben en la
+**local**, que es descartable y se reconstruye con `pnpm db:local:reset`:
 
 | Comando | Qué escribe |
 |---|---|
 | `pnpm test:int` | Crea 9 registros, borra por coincidencia de texto, y hace DROP de dos tablas |
 | `pnpm test:e2e` | Siembra y borra un usuario de prueba (`tests/e2e/admin.e2e.spec.ts`) |
 | `pnpm test` | Ambas cosas: encadena `test:int` y `test:e2e` |
+
+O sea que el motivo original para no correrlas —que escribían en la base de la doctora— ya no
+existe. Volver a habilitarlas es una decisión pendiente, no un impedimento técnico.
+
+**Mientras esa decisión no se tome: no ejecutarlas sin pedir autorización.** Vale para personas y
+para agentes. Que el impedimento técnico haya desaparecido no es lo mismo que tener permiso, y el
+costo de correrlas por las suyas está descrito justo abajo.
 
 Detalle relevante: `tests/int/clinical-agent-route.int.spec.ts:44-46` deja las tablas
 `clinical_agent_admission_events` y `clinical_agent_admission_leases` **dropeadas al terminar**. Si la
@@ -52,7 +70,7 @@ Regla para cualquier test nuevo: el proveedor se inyecta, siempre. Ningún test 
 
 | Área | Estado | Notas |
 |---|---|---|
-| Frontend del agente | **Sin tests** | La UI existe en `src/app/(frontend)/agent/` y funciona, pero no tiene ninguna prueba |
+| Frontend del agente | **Casi sin tests** | Lo único cubierto es el cuerpo que el cliente envía (`tests/int/clinical-chat-request-body.int.spec.ts`). El render, el manejo de eventos del stream y los estados de error de `ClinicalChat.tsx` siguen sin prueba |
 | E2E del agente | **Inexistente** | Los dos specs en `tests/e2e/` son de la plantilla de Payload |
 | Cobertura | **Sin herramienta instalada** | No hay ninguna dependencia de coverage en `package.json`. No se puede medir |
 | Camino de aclaración | **Sin test** | La rama `kind: 'clarification'` solo está cubierta por instrucción de prompt, no por una prueba |
@@ -66,35 +84,37 @@ Los dos e2e existentes además están rotos de fábrica: `frontend.e2e.spec.ts` 
 
 El agente funciona, pero llegar ahí exigió cambios que **contradicen artefactos SDD congelados**.
 No se editaron esos artefactos a propósito: son evidencia de qué se especificó. Todo esto entra
-en el cambio SDD nuevo, junto con la migración a Supabase.
+en el cambio SDD nuevo. La migración a Supabase, que antes se listaba acá como parte del mismo
+paquete, se completó el 2026-08-12.
 
 | Divergencia | Spec que contradice | Motivo |
 |---|---|---|
 | El artefacto llega por la tool `submitClinicalArtifact`, no por `Output.object` | `design.md:14` especifica `Output.object` para devolver las referencias a facts | El modelo que el propio spec fija (`deepseek/deepseek-v4-flash`, `design.md:5`) tiene tool calling pero no formato de respuesta JSON nativo. Los inputs de una tool **sí** los valida el proveedor contra el schema; los formatos de respuesta no. Ver `gateway.ts:6-12` |
 | `ClinicalToolset` devuelve `factId` | Contrato de herramientas del diseño | El modelo no puede referenciar IDs que nunca recibió |
 | `canShareProtocol` ya no es herramienta | *Bounded streaming execution* lo lista como una de las tres | Costaba O(protocolos) y agotaba el presupuesto; se plegó dentro de `getProductDetails` |
-| `testTimeout: 20_000` en Vitest | Evidencia de verificación con el default de 5 s | Los specs de integración corren contra Postgres remoto |
+| `testTimeout: 20_000` en Vitest | Evidencia de verificación con el default de 5 s | Se subió porque los specs corrían contra Postgres remoto y `acquire()` encadena round trips secuenciales. **Desde el 2026-08-12 el desarrollo corre contra Postgres local**, así que esa justificación ya no aplica y el valor está sin volver a medir |
 | `ClinicalAgentEvent.artifact` lleva facts, no strings | El evento especificado transporta texto renderizado | La presentación pertenece a la UI; un string no se puede maquetar ni copiar por partes |
 
-### Defecto abierto: el agente re-responde el historial completo
+### Resuelto: el agente re-respondía el historial completo
 
-Cada consulta re-ejecuta las búsquedas de **todas las preguntas anteriores** de la sesión.
-Los paneles acumulan productos que no se preguntaron esta vez y el presupuesto de
-herramientas se agota antes de atender la pregunta actual.
+Cerrado el 2026-08-12 en `686980f`. `requestBody()` mandaba todo el historial y la ruta solo
+acepta `role: 'user'`, así que el modelo veía una lista de preguntas sin respuestas
+intercaladas y las contestaba todas: consultar "BOTULAX" llenaba la card interna con ASIAN
+CENTELLA, ARTICHOKE y BOTULAX a la vez. Ahora se envía **una sola pregunta por request**.
 
-Causa, verificada por lectura de código: `requestBody()` en `ClinicalChat.tsx:44-53` envía
-todo el historial (hasta 40 mensajes) y la ruta **solo acepta `role: 'user'`**
-(`route.ts:69`). El modelo recibe una lista de preguntas **sin respuestas intercaladas** y
-concluye, razonablemente, que están todas pendientes.
+Queda cubierto por `tests/int/clinical-chat-request-body.int.spec.ts`, que se probó fallando
+con el cuerpo viejo. Derivar `internalFactIds` del ledger no causó el defecto: lo hizo
+visible, porque antes el re-trabajo consumía presupuesto en silencio.
 
-Observado el 2026-08-10: consultando "BOTULAX", la card interna mostró ASIAN CENTELLA,
-ARTICHOKE, BOTULAX y ASIAN CENTELLA otra vez — el orden reproduce el historial de la sesión.
+### Deuda abierta: el agente no tiene memoria conversacional
 
-Derivar `internalFactIds` del ledger **no causó esto**; lo hizo visible. Antes el re-trabajo
-consumía presupuesto en silencio.
+Consecuencia aceptada del arreglo anterior. Cada pregunta llega sola, sin antecedente: un
+"¿y su dosis?" después de preguntar por un producto no tiene a qué referirse.
 
-Direcciones sin decidir: enviar solo la pregunta actual; o marcar en el prompt que solo el
-último mensaje está vigente; o admitir turnos de assistant en la ruta, que es cambio de spec.
+La salida es admitir turnos de assistant en el contrato de la ruta, que hoy los rechaza
+(`route.ts:69`). Es **cambio de spec** y no se hizo junto con el arreglo a propósito: enviar
+una pregunta sola es correcto aunque limitado, y el contrato nuevo merece diseñarse, no
+improvisarse mientras se apaga un incendio.
 
 ### Defecto abierto: la búsqueda es sensible a tildes
 
@@ -207,8 +227,16 @@ Cuando se migre a Supabase habrá que abrir un cambio SDD nuevo para re-verifica
 
 ---
 
-## Nota sobre la migración a Supabase
+## Migración a Supabase: completada el 2026-08-12
 
-Supabase también es Postgres remoto administrado. **La migración no resuelve por sí sola los timeouts**:
-la aritmética de round trips secuenciales por latencia de red se reproduce igual. Conviene planificar
-el CTE de `acquire()` y una base de test descartable como parte del mismo trabajo.
+La predicción se cumplió: Supabase también es Postgres remoto administrado, y la migración por sí
+sola no resolvió los timeouts — la aritmética de round trips secuenciales por latencia se reproduce
+igual contra cualquier base remota.
+
+De las dos cosas que esta nota pedía planificar, **una está hecha**: existe la base descartable, y no
+como base de test sino como entorno de desarrollo entero. Supabase local vía CLI, reconstruible con
+`pnpm db:local:reset`, con catálogo ficticio sembrado. Eso saca la latencia de red de la ecuación en
+desarrollo, que era la causa real de los timeouts.
+
+**Sigue pendiente el CTE de `acquire()`.** Contra la base local ya no molesta, pero producción sigue
+siendo remota y ahí los round trips se pagan igual.
