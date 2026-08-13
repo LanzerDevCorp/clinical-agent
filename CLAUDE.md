@@ -35,6 +35,12 @@ pnpm db:local:seed      # reseed only
 `src/scripts/seed-local.ts` fills the catalogue with invented products. Production
 data is never copied to a developer machine.
 
+It also creates the admin user, so a reset never sends you back to Payload's
+first-user wizard. Defaults to `dev@local.test` / `localdev`; set
+`SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` in `.env` to keep your own
+credentials instead. An account with that email is left untouched if it already
+exists, so reseeding never rewrites a password you are logged in with.
+
 ### Two rules that are enforced, not suggested
 
 **Payload owns the schema.** Tables come from migrations in `src/migrations/`,

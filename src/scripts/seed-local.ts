@@ -1,5 +1,5 @@
 /**
- * Fill an empty local database with an invented catalogue.
+ * Fill an empty local database with an admin user and an invented catalogue.
  *
  * The data here is fiction. Production holds real clinical records about real
  * products, and a developer machine is the wrong place for them: it runs an
@@ -37,6 +37,39 @@ function assertLocalDatabase() {
 assertLocalDatabase()
 
 const payload = await getPayload({ config })
+
+// A reset drops the users table with everything else, and Payload then blocks the
+// admin panel behind the first-user wizard. Recreating that account by hand after
+// every reset is friction with no upside, so the seed owns it.
+//
+// Real credentials belong in .env, which is gitignored. The fallback below is
+// deliberately generic: this file is committed, so anything hardcoded here is
+// published to everyone who clones the repository.
+const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL || 'dev@local.test'
+const ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD || 'localdev'
+
+async function seedAdminUser() {
+  // db:local:seed also runs without a reset, so the account usually already exists.
+  // Recreating it would collide on the unique email, and overwriting the password
+  // of an account someone is logged into is worse than leaving it alone.
+  const { totalDocs } = await payload.count({
+    collection: 'users',
+    where: { email: { equals: ADMIN_EMAIL } },
+  })
+
+  if (totalDocs > 0) {
+    console.log(`Admin user ${ADMIN_EMAIL} already exists; left untouched.`)
+    return
+  }
+
+  await payload.create({
+    collection: 'users',
+    data: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
+  })
+  console.log(`Admin user created: ${ADMIN_EMAIL}`)
+}
+
+await seedAdminUser()
 
 /** Create many documents and index them by a key, so relationships stay readable below. */
 async function createMany<T extends Record<string, unknown>>(
