@@ -1,0 +1,197 @@
+{
+  "laboratories": ["Laboratorio Vértice", "Biotecna Andina", "Dermalux Ibérica"],
+  "activeIngredients": [
+    "Ácido hialurónico reticulado",
+    "Policaprolactona",
+    "Complejo peptídico VX-9",
+    "Cafeína anhidra",
+    "Toxina botulínica tipo A (ficticia)",
+    "L-carnitina"
+  ],
+  "applicationZones": ["Tercio superior facial", "Región submentoniana", "Abdomen"],
+  "administrationRoutes": ["Intradérmica", "Subcutánea", "Intramuscular"],
+  "applicationTechniques": ["Microbolos", "Retroinyección lineal", "Abanico"],
+  "contraindications": [
+    { "description": "Embarazo o lactancia", "type": "absoluta" },
+    { "description": "Infección activa en la zona de aplicación", "type": "absoluta" },
+    { "description": "Tratamiento anticoagulante en curso", "type": "relativa" },
+    { "description": "Antecedente de queloides", "type": "relativa" }
+  ],
+  "adverseEffects": [
+    "Eritema transitorio en el sitio de punción",
+    "Edema leve durante las primeras 48 horas",
+    "Hematoma localizado",
+    "Nódulos palpables de resolución espontánea"
+  ],
+  "clinicalIndications": [
+    "Líneas de expresión periorbitarias",
+    "Flacidez leve del tercio inferior",
+    "Adiposidad localizada",
+    "Hidratación profunda"
+  ],
+  "postCareNotes": [
+    "Evitar exposición solar directa durante 72 horas",
+    "No realizar ejercicio intenso por 24 horas",
+    "Aplicar frío local 10 minutos cada 2 horas el primer día",
+    "No masajear la zona salvo indicación expresa"
+  ],
+  "safetyWarnings": [
+    "No combinar con otros inyectables en la misma sesión",
+    "Requiere prueba de sensibilidad previa",
+    "Conservar entre 2 °C y 8 °C; no congelar"
+  ],
+  "protocols": [
+    {
+      "name": "Protocolo facial de hidratación profunda",
+      "clientShareable": true,
+      "zones": ["Tercio superior facial"],
+      "routes": ["Intradérmica"],
+      "techniques": ["Microbolos"],
+      "visibleEffectsOnset": "Progresivo desde la primera sesión",
+      "effectDuration": "De 4 a 6 meses",
+      "recommendedDose": "2 mL por sesión, distribuidos en microbolos de 0,05 mL.",
+      "injectionDepth": "Dermis superficial",
+      "sessionsMin": 3,
+      "sessionsMax": 5,
+      "frequency": "Cada 21 días"
+    },
+    {
+      "name": "Protocolo de definición submentoniana",
+      "clientShareable": false,
+      "zones": ["Región submentoniana"],
+      "routes": ["Subcutánea"],
+      "techniques": ["Retroinyección lineal", "Abanico"],
+      "visibleEffectsOnset": "A partir de la segunda sesión",
+      "effectDuration": "Hasta 12 meses",
+      "recommendedDose": "1 mL por hemicara.",
+      "injectionDepth": "Tejido celular subcutáneo",
+      "sessionsMin": 2,
+      "sessionsMax": 4,
+      "frequency": "Cada 30 días"
+    },
+    {
+      "name": "Protocolo corporal reductor",
+      "clientShareable": true,
+      "zones": ["Abdomen"],
+      "routes": ["Subcutánea", "Intramuscular"],
+      "techniques": ["Abanico"],
+      "visibleEffectsOnset": "Entre la tercera y la cuarta sesión",
+      "effectDuration": "Según mantenimiento",
+      "recommendedDose": "5 mL por sesión repartidos en cuadrantes.",
+      "injectionDepth": "Subcutáneo profundo",
+      "sessionsMin": 6,
+      "sessionsMax": 10,
+      "frequency": "Semanal"
+    }
+  ],
+  "products": [
+    {
+      "canonicalName": "HIDRAVÉRTICE 20",
+      "validationStatus": "APPROVED",
+      "description": "Gel inyectable de ácido hialurónico reticulado para hidratación profunda.",
+      "productType": "liquido",
+      "laboratory": "Laboratorio Vértice",
+      "activeIngredients": ["Ácido hialurónico reticulado"],
+      "aliases": [{ "term": "Hidravertice" }, { "term": "HV20" }],
+      "presentations": [
+        {
+          "canonicalName": "HIDRAVÉRTICE 20 · jeringa 2 mL",
+          "status": "activa",
+          "characteristics": "Jeringa prellenada de 2 mL con dos agujas 30G.",
+          "certifications": "Registro sanitario ficticio RS-00012",
+          "contraindications": [
+            "Embarazo o lactancia",
+            "Infección activa en la zona de aplicación"
+          ],
+          "adverseEffects": [
+            "Eritema transitorio en el sitio de punción",
+            "Edema leve durante las primeras 48 horas"
+          ],
+          "clinicalIndications": ["Hidratación profunda", "Líneas de expresión periorbitarias"],
+          "postCareNotes": [
+            "Evitar exposición solar directa durante 72 horas",
+            "No masajear la zona salvo indicación expresa"
+          ],
+          "safetyWarnings": ["Conservar entre 2 °C y 8 °C; no congelar"],
+          "protocols": ["Protocolo facial de hidratación profunda"]
+        },
+        {
+          "canonicalName": "HIDRAVÉRTICE 20 · vial 5 mL",
+          "status": "descontinuada",
+          "characteristics": "Vial multidosis. Retirado del mercado en 2025.",
+          "contraindications": ["Embarazo o lactancia"],
+          "clinicalIndications": ["Hidratación profunda"]
+        }
+      ]
+    },
+    {
+      "canonicalName": "PCL DEFINE",
+      "validationStatus": "APPROVED",
+      "description": "Suspensión de policaprolactona para estímulo de colágeno.",
+      "productType": "liofilizado",
+      "laboratory": "Biotecna Andina",
+      "activeIngredients": ["Policaprolactona", "Complejo peptídico VX-9"],
+      "aliases": [{ "term": "PCL-D" }],
+      "presentations": [
+        {
+          "canonicalName": "PCL DEFINE · vial 210 mg",
+          "status": "activa",
+          "characteristics": "Vial liofilizado. Requiere reconstitución previa.",
+          "certifications": "Certificación ficticia CE-0044",
+          "aliases": [{ "term": "PCL Define 210" }],
+          "contraindications": [
+            "Antecedente de queloides",
+            "Tratamiento anticoagulante en curso"
+          ],
+          "adverseEffects": [
+            "Nódulos palpables de resolución espontánea",
+            "Hematoma localizado"
+          ],
+          "clinicalIndications": ["Flacidez leve del tercio inferior"],
+          "postCareNotes": [
+            "No realizar ejercicio intenso por 24 horas",
+            "Aplicar frío local 10 minutos cada 2 horas el primer día"
+          ],
+          "safetyWarnings": [
+            "Requiere prueba de sensibilidad previa",
+            "No combinar con otros inyectables en la misma sesión"
+          ],
+          "protocols": ["Protocolo de definición submentoniana"],
+          "reconstitution": {
+            "diluentType": "Agua para inyección",
+            "volumeMl": 7,
+            "instructions": "Reconstituir y reposar 20 minutos antes de la aplicación. No agitar."
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "LIPOCAF FORTE",
+      "validationStatus": "PENDING",
+      "validationNotes": "Ficha cargada por el laboratorio. Falta revisión de la dirección clínica.",
+      "description": "Solución lipolítica de cafeína y L-carnitina.",
+      "productType": "liquido",
+      "laboratory": "Dermalux Ibérica",
+      "activeIngredients": ["Cafeína anhidra", "L-carnitina"],
+      "presentations": [
+        {
+          "canonicalName": "LIPOCAF FORTE · ampolla 10 mL",
+          "status": "activa",
+          "characteristics": "Caja de 10 ampollas.",
+          "contraindications": ["Embarazo o lactancia"],
+          "adverseEffects": ["Eritema transitorio en el sitio de punción"],
+          "clinicalIndications": ["Adiposidad localizada"],
+          "postCareNotes": ["No realizar ejercicio intenso por 24 horas"],
+          "protocols": ["Protocolo corporal reductor"]
+        }
+      ]
+    },
+    {
+      "canonicalName": "TENSOR PDO LUX",
+      "validationStatus": "PENDING",
+      "description": "Hilos de polidioxanona para tensado mecánico.",
+      "productType": "hilos_pdo",
+      "laboratory": "Dermalux Ibérica"
+    }
+  ]
+}

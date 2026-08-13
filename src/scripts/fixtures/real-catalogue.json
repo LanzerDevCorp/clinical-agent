@@ -1,0 +1,1511 @@
+{
+  "laboratories": [
+    "Laboratorio MCCM",
+    "Laboratorio sin especificar (Toxina Botulínica)",
+    "Hugelpharma",
+    "Protox",
+    "Laboratorio Desarrollador de Toxinas",
+    "HUGEL Inc., Corea del Sur",
+    "Protox, Corea del Sur",
+    "Laboratorio MCCM, España",
+    "Bellatoxel, Corea del Sur"
+  ],
+  "activeIngredients": [
+    "Vitamina A (Retinol)",
+    "Vitamina E (Tocopherol)",
+    "Vitamina C (Ácido Ascórbico)",
+    "Ácido Hialurónico",
+    "Pantenol",
+    "DMAE",
+    "Silicio Orgánico",
+    "Centella Asiática",
+    "Argireline (Hexapéptido)",
+    "Extracto de Alcachofa",
+    "Extracto de Centella Asiática",
+    "Vitamina B1 (Tiamina)",
+    "Vitamina B3 (Niacina)",
+    "Vitamina B6 (Piridoxina)",
+    "Vitamina B9 (Ácido Fólico)",
+    "Vitamina B12 (Cobalamina)",
+    "Clostridium Botulinum Tipo A 100 UI",
+    "Albúmina Sérica Humana 0.5 mg",
+    "Cloruro de Sodio 0.9 mg",
+    "Biotina (Vitamina B7 / Vitamina H)",
+    "Toxina Botulínica Tipo A 100 UI",
+    "Cafeína",
+    "Adenosín trifosfato disódico (ATP)",
+    "Niacinamida (Vitamina B3)",
+    "L-Carnitina",
+    "Argireline (Acetil Hexapéptido-8)",
+    "Vitamina B1",
+    "Vitamina B12",
+    "Toxina botulínica tipo A",
+    "DMAE (Dimetilaminoetanol)",
+    "Extracto de Alcachofa (Cynara Scolymus)",
+    "Centella Asiática (Gotu Kola)",
+    "Vitamina B3 (Niacina / Niacinamida)"
+  ],
+  "applicationZones": [
+    "Facial",
+    "Cuello",
+    "Frente",
+    "Entrecejo",
+    "Periocular",
+    "Corporal",
+    "Grasa Localizada",
+    "Celulitis Edematosa",
+    "Músculos Faciales",
+    "Zonas Terapéuticas",
+    "Cuero Cabelludo",
+    "Celulitis",
+    "Escote",
+    "Zona de Arrugas",
+    "Arrugas perioculares",
+    "Bunny lines",
+    "Músculo masetero",
+    "Papada / Doble mentón."
+  ],
+  "administrationRoutes": [
+    "Intradérmica",
+    "Subcutánea",
+    "Tejido Adiposo",
+    "Intramuscular"
+  ],
+  "applicationTechniques": [
+    "Mesoterapia",
+    "Dermapen",
+    "Mesoterapia puntual en arruga",
+    "Mesoterapia Corporal",
+    "Inyección Punto a Punto",
+    "Mesoterapia Capilar",
+    "Inyección en la arruga"
+  ],
+  "contraindications": [
+    {
+      "description": "Embarazo y lactancia",
+      "type": "absoluta"
+    },
+    {
+      "description": "Infección o inflamación activa en el sitio de inyección.",
+      "type": "absoluta"
+    },
+    {
+      "description": "Hipersensibilidad conocida a la albúmina o intolerancia a cualquier componente de la fórmula.",
+      "type": "absoluta"
+    },
+    {
+      "description": "Tratamiento simultáneo con aminoglucósidos, espectinomicina o bloqueantes neuromusculares",
+      "type": "absoluta"
+    },
+    {
+      "description": "Enfermedades crónico-degenerativas en descontrol",
+      "type": "relativa"
+    },
+    {
+      "description": "Trastornos de la coagulación o tratamiento con anticoagulantes",
+      "type": "relativa"
+    },
+    {
+      "description": "Estados de inmunosupresión o enfermedades autoinmunes activas.",
+      "type": "relativa"
+    },
+    {
+      "description": "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+      "type": "absoluta"
+    },
+    {
+      "description": "Trastornos neuromusculares (Miastenia Gravis, Lambert-Eaton, esclerosis múltiple, ELA)",
+      "type": "absoluta"
+    },
+    {
+      "description": "Uso simultáneo de antibióticos (aminoglucósidos, espectinomicina) o relajantes musculares.",
+      "type": "absoluta"
+    },
+    {
+      "description": "Hipersensibilidad a la albúmina, proteínas de huevo u otros componentes de la fórmula.",
+      "type": "absoluta"
+    },
+    {
+      "description": "Pacientes hipertensos.",
+      "type": "relativa"
+    },
+    {
+      "description": "Hipersensibilidad / alergia a algún componente de la fórmula.",
+      "type": "absoluta"
+    }
+  ],
+  "adverseEffects": [
+    "Dolor leve en el sitio de punción",
+    "Eritema / Enrojecimiento local transitorio",
+    "Edema / Inflamación o hinchazón local",
+    "Prurito (picazón) leve",
+    "Hematoma / Equimosis (moretón)",
+    "Parálisis muscular incompleta con arrugas residuales. ",
+    "Sensación de presión u opresión frontal",
+    "Parálisis muscular incompleta con arrugas residuales / Asimetría",
+    "Propagación a distancia del efecto de la toxina.",
+    "Cefalea (dolor de cabeza) leve a moderada",
+    "Sintomatología pseudogripal (náuseas, fatiga, malestar general)",
+    "Reacción de hipersensibilidad / Alergia"
+  ],
+  "clinicalIndications": [
+    "Atenuación de líneas de expresión y arrugas finas",
+    "Líneas faciales hiperfuncionantes. ",
+    "Tratamiento antiarrugas efecto \"botox-like\" no invasivo",
+    "Efecto tensor, firmeza cutánea y lifting facial",
+    "Acción antioxidante y fotoprotección (Prevención de daño solar)",
+    "Prevención del envejecimiento cutáneo",
+    "Tratamiento de pieles dañadas, fotoenvejecidas y piel de fumador",
+    "Nutrición, revitalización y regeneración tisular profunda",
+    "Hidratación profunda cutánea",
+    "Efecto despigmentante y unificación del tono",
+    "Coadyuvante en tratamientos estéticos y revitalizantes",
+    "Reducción de grasa localizada",
+    "Tratamiento integral de celulitis (Adiposa, Edematosa y Dura/Fibrosa)",
+    "Efecto drenante y reducción de retención de líquidos (Edema)",
+    "Estimulación del metabolismo lipídico y permeabilidad adipocitaria",
+    "Activación de la microcirculación y circulación de retorno (Venotónico)",
+    "Prevención y tratamiento de fibrosis y firmeza vascular",
+    "Firmeza y tonicidad corporal (Abdomen, nalgas, caderas, muslos)",
+    "Tratamiento anticaída y fortalecimiento del folículo piloso",
+    "Seborregulación capilar y tratamiento de cuero cabelludo oleoso",
+    "Estimulación de la síntesis de queratina y crecimiento capilar",
+    "Mantenimiento capilar post-microinjerto o trasplante",
+    "Tratamiento de hiperhidrosis (Axilar, palmar, plantar y facial)",
+    "Tratamiento de bruxismo y migraña",
+    "Celulitis edematosa",
+    "Tratamiento de celulitis edematosa y adiposa.",
+    "Tratamiento de celulitis adiposa."
+  ],
+  "postCareNotes": [
+    "Evitar tocar, manipular o masajear el rostro / zona tratada",
+    "No aplicar maquillaje, cremas ni cosméticos en las primeras 4 a 12 horas",
+    "Limpiar la piel suavemente y aplicar tónicos recién transcurridas 4 horas",
+    "Protección solar estricta FPS 50+ y evitar exposición solar prolongada",
+    "Evitar sudoración excesiva, piscinas, saunas y agua de mar por 48 horas",
+    "Hidratación abundante (tomar suficiente agua)",
+    "Evitar el consumo de carbohidratos durante los primeros 5 días post-tratamiento ",
+    "Esperar 72 horas antes de realizar radiofrecuencia o aparatología corporal",
+    "Evitar la realización de ejercicio físico en las primeras 24 horas",
+    "Tomar paracetamol en caso de febrícula o molestar leve",
+    "No acostarse ni agacharse durante las primeras 4 horas.",
+    "Evitar masajear o frotar las zonas tratadas\n",
+    "Evitar la exposición a temperaturas extremas (frío o calor intenso / sauna)",
+    "No consumir bebidas alcohólicas por 48 horas",
+    "No tocar ni lavar el cuero cabelludo en las primeras 12 horas",
+    "Evitar exposición prolongada al sol",
+    "Mantener dieta equilibrada rica en hierro, antioxidantes y vitaminas",
+    "Reducir el estrés",
+    "Suspender actividad física por 48 horas"
+  ],
+  "safetyWarnings": [
+    "Uso exclusivo por profesional sanitario / médico capacitado",
+    "Aplicación mediante técnica aséptica estricta e inyección según la vía especificada",
+    "Respetar la dosificación y el intervalo mínimo entre sesiones (evitar necrosis o reacciones adversas)",
+    "Conservar en refrigeración 2°C - 8°C (no congelar)",
+    "Tras reconstitución / apertura, usar preferentemente dentro de 24 horas (máximo 7 a 10 días en refrigeración)",
+    "Conservar en lugar fresco, seco y protegido de la luz directa",
+    "Precaución e interacción con aminoglucósidos, magnesio, quinina, polimixina, tetraciclinas y anticolinérgicos (Toxinas)",
+    "No aplicar sobre heridas abiertas, úlceras, lesiones infectadas o dermatosis activa",
+    "Suspender inmediatamente el tratamiento ante intolerancia individual a los componentes",
+    "Precaución especial en pacientes con enfermedades crónicas descontroladas",
+    "Aplicar preferentemente en 24h",
+    "Técnica aséptica e inyección intramuscular estricta (no exceder dosis)",
+    "Interacción farmacológica: precaución con aminoglucósidos, magnesio, quinina y anticolinérgicos",
+    "No aplicar si existe proceso inflamatorio o infeccioso en la zona"
+  ],
+  "protocols": [
+    {
+      "name": "Protocolo Revitalizante y Antioxidante AEC",
+      "clientShareable": true,
+      "zones": [
+        "Facial"
+      ],
+      "routes": [
+        "Intradérmica"
+      ],
+      "techniques": [
+        "Mesoterapia",
+        "Dermapen"
+      ],
+      "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+      "effectDuration": "Según protocolo de mantenimiento",
+      "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-4 mm o 30G-13 mm, separación de 1-1.5 cm entre puntos). Cantidad máxima por sesión; 10 ml.",
+      "injectionDepth": "Intradérmica",
+      "sessionsMin": "4",
+      "sessionsMax": "6",
+      "frequency": "Cada 2 semanas"
+    },
+    {
+      "name": "Protocolo de atenuación de arrugas de Argireline",
+      "clientShareable": false,
+      "zones": [
+        "Facial",
+        "Cuello",
+        "Escote"
+      ],
+      "routes": [
+        "Intradérmica"
+      ],
+      "techniques": [
+        "Mesoterapia",
+        "Dermapen"
+      ],
+      "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+      "effectDuration": "Según protocolo de mantenimiento",
+      "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-4 mm o 30G-13 mm, separación de 1-1.5 cm entre puntos).",
+      "injectionDepth": "Intradérmica",
+      "sessionsMin": "4",
+      "sessionsMax": "6",
+      "frequency": "Cada 2 semanas"
+    },
+    {
+      "name": "Protocolo Mesoterapia Lipolítica Cellestabyl",
+      "clientShareable": false,
+      "zones": [
+        "Corporal",
+        "Grasa Localizada",
+        "Celulitis",
+        "Papada / Doble mentón."
+      ],
+      "routes": [
+        "Subcutánea"
+      ],
+      "techniques": [
+        "Mesoterapia"
+      ],
+      "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+      "effectDuration": "Según protocolo de mantenimiento",
+      "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-13 mm, separación de 1-1.5 cm entre puntos).",
+      "injectionDepth": "Subcutáneo / Tejido adiposo",
+      "sessionsMin": "4",
+      "sessionsMax": "6",
+      "frequency": "Cada 2 semanas"
+    },
+    {
+      "name": "Protocolo Drenante y Estimulador de Colágeno de Centella Asiática",
+      "clientShareable": false,
+      "zones": [
+        "Corporal",
+        "Facial"
+      ],
+      "routes": [
+        "Intradérmica",
+        "Tejido Adiposo"
+      ],
+      "techniques": [
+        "Mesoterapia",
+        "Dermapen"
+      ],
+      "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+      "effectDuration": "Según protocolo de mantenimiento",
+      "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-4 mm o 30G-13 mm, separación de 1-1.5 cm entre puntos).",
+      "injectionDepth": "Intradérmica / Subcutánea",
+      "sessionsMin": "4",
+      "sessionsMax": "6",
+      "frequency": "Cada 2 semanas"
+    },
+    {
+      "name": "Protocolo Lipolítico y Drenante Alcachofa",
+      "clientShareable": false,
+      "zones": [
+        "Corporal",
+        "Grasa Localizada",
+        "Celulitis Edematosa"
+      ],
+      "routes": [
+        "Subcutánea",
+        "Tejido Adiposo"
+      ],
+      "techniques": [
+        "Mesoterapia Corporal"
+      ],
+      "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+      "effectDuration": "Según protocolo de mantenimiento",
+      "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-4 mm o 30G-13 mm, separación de 1-1.5 cm entre puntos).",
+      "injectionDepth": "Subcutáneo / Tejido adiposo",
+      "sessionsMin": "4",
+      "sessionsMax": "6",
+      "frequency": "Cada 2 semanas"
+    },
+    {
+      "name": "Protocolo Antienvejecimiento de Antiaging",
+      "clientShareable": false,
+      "zones": [
+        "Facial",
+        "Cuello",
+        "Escote"
+      ],
+      "routes": [
+        "Intradérmica"
+      ],
+      "techniques": [
+        "Mesoterapia",
+        "Dermapen"
+      ],
+      "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+      "effectDuration": "Según protocolo de mantenimiento",
+      "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-4 mm o 30G-13 mm, separación de 1-1.5 cm entre puntos).",
+      "injectionDepth": "Intradérmica",
+      "sessionsMin": "4",
+      "sessionsMax": "6",
+      "frequency": "Cada 2 semanas"
+    },
+    {
+      "name": "Protocolo anticelulitis de Cellulite",
+      "clientShareable": false,
+      "zones": [
+        "Corporal",
+        "Celulitis",
+        "Grasa Localizada"
+      ],
+      "routes": [
+        "Subcutánea"
+      ],
+      "techniques": [
+        "Mesoterapia"
+      ],
+      "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+      "effectDuration": "Según protocolo de mantenimiento",
+      "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-13 mm, separación de 1-1.5 cm entre puntos).",
+      "injectionDepth": "Subcutáneo / Tejido adiposo",
+      "sessionsMin": "4",
+      "sessionsMax": "6",
+      "frequency": "Cada 2 semanas"
+    },
+    {
+      "name": "Protocolo Revitalizante Celular B-Complex",
+      "clientShareable": false,
+      "zones": [
+        "Facial",
+        "Zonas Terapéuticas"
+      ],
+      "routes": [
+        "Intradérmica"
+      ],
+      "techniques": [
+        "Mesoterapia",
+        "Dermapen"
+      ],
+      "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+      "effectDuration": "Según protocolo de mantenimiento",
+      "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-4 mm o 30G-13 mm, separación de 1-1.5 cm entre puntos).",
+      "injectionDepth": "Intradérmica",
+      "sessionsMin": "4",
+      "sessionsMax": "6",
+      "frequency": "Cada 2 semanas"
+    },
+    {
+      "name": "Protocolo Relajación Muscular Bellatoxel",
+      "clientShareable": false,
+      "zones": [
+        "Músculos Faciales",
+        "Zonas Terapéuticas"
+      ],
+      "routes": [
+        "Intramuscular"
+      ],
+      "techniques": [
+        "Inyección Punto a Punto"
+      ],
+      "visibleEffectsOnset": "5 a 7 días post-aplicación",
+      "effectDuration": "4 a 6 meses",
+      "recommendedDose": "2 a 4 UI por punto (estético) / 2 UI por punción (hiperhidrosis). Aguja 30G-6 mm o 31G-6 mm.",
+      "injectionDepth": "Intramuscular",
+      "sessionsMin": "1",
+      "sessionsMax": "2",
+      "frequency": "Cada 4 a 6 meses"
+    },
+    {
+      "name": "Protocolo Fortalecedor Capilar Biotin Hidrixin",
+      "clientShareable": false,
+      "zones": [
+        "Cuero Cabelludo"
+      ],
+      "routes": [
+        "Intradérmica"
+      ],
+      "techniques": [
+        "Mesoterapia Capilar",
+        "Dermapen"
+      ],
+      "visibleEffectsOnset": "Progresivo según protocolo capilar",
+      "effectDuration": "Según protocolo de mantenimiento",
+      "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-4 mm / Dermapen, separación de 1 cm entre puntos).",
+      "injectionDepth": "Intradérmico (cuero cabelludo)",
+      "sessionsMin": "6",
+      "sessionsMax": "12",
+      "frequency": "Cada 2 semanas"
+    },
+    {
+      "name": "Protocolo Relajación Muscular Botulax",
+      "clientShareable": false,
+      "zones": [
+        "Músculos Faciales",
+        "Zonas Terapéuticas"
+      ],
+      "routes": [
+        "Intramuscular"
+      ],
+      "techniques": [
+        "Inyección Punto a Punto"
+      ],
+      "visibleEffectsOnset": "5 a 7 días post-aplicación",
+      "effectDuration": "4 a 6 meses",
+      "recommendedDose": "2 a 4 UI por punto. Aguja 30G-6 mm o 31G-6 mm.",
+      "injectionDepth": "Intramuscular",
+      "sessionsMin": "1",
+      "sessionsMax": "2",
+      "frequency": "Cada 4 a 6 meses"
+    },
+    {
+      "name": "Protocolo Relajación Muscular BTSA9",
+      "clientShareable": false,
+      "zones": [
+        "Músculos Faciales",
+        "Zonas Terapéuticas"
+      ],
+      "routes": [
+        "Intramuscular"
+      ],
+      "techniques": [
+        "Inyección Punto a Punto"
+      ],
+      "visibleEffectsOnset": "3 a 7 días post-aplicación",
+      "effectDuration": "4 a 6 meses",
+      "recommendedDose": "2 a 4 UI por punto. Aguja 30G-6 mm o 31G-6 mm.",
+      "injectionDepth": "Intramuscular",
+      "sessionsMin": "1",
+      "sessionsMax": "2",
+      "frequency": "Cada 4 a 6 meses"
+    },
+    {
+      "name": "Protocolo Mesoterapia Lipolítica Cafeína",
+      "clientShareable": false,
+      "zones": [
+        "Corporal",
+        "Grasa Localizada",
+        "Celulitis"
+      ],
+      "routes": [
+        "Subcutánea"
+      ],
+      "techniques": [
+        "Mesoterapia"
+      ],
+      "visibleEffectsOnset": "Progresivo según avance de las sesiones",
+      "effectDuration": "Según protocolo de mantenimiento",
+      "recommendedDose": "0.01 a 0.03 mL por punción (aguja 30G-13 mm, separación de 1-1.5 cm entre puntos).",
+      "injectionDepth": "Subcutáneo / Tejido adiposo",
+      "sessionsMin": "4",
+      "sessionsMax": "6",
+      "frequency": "Cada 2 semanas"
+    }
+  ],
+  "products": [
+    {
+      "canonicalName": "AEC",
+      "validationStatus": "APPROVED",
+      "description": "AEC es un tratamiento de Mesoterapia Regenerativa, es un complejo con Vitamina A, E y C; que previene el envejecimiento, revierte las señales del fotoenvejecimiento y mejora la barrera protectora de la piel.",
+      "productType": "liquido",
+      "laboratory": "Laboratorio MCCM",
+      "activeIngredients": [
+        "Vitamina A (Retinol)",
+        "Vitamina E (Tocopherol)",
+        "Vitamina C (Ácido Ascórbico)"
+      ],
+      "aliases": [
+        {
+          "term": "MCCM AEC"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Ampolleta 5 ml",
+          "status": "activa",
+          "characteristics": "Forma de aplicación: Mesoterapia o dermapen.",
+          "certifications": "Certificaciones de su país de origen.",
+          "aliases": [
+            {
+              "term": "Ampolleta 5ml"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+            "Enfermedades crónico-degenerativas en descontrol",
+            "Trastornos de la coagulación o tratamiento con anticoagulantes",
+            "Hipersensibilidad / alergia a algún componente de la fórmula."
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Eritema / Enrojecimiento local transitorio",
+            "Edema / Inflamación o hinchazón local",
+            "Prurito (picazón) leve",
+            "Hematoma / Equimosis (moretón)"
+          ],
+          "clinicalIndications": [
+            "Prevención del envejecimiento cutáneo",
+            "Tratamiento de pieles dañadas, fotoenvejecidas y piel de fumador",
+            "Nutrición, revitalización y regeneración tisular profunda"
+          ],
+          "postCareNotes": [
+            "Evitar tocar, manipular o masajear el rostro / zona tratada",
+            "No aplicar maquillaje, cremas ni cosméticos en las primeras 4 a 12 horas",
+            "Limpiar la piel suavemente y aplicar tónicos recién transcurridas 4 horas",
+            "Evitar sudoración excesiva, piscinas, saunas y agua de mar por 48 horas",
+            "Protección solar estricta FPS 50+ y evitar exposición solar prolongada"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "No aplicar sobre heridas abiertas, úlceras, lesiones infectadas o dermatosis activa",
+            "Suspender inmediatamente el tratamiento ante intolerancia individual a los componentes"
+          ],
+          "protocols": [
+            "Protocolo Revitalizante y Antioxidante AEC"
+          ],
+          "reconstitution": {
+            "diluentType": "No requiere",
+            "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "ANTIAGING",
+      "validationStatus": "APPROVED",
+      "description": "ANTIAGING es un tratamiento de Mesoterapia Regenerativa, es un coctel de activos revitalizantes utilizados para rejuvenecer y mejorar el aspecto de la piel. Esta combinación reduce los signos del envejecimiento internos y externos. Proporcionando una piel hidratada, nutrida, suave y revitalizada.",
+      "productType": "liquido",
+      "laboratory": "Laboratorio MCCM",
+      "activeIngredients": [
+        "Ácido Hialurónico",
+        "Pantenol",
+        "DMAE",
+        "Silicio Orgánico",
+        "Centella Asiática",
+        "DMAE (Dimetilaminoetanol)"
+      ],
+      "aliases": [
+        {
+          "term": "MCCM ANTIAGING"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Ampolleta 5 ml",
+          "status": "activa",
+          "characteristics": "Producto con la misma composición, indicaciones y características que la presentación de 10 mL; únicamente difiere en el volumen de la presentación. Forma de aplicación: Mesoterapia o dermapen. ",
+          "certifications": "Certificaciones de su país de origen.",
+          "aliases": [
+            {
+              "term": "Ampolleta 5ml"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+            "Enfermedades crónico-degenerativas en descontrol",
+            "Trastornos de la coagulación o tratamiento con anticoagulantes",
+            "Hipersensibilidad / alergia a algún componente de la fórmula."
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Eritema / Enrojecimiento local transitorio",
+            "Edema / Inflamación o hinchazón local",
+            "Prurito (picazón) leve",
+            "Hematoma / Equimosis (moretón)"
+          ],
+          "clinicalIndications": [
+            "Efecto tensor, firmeza cutánea y lifting facial",
+            "Acción antioxidante y fotoprotección (Prevención de daño solar)",
+            "Prevención del envejecimiento cutáneo",
+            "Hidratación profunda cutánea",
+            "Efecto despigmentante y unificación del tono"
+          ],
+          "postCareNotes": [
+            "Evitar tocar, manipular o masajear el rostro / zona tratada",
+            "No aplicar maquillaje, cremas ni cosméticos en las primeras 4 a 12 horas",
+            "Limpiar la piel suavemente y aplicar tónicos recién transcurridas 4 horas",
+            "Evitar sudoración excesiva, piscinas, saunas y agua de mar por 48 horas",
+            "Protección solar estricta FPS 50+ y evitar exposición solar prolongada"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "No aplicar sobre heridas abiertas, úlceras, lesiones infectadas o dermatosis activa",
+            "Precaución especial en pacientes con enfermedades crónicas descontroladas"
+          ],
+          "protocols": [
+            "Protocolo Antienvejecimiento de Antiaging"
+          ],
+          "reconstitution": {
+            "diluentType": "No requiere",
+            "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+          }
+        },
+        {
+          "canonicalName": "Vial 10 ml",
+          "status": "activa",
+          "characteristics": "Producto con la misma composición, indicaciones y características que la presentación de 5 mL; únicamente difiere en el volumen de la presentación. Forma de aplicación: Mesoterapia o dermapen. ",
+          "certifications": "Certificaciones de su país de origen.",
+          "aliases": [
+            {
+              "term": "Vial 10ml"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+            "Enfermedades crónico-degenerativas en descontrol",
+            "Trastornos de la coagulación o tratamiento con anticoagulantes",
+            "Hipersensibilidad / alergia a algún componente de la fórmula."
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Eritema / Enrojecimiento local transitorio",
+            "Edema / Inflamación o hinchazón local",
+            "Prurito (picazón) leve",
+            "Hematoma / Equimosis (moretón)"
+          ],
+          "clinicalIndications": [
+            "Efecto tensor, firmeza cutánea y lifting facial",
+            "Acción antioxidante y fotoprotección (Prevención de daño solar)",
+            "Prevención del envejecimiento cutáneo",
+            "Hidratación profunda cutánea",
+            "Efecto despigmentante y unificación del tono"
+          ],
+          "postCareNotes": [
+            "Evitar tocar, manipular o masajear el rostro / zona tratada",
+            "No aplicar maquillaje, cremas ni cosméticos en las primeras 4 a 12 horas",
+            "Limpiar la piel suavemente y aplicar tónicos recién transcurridas 4 horas",
+            "Evitar sudoración excesiva, piscinas, saunas y agua de mar por 48 horas",
+            "Protección solar estricta FPS 50+ y evitar exposición solar prolongada"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "No aplicar sobre heridas abiertas, úlceras, lesiones infectadas o dermatosis activa",
+            "Precaución especial en pacientes con enfermedades crónicas descontroladas"
+          ],
+          "protocols": [
+            "Protocolo Antienvejecimiento de Antiaging"
+          ],
+          "reconstitution": {
+            "diluentType": "No requiere",
+            "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "ARGIRELINE",
+      "validationStatus": "APPROVED",
+      "description": "Regenerativo. Solución antienvejecimiento a base de hexapeptido. Activador de colágeno y elastina, previene y reduce las líneas de expresión.",
+      "productType": "liquido",
+      "laboratory": "Laboratorio MCCM",
+      "activeIngredients": [
+        "Argireline (Acetil Hexapéptido-8)"
+      ],
+      "aliases": [
+        {
+          "term": "MCCM ARGIRELINE"
+        },
+        {
+          "term": "ArgiBTX"
+        },
+        {
+          "term": "Argireline"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Ampolleta 2 ml",
+          "status": "activa",
+          "characteristics": " Efecto bótox natural. Forma de aplicación: Mesoterapia o dermapen.",
+          "certifications": "Certificaciones de su país de origen.",
+          "aliases": [
+            {
+              "term": "Ampolleta 2ml"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+            "Enfermedades crónico-degenerativas en descontrol",
+            "Trastornos de la coagulación o tratamiento con anticoagulantes",
+            "Hipersensibilidad / alergia a algún componente de la fórmula."
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Eritema / Enrojecimiento local transitorio",
+            "Edema / Inflamación o hinchazón local",
+            "Prurito (picazón) leve",
+            "Hematoma / Equimosis (moretón)"
+          ],
+          "clinicalIndications": [
+            "Atenuación de líneas de expresión y arrugas finas",
+            "Tratamiento antiarrugas efecto \"botox-like\" no invasivo"
+          ],
+          "postCareNotes": [
+            "Evitar tocar, manipular o masajear el rostro / zona tratada",
+            "No aplicar maquillaje, cremas ni cosméticos en las primeras 4 a 12 horas",
+            "Limpiar la piel suavemente y aplicar tónicos recién transcurridas 4 horas",
+            "Evitar sudoración excesiva, piscinas, saunas y agua de mar por 48 horas",
+            "Protección solar estricta FPS 50+ y evitar exposición solar prolongada"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "No aplicar sobre heridas abiertas, úlceras, lesiones infectadas o dermatosis activa",
+            "Precaución especial en pacientes con enfermedades crónicas descontroladas"
+          ],
+          "protocols": [
+            "Protocolo de atenuación de arrugas de Argireline"
+          ],
+          "reconstitution": {
+            "diluentType": "No requiere",
+            "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "ARTICHOKE",
+      "validationStatus": "APPROVED",
+      "description": "ARTICHOKE es un tratamiento de Mesoterapia Lipolítica. Ayuda a estimular la circulación linfática, reduciendo la retención de líquidos. Su principal activo es la Alcachofa que es utilizada para tratar la celulitis y la grasa localizada. Este activo integra propiedades desintoxicantes y diuréticas.",
+      "productType": "liquido",
+      "laboratory": "Laboratorio MCCM",
+      "activeIngredients": [
+        "Extracto de Alcachofa"
+      ],
+      "aliases": [
+        {
+          "term": "MCCM ARTICHOKE"
+        },
+        {
+          "term": "Extracto de Alcachofa"
+        },
+        {
+          "term": "Alcachofa"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Ampolleta 5 ml",
+          "status": "activa",
+          "characteristics": "En los activos lipolíticos se recomienda su aplicación únicamente con técnica de mesoterapia.",
+          "certifications": "Certificaciones de su país de origen.",
+          "aliases": [
+            {
+              "term": "Ampolleta 5ml"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+            "Enfermedades crónico-degenerativas en descontrol",
+            "Hipersensibilidad / alergia a algún componente de la fórmula."
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Eritema / Enrojecimiento local transitorio",
+            "Edema / Inflamación o hinchazón local",
+            "Prurito (picazón) leve",
+            "Hematoma / Equimosis (moretón)"
+          ],
+          "clinicalIndications": [
+            "Celulitis edematosa",
+            "Efecto drenante y reducción de retención de líquidos (Edema)",
+            "Estimulación del metabolismo lipídico y permeabilidad adipocitaria"
+          ],
+          "postCareNotes": [
+            "Hidratación abundante (tomar suficiente agua)",
+            "Evitar el consumo de carbohidratos durante los primeros 5 días post-tratamiento ",
+            "Esperar 72 horas antes de realizar radiofrecuencia o aparatología corporal",
+            "Tomar paracetamol en caso de febrícula o molestar leve",
+            "Suspender actividad física por 48 horas",
+            "No consumir bebidas alcohólicas por 48 horas"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "No aplicar sobre heridas abiertas, úlceras, lesiones infectadas o dermatosis activa",
+            "Respetar la dosificación y el intervalo mínimo entre sesiones (evitar necrosis o reacciones adversas)",
+            "Precaución especial en pacientes con enfermedades crónicas descontroladas"
+          ],
+          "protocols": [
+            "Protocolo Lipolítico y Drenante Alcachofa"
+          ],
+          "reconstitution": {
+            "diluentType": "No requiere",
+            "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "ASIAN CENTELLA",
+      "validationStatus": "APPROVED",
+      "description": "Tratamiento de Mesoterapia Regenerativa, con altas propiedades estimuladoras de colágeno. Tiene propiedades antioxidantes y drenantes, y por su efecto drenante, es utilizada en tratamientos lipolíticos y disminución de celulitis.",
+      "productType": "liquido",
+      "laboratory": "Laboratorio MCCM",
+      "activeIngredients": [
+        "Extracto de Centella Asiática"
+      ],
+      "aliases": [
+        {
+          "term": "MCCM ASIAN CENTELLA"
+        },
+        {
+          "term": "Centella Asiática"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Ampolleta 5 ml",
+          "status": "activa",
+          "characteristics": "Altas propiedades estimuladoras de colágeno. La centella asiática contiene propiedades lipolíticas aunque no es un lipolítico propiamente. ",
+          "certifications": "Certificaciones de su país de origen.",
+          "aliases": [
+            {
+              "term": "Ampolleta 5ml"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+            "Enfermedades crónico-degenerativas en descontrol",
+            "Hipersensibilidad / alergia a algún componente de la fórmula."
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Eritema / Enrojecimiento local transitorio",
+            "Edema / Inflamación o hinchazón local",
+            "Prurito (picazón) leve",
+            "Hematoma / Equimosis (moretón)"
+          ],
+          "clinicalIndications": [
+            "Tratamiento integral de celulitis (Adiposa, Edematosa y Dura/Fibrosa)",
+            "Efecto drenante y reducción de retención de líquidos (Edema)",
+            "Estimulación del metabolismo lipídico y permeabilidad adipocitaria",
+            "Activación de la microcirculación y circulación de retorno (Venotónico)",
+            "Prevención y tratamiento de fibrosis y firmeza vascular"
+          ],
+          "postCareNotes": [
+            "Hidratación abundante (tomar suficiente agua)",
+            "Esperar 72 horas antes de realizar radiofrecuencia o aparatología corporal",
+            "Evitar masajear o frotar las zonas tratadas\n",
+            "Evitar la exposición a temperaturas extremas (frío o calor intenso / sauna)",
+            "Suspender actividad física por 48 horas"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "No aplicar sobre heridas abiertas, úlceras, lesiones infectadas o dermatosis activa",
+            "Precaución especial en pacientes con enfermedades crónicas descontroladas"
+          ],
+          "protocols": [
+            "Protocolo Drenante y Estimulador de Colágeno de Centella Asiática"
+          ],
+          "reconstitution": {
+            "diluentType": "No requiere",
+            "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "B-COMPLEX",
+      "validationStatus": "APPROVED",
+      "description": "B-COMPLEX es un tratamiento de Mesoterapia Regenerativa, es un complejo vitamínico que ayuda a regenerar la piel, creando nuevas células, reduciendo signos del envejecimiento y eliminando manchas. Ayuda a mejorar las condiciones de nutrición de la piel.",
+      "productType": "liquido",
+      "laboratory": "Laboratorio MCCM",
+      "activeIngredients": [
+        "Vitamina B1 (Tiamina)",
+        "Vitamina B3 (Niacina)",
+        "Vitamina B6 (Piridoxina)",
+        "Vitamina B9 (Ácido Fólico)",
+        "Vitamina B12 (Cobalamina)",
+        "Vitamina B3 (Niacina / Niacinamida)"
+      ],
+      "aliases": [
+        {
+          "term": "MCCM B-COMPLEX"
+        },
+        {
+          "term": "Complejo B"
+        },
+        {
+          "term": "B complex"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Ampolleta 5 ml",
+          "status": "activa",
+          "aliases": [
+            {
+              "term": "Ampolleta 5ml"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+            "Hipersensibilidad conocida a la albúmina o intolerancia a cualquier componente de la fórmula.",
+            "Enfermedades crónico-degenerativas en descontrol",
+            "Trastornos de la coagulación o tratamiento con anticoagulantes"
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Eritema / Enrojecimiento local transitorio",
+            "Edema / Inflamación o hinchazón local",
+            "Prurito (picazón) leve",
+            "Hematoma / Equimosis (moretón)"
+          ],
+          "clinicalIndications": [
+            "Prevención del envejecimiento cutáneo",
+            "Tratamiento de pieles dañadas, fotoenvejecidas y piel de fumador",
+            "Nutrición, revitalización y regeneración tisular profunda",
+            "Coadyuvante en tratamientos estéticos y revitalizantes"
+          ],
+          "postCareNotes": [
+            "Evitar tocar, manipular o masajear el rostro / zona tratada",
+            "No aplicar maquillaje, cremas ni cosméticos en las primeras 4 a 12 horas",
+            "Limpiar la piel suavemente y aplicar tónicos recién transcurridas 4 horas",
+            "Evitar sudoración excesiva, piscinas, saunas y agua de mar por 48 horas",
+            "Protección solar estricta FPS 50+ y evitar exposición solar prolongada"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "No aplicar sobre heridas abiertas, úlceras, lesiones infectadas o dermatosis activa",
+            "Precaución especial en pacientes con enfermedades crónicas descontroladas"
+          ],
+          "protocols": [
+            "Protocolo Revitalizante Celular B-Complex"
+          ],
+          "reconstitution": {
+            "diluentType": "No requiere",
+            "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "BELLATOXEL",
+      "validationStatus": "PENDING",
+      "description": "La Toxina Botulínica Bellatoxel es un neuromodulador diseñado para la mejora temporal de las arrugas faciales. ",
+      "productType": "liofilizado",
+      "laboratory": "Laboratorio sin especificar (Toxina Botulínica)",
+      "activeIngredients": [
+        "Toxina Botulínica Tipo A 100 UI",
+        "Albúmina Sérica Humana 0.5 mg",
+        "Cloruro de Sodio 0.9 mg"
+      ],
+      "aliases": [
+        {
+          "term": "Bellatoxel 100 UI"
+        },
+        {
+          "term": "Bellatoxel 100U"
+        },
+        {
+          "term": "Bellatoxel"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Vial Liofilizado 100 UI",
+          "status": "activa",
+          "characteristics": "Peso molecular: 900 kDa. Pureza: 99%. Caducidad: 36 meses desde su manufactura. ",
+          "certifications": "Aprobado por el Ministerio de Seguridad de Alimentos y Medicamentos de Corea (MFDS).",
+          "aliases": [
+            {
+              "term": "Vial 100 UI"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Infección o inflamación activa en el sitio de inyección.",
+            "Hipersensibilidad conocida a la albúmina o intolerancia a cualquier componente de la fórmula.",
+            "Trastornos neuromusculares (Miastenia Gravis, Lambert-Eaton, esclerosis múltiple, ELA)",
+            "Uso simultáneo de antibióticos (aminoglucósidos, espectinomicina) o relajantes musculares.",
+            "Trastornos de la coagulación o tratamiento con anticoagulantes"
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Hematoma / Equimosis (moretón)",
+            "Sensación de presión u opresión frontal",
+            "Parálisis muscular incompleta con arrugas residuales. ",
+            "Cefalea (dolor de cabeza) leve a moderada",
+            "Propagación a distancia del efecto de la toxina."
+          ],
+          "clinicalIndications": [
+            "Líneas faciales hiperfuncionantes. ",
+            "Tratamiento de hiperhidrosis (Axilar, palmar, plantar y facial)",
+            "Tratamiento de bruxismo y migraña"
+          ],
+          "postCareNotes": [
+            "No acostarse ni agacharse durante las primeras 4 horas.",
+            "Evitar masajear o frotar las zonas tratadas\n",
+            "Evitar la exposición a temperaturas extremas (frío o calor intenso / sauna)",
+            "No consumir bebidas alcohólicas por 48 horas",
+            "Suspender actividad física por 48 horas"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "Conservar en refrigeración 2°C - 8°C (no congelar)",
+            "Aplicar preferentemente en 24h",
+            "Interacción farmacológica: precaución con aminoglucósidos, magnesio, quinina y anticolinérgicos",
+            "No aplicar si existe proceso inflamatorio o infeccioso en la zona"
+          ],
+          "protocols": [
+            "Protocolo Relajación Muscular Bellatoxel"
+          ],
+          "reconstitution": {
+            "diluentType": "Solución Salina Estéril 0.9% sin conservadores (refrigerada)",
+            "volumeMl": 1,
+            "instructions": "Inyectar lentamente 1 mL de solución salina estéril al 0.9% refrigerada sin agitar para obtener 10 UI por cada 0.1 mL. Usar preferentemente en 24h (máximo 7-10 días en refrigeración)."
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "BIOTIN HIDRIXIN",
+      "validationStatus": "APPROVED",
+      "description": "Tratamiento de Mesoterapia Capilar. La Vitamina B7 (Biotina) es eficaz en combatir la caída y el adelgazamiento del cabello, ya que fortalece el cabello y nutre el folículo piloso para evitar la caída, actuando como astringente natural del cuero cabelludo. ",
+      "productType": "liquido",
+      "laboratory": "Laboratorio MCCM",
+      "activeIngredients": [
+        "Biotina (Vitamina B7 / Vitamina H)"
+      ],
+      "aliases": [
+        {
+          "term": "MCCM BIOTIN HIDRIXIN"
+        },
+        {
+          "term": "Biotina MCCM"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Ampolleta 2 ml",
+          "status": "activa",
+          "characteristics": "Puede combinarse con Hair, Finasteride o Minoxidil.",
+          "certifications": "Certificaciones de su país de origen.",
+          "aliases": [
+            {
+              "term": "Ampolleta 2ml"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+            "Enfermedades crónico-degenerativas en descontrol",
+            "Hipersensibilidad / alergia a algún componente de la fórmula."
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Eritema / Enrojecimiento local transitorio",
+            "Edema / Inflamación o hinchazón local",
+            "Prurito (picazón) leve",
+            "Hematoma / Equimosis (moretón)"
+          ],
+          "clinicalIndications": [
+            "Tratamiento anticaída y fortalecimiento del folículo piloso",
+            "Seborregulación capilar y tratamiento de cuero cabelludo oleoso",
+            "Estimulación de la síntesis de queratina y crecimiento capilar",
+            "Mantenimiento capilar post-microinjerto o trasplante"
+          ],
+          "postCareNotes": [
+            "No tocar ni lavar el cuero cabelludo en las primeras 12 horas",
+            "Evitar exposición prolongada al sol",
+            "Mantener dieta equilibrada rica en hierro, antioxidantes y vitaminas",
+            "Reducir el estrés",
+            "Hidratación abundante (tomar suficiente agua)"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "No aplicar sobre heridas abiertas, úlceras, lesiones infectadas o dermatosis activa",
+            "Precaución especial en pacientes con enfermedades crónicas descontroladas"
+          ],
+          "protocols": [
+            "Protocolo Fortalecedor Capilar Biotin Hidrixin"
+          ],
+          "reconstitution": {
+            "diluentType": "No requiere",
+            "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "BOTULAX",
+      "validationStatus": "APPROVED",
+      "description": "La Toxina Botulínica BOTULAX, mejora temporal de las arrugas del rostro de moderadas a graves.",
+      "productType": "liofilizado",
+      "laboratory": "Hugelpharma",
+      "activeIngredients": [
+        "Toxina Botulínica Tipo A 100 UI",
+        "Albúmina Sérica Humana 0.5 mg",
+        "Cloruro de Sodio 0.9 mg"
+      ],
+      "aliases": [
+        {
+          "term": "Botulax 100 UI"
+        },
+        {
+          "term": "Botulax 100U"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Vial Liofilizado 100 UI",
+          "status": "activa",
+          "characteristics": "Peso molecular: 900 kDa. Pureza: 99%. Caducidad: 24 meses desde su manufactura.",
+          "certifications": "Aprobado por la Administración Coreana de Productos Alimentarios y Farmacéuticos (KFDA)",
+          "aliases": [
+            {
+              "term": "Vial 100 UI"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Infección o inflamación activa en el sitio de inyección.",
+            "Hipersensibilidad a la albúmina, proteínas de huevo u otros componentes de la fórmula.",
+            "Trastornos neuromusculares (Miastenia Gravis, Lambert-Eaton, esclerosis múltiple, ELA)",
+            "Uso simultáneo de antibióticos (aminoglucósidos, espectinomicina) o relajantes musculares.",
+            "Trastornos de la coagulación o tratamiento con anticoagulantes"
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Edema / Inflamación o hinchazón local",
+            "Eritema / Enrojecimiento local transitorio",
+            "Hematoma / Equimosis (moretón)",
+            "Cefalea (dolor de cabeza) leve a moderada",
+            "Sintomatología pseudogripal (náuseas, fatiga, malestar general)",
+            "Parálisis muscular incompleta con arrugas residuales. ",
+            "Propagación a distancia del efecto de la toxina.",
+            "Reacción de hipersensibilidad / Alergia"
+          ],
+          "clinicalIndications": [
+            "Líneas faciales hiperfuncionantes. ",
+            "Tratamiento de hiperhidrosis (Axilar, palmar, plantar y facial)",
+            "Tratamiento de bruxismo y migraña"
+          ],
+          "postCareNotes": [
+            "No acostarse ni agacharse durante las primeras 4 horas.",
+            "Evitar masajear o frotar las zonas tratadas\n",
+            "Evitar la exposición a temperaturas extremas (frío o calor intenso / sauna)",
+            "No consumir bebidas alcohólicas por 48 horas",
+            "Suspender actividad física por 48 horas"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "Conservar en refrigeración 2°C - 8°C (no congelar)",
+            "Interacción farmacológica: precaución con aminoglucósidos, magnesio, quinina y anticolinérgicos",
+            "No aplicar si existe proceso inflamatorio o infeccioso en la zona",
+            "Aplicar preferentemente en 24h"
+          ],
+          "protocols": [
+            "Protocolo Relajación Muscular Botulax"
+          ],
+          "reconstitution": {
+            "diluentType": "Solución Salina 0.9% refrigerada.",
+            "volumeMl": 1,
+            "instructions": "Reconstituir con 1 mL de solución salina al 0.9% refrigerada para evitar choque térmico (10 UI / 0.1 mL). Aplicar preferentemente en 24h."
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "BTSA9",
+      "validationStatus": "APPROVED",
+      "description": "La Toxina Botulínica, BTSA 9 es un potente tensor, que mejora notablemente las arrugas.",
+      "productType": "liofilizado",
+      "laboratory": "Protox",
+      "activeIngredients": [
+        "Toxina Botulínica Tipo A 100 UI",
+        "Cloruro de Sodio 0.9 mg",
+        "Albúmina Sérica Humana 0.5 mg"
+      ],
+      "aliases": [
+        {
+          "term": "BTSA 9"
+        },
+        {
+          "term": "BTSA9 100 UI"
+        },
+        {
+          "term": "BTSA"
+        },
+        {
+          "term": "BTSA9 100U"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Vial Liofilizado 100 UI",
+          "status": "activa",
+          "characteristics": "Peso molecular: 900 kDa. Pureza: 99%.",
+          "certifications": "Aprobado por la Administración Coreana de Productos Alimentarios y Farmacéuticos (KFDA)",
+          "aliases": [
+            {
+              "term": "Vial 100 UI"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Infección o inflamación activa en el sitio de inyección.",
+            "Hipersensibilidad a la albúmina, proteínas de huevo u otros componentes de la fórmula.",
+            "Trastornos neuromusculares (Miastenia Gravis, Lambert-Eaton, esclerosis múltiple, ELA)",
+            "Uso simultáneo de antibióticos (aminoglucósidos, espectinomicina) o relajantes musculares.",
+            "Trastornos de la coagulación o tratamiento con anticoagulantes"
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Eritema / Enrojecimiento local transitorio",
+            "Edema / Inflamación o hinchazón local",
+            "Hematoma / Equimosis (moretón)",
+            "Cefalea (dolor de cabeza) leve a moderada",
+            "Sintomatología pseudogripal (náuseas, fatiga, malestar general)",
+            "Parálisis muscular incompleta con arrugas residuales. ",
+            "Propagación a distancia del efecto de la toxina.",
+            "Reacción de hipersensibilidad / Alergia"
+          ],
+          "clinicalIndications": [
+            "Líneas faciales hiperfuncionantes. ",
+            "Efecto tensor, firmeza cutánea y lifting facial",
+            "Tratamiento de hiperhidrosis (Axilar, palmar, plantar y facial)",
+            "Tratamiento de bruxismo y migraña"
+          ],
+          "postCareNotes": [
+            "No acostarse ni agacharse durante las primeras 4 horas.",
+            "Evitar masajear o frotar las zonas tratadas\n",
+            "Evitar la exposición a temperaturas extremas (frío o calor intenso / sauna)",
+            "Suspender actividad física por 48 horas",
+            "No consumir bebidas alcohólicas por 48 horas"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "Conservar en refrigeración 2°C - 8°C (no congelar)",
+            "Interacción farmacológica: precaución con aminoglucósidos, magnesio, quinina y anticolinérgicos",
+            "Aplicar preferentemente en 24h",
+            "No aplicar si existe proceso inflamatorio o infeccioso en la zona"
+          ],
+          "protocols": [
+            "Protocolo Relajación Muscular BTSA9"
+          ],
+          "reconstitution": {
+            "diluentType": "Solución Salina 0.9% refrigerada. ",
+            "volumeMl": 1,
+            "instructions": "Reconstituir con 1 mL de solución salina al 0.9% refrigerada para evitar choque térmico (10 UI / 0.1 mL). "
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "CAFFEINE",
+      "validationStatus": "APPROVED",
+      "description": "CAFFEINE es un tratamiento de Mesoterapia Lipolítica. Este producto contiene propiedades lipolíticas y su elevado poder de absorción promueve mejores resultados en tratamientos de pérdida de peso. Mejora la circulación sanguínea, estimulando la circulación de retorno y consecuentemente drena los tejidos.",
+      "productType": "liquido",
+      "laboratory": "Laboratorio MCCM",
+      "activeIngredients": [
+        "Cafeína"
+      ],
+      "aliases": [
+        {
+          "term": "MCCM CAFFEINE"
+        },
+        {
+          "term": "Cafeína"
+        },
+        {
+          "term": "Cafeine"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Ampolleta 1 ml",
+          "status": "activa",
+          "characteristics": "Forma de aplicación: Mesoterapia. Excelente activo para celulitis.",
+          "certifications": "Certificaciones de su país de origen.",
+          "aliases": [
+            {
+              "term": "Ampolleta 1ml"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+            "Pacientes hipertensos.",
+            "Enfermedades crónico-degenerativas en descontrol",
+            "Hipersensibilidad / alergia a algún componente de la fórmula."
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Eritema / Enrojecimiento local transitorio",
+            "Prurito (picazón) leve",
+            "Hematoma / Equimosis (moretón)"
+          ],
+          "clinicalIndications": [
+            "Tratamiento de celulitis edematosa y adiposa.",
+            "Reducción de grasa localizada",
+            "Efecto drenante y reducción de retención de líquidos (Edema)",
+            "Activación de la microcirculación y circulación de retorno (Venotónico)"
+          ],
+          "postCareNotes": [
+            "Evitar la realización de ejercicio físico en las primeras 24 horas",
+            "No consumir bebidas alcohólicas por 48 horas",
+            "Evitar el consumo de carbohidratos durante los primeros 5 días post-tratamiento ",
+            "Esperar 72 horas antes de realizar radiofrecuencia o aparatología corporal",
+            "Tomar paracetamol en caso de febrícula o molestar leve"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "Respetar la dosificación y el intervalo mínimo entre sesiones (evitar necrosis o reacciones adversas)",
+            "Precaución especial en pacientes con enfermedades crónicas descontroladas"
+          ],
+          "protocols": [
+            "Protocolo Mesoterapia Lipolítica Cafeína"
+          ],
+          "reconstitution": {
+            "diluentType": "No requiere",
+            "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "CELLESTABYL",
+      "validationStatus": "APPROVED",
+      "description": "CELLESTABYL es un tratamiento de Mesoterapia Lipolítica, tiene una combinación de activos eficaces para combatir la celulitis y depósitos pequeños de grasa localizada.",
+      "productType": "liquido",
+      "laboratory": "Laboratorio MCCM",
+      "activeIngredients": [
+        "Vitamina B6 (Piridoxina)",
+        "Adenosín trifosfato disódico (ATP)",
+        "Niacinamida (Vitamina B3)"
+      ],
+      "aliases": [
+        {
+          "term": "MCCM CELLESTABYL"
+        },
+        {
+          "term": "Celestabyl"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Ampolleta 1 ml",
+          "status": "activa",
+          "characteristics": "Recomendado para celulitis, grasa localizada y papada.",
+          "certifications": "Certificaciones de su país de origen.",
+          "aliases": [
+            {
+              "term": "Ampolleta 1ml"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+            "Enfermedades crónico-degenerativas en descontrol",
+            "Hipersensibilidad / alergia a algún componente de la fórmula."
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Eritema / Enrojecimiento local transitorio",
+            "Prurito (picazón) leve",
+            "Hematoma / Equimosis (moretón)"
+          ],
+          "clinicalIndications": [
+            "Tratamiento de celulitis adiposa.",
+            "Reducción de grasa localizada",
+            "Estimulación del metabolismo lipídico y permeabilidad adipocitaria"
+          ],
+          "postCareNotes": [
+            "Hidratación abundante (tomar suficiente agua)",
+            "Evitar el consumo de carbohidratos durante los primeros 5 días post-tratamiento ",
+            "Evitar la realización de ejercicio físico en las primeras 24 horas",
+            "Esperar 72 horas antes de realizar radiofrecuencia o aparatología corporal"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "Respetar la dosificación y el intervalo mínimo entre sesiones (evitar necrosis o reacciones adversas)",
+            "No aplicar sobre heridas abiertas, úlceras, lesiones infectadas o dermatosis activa"
+          ],
+          "protocols": [
+            "Protocolo Mesoterapia Lipolítica Cellestabyl"
+          ],
+          "reconstitution": {
+            "diluentType": "No requiere",
+            "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+          }
+        }
+      ]
+    },
+    {
+      "canonicalName": "CELLULITE",
+      "validationStatus": "APPROVED",
+      "description": "El coctel Cellulite es una combinación de activos diseñada para complementar los tratamientos dirigidos a la grasa localizada y la celulitis. Su fórmula, que integra L-Carnitina, Cafeína, Silicio Orgánico y Centella Asiática, proporciona una acción lipolítica y reafirmante, favoreciendo una piel con mayor firmeza, elasticidad y una apariencia más uniforme.",
+      "productType": "liquido",
+      "laboratory": "Laboratorio MCCM",
+      "activeIngredients": [
+        "L-Carnitina",
+        "Cafeína",
+        "Silicio Orgánico",
+        "Centella Asiática"
+      ],
+      "aliases": [
+        {
+          "term": "MCCM CELLULITE"
+        },
+        {
+          "term": "Celulite"
+        }
+      ],
+      "presentations": [
+        {
+          "canonicalName": "Ampolleta 5 ml",
+          "status": "activa",
+          "characteristics": "Cellulite es una combinación de activos formulada para complementar los tratamientos estéticos enfocados principalmente en la celulitis.",
+          "certifications": "Certificaciones de su país de origen.",
+          "aliases": [
+            {
+              "term": "Ampolleta 5ml"
+            }
+          ],
+          "contraindications": [
+            "Embarazo y lactancia",
+            "Hipersensibilidad / alergia a algún componente de la fórmula.",
+            "Heridas, úlceras, lesiones infectadas o dermatosis supurante",
+            "Enfermedades crónico-degenerativas en descontrol"
+          ],
+          "adverseEffects": [
+            "Dolor leve en el sitio de punción",
+            "Eritema / Enrojecimiento local transitorio",
+            "Prurito (picazón) leve",
+            "Hematoma / Equimosis (moretón)"
+          ],
+          "clinicalIndications": [
+            "Tratamiento integral de celulitis (Adiposa, Edematosa y Dura/Fibrosa)",
+            "Reducción de grasa localizada",
+            "Firmeza y tonicidad corporal (Abdomen, nalgas, caderas, muslos)"
+          ],
+          "postCareNotes": [
+            "Hidratación abundante (tomar suficiente agua)",
+            "Evitar el consumo de carbohidratos durante los primeros 5 días post-tratamiento ",
+            "Esperar 72 horas antes de realizar radiofrecuencia o aparatología corporal",
+            "Evitar la realización de ejercicio físico en las primeras 24 horas",
+            "No consumir bebidas alcohólicas por 48 horas"
+          ],
+          "safetyWarnings": [
+            "Uso exclusivo por profesional sanitario / médico capacitado",
+            "Respetar la dosificación y el intervalo mínimo entre sesiones (evitar necrosis o reacciones adversas)"
+          ],
+          "protocols": [
+            "Protocolo anticelulitis de Cellulite"
+          ],
+          "reconstitution": {
+            "diluentType": "No requiere",
+            "instructions": "Solución líquida lista para usar. No requiere reconstitución ni dilución previa."
+          }
+        }
+      ]
+    }
+  ]
+}

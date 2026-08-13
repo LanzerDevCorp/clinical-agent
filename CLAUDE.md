@@ -28,12 +28,32 @@ See `supabase/README.md` for what runs and why.
 ```
 supabase start          # Postgres :54322 · API :54321 · Studio :54323
 pnpm dev                # the app, against that local database
-pnpm db:local:reset     # wipe, migrate and reseed
-pnpm db:local:seed      # reseed only
+pnpm db:local:reset          # wipe, migrate and reseed
+pnpm db:local:seed           # reseed only, real catalogue
+pnpm db:local:seed:fiction   # reseed only, invented catalogue
 ```
 
-`src/scripts/seed-local.ts` fills the catalogue with invented products. Production
-data is never copied to a developer machine.
+`src/scripts/seed-local.ts` replays a fixture from `src/scripts/fixtures/` through
+Payload's API. Two exist, and `SEED_DATASET` picks between them:
+
+- **`real-catalogue.json`** (default) — the 13 products the production catalogue
+  holds, extracted from a Neon dump. Catalogue only: no users, no sessions, no
+  admission events, and `validationNotes` is dropped because it carries internal
+  team notes. The product facts themselves are manufacturer datasheets, the same
+  ones already in `real-products/`.
+- **`invented-catalogue.json`** — four fictional products. Keep them: they cover
+  the two shapes the real data does not have, a discontinued presentation and a
+  product with no presentation at all, which is what breaks code that assumes
+  every product is orderable. Reach for this dataset when touching that code.
+
+A full database dump is never restored into a developer machine, and never
+committed: `backups/` is gitignored because those dumps carry users, sessions and
+admission events. The fixture is the catalogue and nothing else.
+
+When production moves, refresh the real fixture with
+`src/scripts/extract-real-catalogue.mjs` — its header carries the exact restore
+and cleanup commands, and `pnpm db:local:fixture` is the middle step. It reads a
+throwaway scratch database, never the app's own and never a remote one.
 
 It also creates the admin user, so a reset never sends you back to Payload's
 first-user wizard. Defaults to `dev@local.test` / `localdev`; set
