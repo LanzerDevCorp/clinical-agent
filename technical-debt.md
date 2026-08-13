@@ -70,7 +70,7 @@ en el cambio SDD nuevo, junto con la migración a Supabase.
 
 | Divergencia | Spec que contradice | Motivo |
 |---|---|---|
-| Modelo `openai/gpt-4o-mini` | `spec.md:27`, `proposal.md:10`, `design.md:5` nombran `deepseek/deepseek-v4-flash` | DeepSeek no soporta salida estructurada nativa; cumplía el schema solo a veces |
+| El artefacto llega por la tool `submitClinicalArtifact`, no por `Output.object` | `design.md:14` especifica `Output.object` para devolver las referencias a facts | El modelo que el propio spec fija (`deepseek/deepseek-v4-flash`, `design.md:5`) tiene tool calling pero no formato de respuesta JSON nativo. Los inputs de una tool **sí** los valida el proveedor contra el schema; los formatos de respuesta no. Ver `gateway.ts:6-12` |
 | `ClinicalToolset` devuelve `factId` | Contrato de herramientas del diseño | El modelo no puede referenciar IDs que nunca recibió |
 | `canShareProtocol` ya no es herramienta | *Bounded streaming execution* lo lista como una de las tres | Costaba O(protocolos) y agotaba el presupuesto; se plegó dentro de `getProductDetails` |
 | `testTimeout: 20_000` en Vitest | Evidencia de verificación con el default de 5 s | Los specs de integración corren contra Postgres remoto |
