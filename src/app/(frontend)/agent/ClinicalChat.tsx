@@ -7,16 +7,13 @@ import type { ClinicalAgentEvent, ClinicalFact } from '@/lib/clinical-agent/agen
 import { ClinicalFacts, factsToText } from './ClinicalFacts'
 import styles from './clinical-chat.module.css'
 
-type Turn = {
+export type Turn = {
   id: string
   question: string
   state: 'processing' | 'done' | 'failed'
   artifact?: { internal: readonly ClinicalFact[]; client: readonly ClinicalFact[] }
   error?: string
 }
-
-/** The route caps the conversation at 40 messages and rejects anything above it. */
-const MAX_MESSAGES = 40
 
 /**
  * The route answers with opaque status codes on purpose — it never leaks a
@@ -40,15 +37,28 @@ function messageForStatus(status: number): string {
  * Builds the exact body the route accepts. `hasExactKeys` in
  * src/app/api/chat/route.ts rejects any extra key at the body, message, or part
  * level, so nothing beyond these fields may be sent.
+ *
+ * Only the current question travels. The route accepts `role: 'user'` and
+ * nothing else (`isClinicalUserMessage`), so sending the session's history put a
+ * list of questions with no answers between them in front of the model, which
+ * read them as all still open and answered every one again: the internal panel
+ * filled with products nobody had just asked about, and the tool budget ran out
+ * before reaching the current question.
+ *
+ * The cost is that a follow-up cannot lean on what came before — "¿y su dosis?"
+ * has no antecedent here. That is the honest shape while the contract carries no
+ * assistant turns: a conversation the model cannot see is worse than one it is
+ * never offered.
  */
-function requestBody(turns: readonly Turn[], pending: Turn) {
-  const history = [...turns, pending].slice(-MAX_MESSAGES)
+export function requestBody(question: Turn) {
   return JSON.stringify({
-    messages: history.map((turn) => ({
-      id: turn.id,
-      role: 'user',
-      parts: [{ type: 'text', text: turn.question }],
-    })),
+    messages: [
+      {
+        id: question.id,
+        role: 'user',
+        parts: [{ type: 'text', text: question.question }],
+      },
+    ],
   })
 }
 
@@ -130,7 +140,7 @@ export function ClinicalChat({ userEmail }: { userEmail: string }) {
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: requestBody(history, pending),
+          body: requestBody(pending),
           signal: controller.signal,
         })
 
