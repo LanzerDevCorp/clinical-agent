@@ -6,6 +6,28 @@ The Payload CMS reference lives at `.claude/skills/payload/SKILL.md`, with detai
 under `.claude/skills/payload/reference/`. Note that `.claude/` is gitignored, so
 a fresh clone does not have it — it is local tooling, not part of the project.
 
+## The Payload MCP server
+
+`@payloadcms/plugin-mcp` is wired into `payload.config.ts`, so the catalogue is
+reachable as MCP tools instead of only through the admin panel or hand-written
+SQL. It answers at `/api/mcp` and returns 401 without a key; keys are documents
+in the `payload-mcp-api-keys` collection.
+
+The permission matrix in that config is the point, not boilerplate:
+
+- **Nothing can delete.** Every collection is `delete: false`. A tool call that
+  can remove a product is one bad turn away from an empty catalogue, and the
+  catalogue is the product.
+- `users` is `find` only. Accounts are not created from a tool call.
+- `media` is `find` and `create`.
+- The rest of the catalogue is `find`, `create` and `update`.
+
+Widening any of that means editing `payload.config.ts`, and the same config ships
+to production — it is not a local convenience with a local blast radius.
+
+It is not registered in `.mcp.json`, which only carries `supabase-local`. Point a
+client at `http://localhost:3000/api/mcp` with a key when you want it.
+
 ## Branches
 
 Work happens on `dev`. `main` is what production runs, and it moves only when a
