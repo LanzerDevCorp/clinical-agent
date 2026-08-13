@@ -118,22 +118,28 @@ describe('ClinicalProductRepository safe contract', () => {
     expect(legacySource).not.toHaveBeenCalled()
   })
 
-  it.each([
-    ['pending product', pendingProduct],
-    ['approved product without an active presentation', approvedWithoutActivePresentation],
-  ])('maps an ineligible %s to UNAVAILABLE without returning raw data', async (_scenario, product) => {
-    const { find, repository, req } = createHarness({ docs: [product] })
+  it('maps an approved product without an active presentation to UNAVAILABLE without returning raw data', async () => {
+    const { find, repository, req } = createHarness({ docs: [approvedWithoutActivePresentation] })
 
-    const result = await repository.searchProducts({ query: 'product' })
+    const result = await repository.searchProducts({ query: 'inactive-sentinel' })
 
     expect(result).toEqual({ ok: false, code: 'UNAVAILABLE' })
-    expect(JSON.stringify(result)).not.toContain(product.canonicalName)
+    expect(JSON.stringify(result)).not.toContain(approvedWithoutActivePresentation.canonicalName)
     expect(find).toHaveBeenCalledWith(expect.objectContaining({
       collection: 'products',
       overrideAccess: false,
       req,
       user: internalUser,
     }))
+  })
+
+  it('reports a pending product as absent even when its name matches the query', async () => {
+    const { repository } = createHarness({ docs: [pendingProduct] })
+
+    const result = await repository.searchProducts({ query: 'pending-sentinel' })
+
+    expect(result).toEqual({ ok: true, data: { kind: 'empty' } })
+    expect(JSON.stringify(result)).not.toContain(pendingProduct.canonicalName)
   })
 })
 
@@ -166,19 +172,23 @@ describe('ClinicalProductRepository discovery', () => {
         overrideAccess: false,
         req,
         user: internalUser,
-        where: {
-          and: [
-            { validationStatus: { equals: 'APPROVED' } },
-            { or: [
-              { canonicalName: { contains: query } },
-              { 'aliases.term': { contains: query } },
-              { 'presentations.canonicalName': { contains: query } },
-              { 'presentations.aliases.term': { contains: query } },
-            ] },
-          ],
-        },
+        where: { validationStatus: { equals: 'APPROVED' } },
       })
     }
+  })
+
+  it('matches a query whose accents differ from the stored name', async () => {
+    const product = approvedProduct(5, 'Centella Asiática', [{ id: 'vial', canonicalName: 'Vial' }])
+    const { repository } = createHarness({ docs: [product] })
+
+    await expect(repository.searchProducts({ query: 'Centella Asiatica' })).resolves.toEqual({
+      ok: true,
+      data: {
+        kind: 'match',
+        product: { id: '5', canonicalName: 'Centella Asiática' },
+        presentation: { id: 'vial', canonicalName: 'Vial' },
+      },
+    })
   })
 
   it('returns deterministic clarification for ambiguous products and presentations', async () => {

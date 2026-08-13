@@ -75,20 +75,37 @@ function compareCandidates(left: DiscoveryCandidate, right: DiscoveryCandidate):
     || left.presentation.id.localeCompare(right.presentation.id)
 }
 
-function discoveryWhere(query: string): Where {
-  return { and: [
-    { validationStatus: { equals: 'APPROVED' as const } },
-    { or: [
-      { canonicalName: { contains: query } },
-      { 'aliases.term': { contains: query } },
-      { 'presentations.canonicalName': { contains: query } },
-      { 'presentations.aliases.term': { contains: query } },
-    ] },
-  ] }
+// Discovery no longer narrows by name in SQL. Payload's `contains` lowers to
+// ILIKE, which ignores case but not accents, so "Centella Asiatica" never
+// reached `rank()` — which already strips diacritics and would have matched.
+// Postgres now returns every approved product and the ranking below decides.
+// Bounded by MAX_DISCOVERY_PAGES × DISCOVERY_PAGE_SIZE; beyond that the result
+// is reported as truncated rather than silently short.
+function discoveryWhere(): Where {
+  return { validationStatus: { equals: 'APPROVED' as const } }
 }
 
-function discoveryCandidates(products: Product[], query: string) {
-  const normalizedQuery = normalized(query)
+function searchableTerms(product: Product): string[] {
+  return [
+    product.canonicalName,
+    ...(product.aliases ?? []).map((alias) => alias.term),
+    ...(product.presentations ?? []).flatMap((presentation) => [
+      presentation.canonicalName,
+      ...(presentation.aliases ?? []).map((alias) => alias.term),
+    ]),
+  ]
+}
+
+// Only consulted once no candidate survived ranking. It separates "the term
+// matches data that cannot surface" — a discontinued presentation, or a product
+// with no active one — from "the term matches nothing". The SQL prefilter used
+// to draw that line by returning zero rows; now it has to be drawn here.
+function matchedIneligibleData(products: Product[], normalizedQuery: string): boolean {
+  return products.some((product) => product.validationStatus === 'APPROVED'
+    && searchableTerms(product).some((term) => Number.isFinite(rank(term, normalizedQuery))))
+}
+
+function discoveryCandidates(products: Product[], normalizedQuery: string) {
   return products.flatMap((product) => {
     if (product.validationStatus !== 'APPROVED') return []
     const productRank = Math.min(
@@ -198,7 +215,7 @@ export function createClinicalProductRepository(
       if (!isInternalUserRequest(req)) return safeFailure('UNAUTHORIZED')
 
       try {
-        const query = input.query.trim()
+        const normalizedQuery = normalized(input.query)
         const products: Product[] = []
         let hasMore = true
         let page = 1
@@ -212,19 +229,19 @@ export function createClinicalProductRepository(
             overrideAccess: false,
             req,
             user: req.user,
-            where: discoveryWhere(query),
+            where: discoveryWhere(),
           })
           products.push(...result.docs)
           hasMore = result.hasNextPage
           page += 1
         }
 
-        const candidates = discoveryCandidates(products, query)
+        const candidates = discoveryCandidates(products, normalizedQuery)
         if (candidates.length === 0) {
           if (hasMore) return safeFailure('TEMPORARY_FAILURE')
-          return products.length === 0
-            ? { ok: true, data: { kind: 'empty' } }
-            : safeFailure('UNAVAILABLE')
+          return matchedIneligibleData(products, normalizedQuery)
+            ? safeFailure('UNAVAILABLE')
+            : { ok: true, data: { kind: 'empty' } }
         }
         if (candidates.length === 1 && !hasMore) {
           const { product, presentation } = candidates[0]
