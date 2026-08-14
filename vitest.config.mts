@@ -13,7 +13,9 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
-    include: ['tests/int/**/*.int.spec.{ts,tsx}'],
+    // Two lanes on purpose. `tests/unit` holds specs with no database and no
+    // Payload import, so they can be run at any time; `tests/int` cannot.
+    include: ['tests/int/**/*.int.spec.{ts,tsx}', 'tests/unit/**/*.spec.{ts,tsx}'],
     // Integration specs talk to a remote managed Postgres, so a single test can
     // chain ~30 sequential round trips. Vitest's 5s default leaves no headroom.
     testTimeout: 20_000,

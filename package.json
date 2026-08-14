@@ -16,6 +16,7 @@
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
+    "test:unit": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/unit",
     "db:seed": "tsx --env-file=.env src/scripts/seed-catalogs.ts",
     "db:ingest": "tsx --env-file=.env src/scripts/ingest-extracted-products.ts",
     "db:local:seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/scripts/seed-local.ts",
