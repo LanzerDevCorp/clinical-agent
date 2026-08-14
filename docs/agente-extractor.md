@@ -93,9 +93,59 @@ ingrediente, una zona, una vía, una técnica— hay que buscarlo en el vocabula
   Sin reformular, sin corregir la redacción, sin mejorar la ortografía.
 - Solo se propone texto nuevo cuando nada del vocabulario sirve.
 
-Dentro del mismo lote vale la misma regla: si dos de los 10 productos significan
-lo mismo, ambos llevan **la misma cadena, byte a byte**. Así el cargador resuelve
-por igualdad exacta y no necesita adivinar.
+## El lote también es vocabulario
+
+El vocabulario que te llega es una foto tomada antes de empezar. **Cada término
+nuevo que proponés lo amplía**, y a partir de ese momento manda igual que los que
+venían del archivo.
+
+Esto no es un detalle: es la mitad del trabajo. Si el producto 3 propone
+`Fibrosis` y el producto 7 escribe `Tratar fibrosis`, el cargador crea **dos
+registros** para una sola idea, porque resuelve por igualdad exacta y no tiene
+forma de saber que quisiste decir lo mismo. Nadie los une después salvo a mano.
+
+### Cómo se cumple
+
+Llevá una lista de los términos nuevos que fuiste proponiendo, por colección, y
+**consultala antes de escribir cada término nuevo** — igual que consultás el
+vocabulario del archivo. Primero buscás en el vocabulario; si no está, buscás en
+tu propia lista; recién si tampoco está, proponés uno nuevo y lo agregás a la
+lista.
+
+No alcanza con acordarte del archivo que estás procesando. La lista tiene que
+sobrevivir los 10 archivos, porque los duplicados aparecen justamente entre
+productos lejanos del lote.
+
+### Lo que pasó en el primer lote real
+
+Cuatro archivos produjeron cuatro redacciones de dos conceptos:
+
+```
+"Celulitis"                 ← CLH LIPASE 1500, CLH liquida
+"Tratamiento de celulitis"  ← DEOXICHOLIC 10%
+"Fibrosis"                  ← CLH LIPASE 1500, CLH liquida
+"Tratar fibrosis"           ← COLLAGENASE 1500 UI
+```
+
+Los dos archivos de CLH sí quedaron consistentes entre sí. La consistencia se
+perdió al cambiar de producto, que es exactamente lo que la lista evita.
+
+### Una indicación es un concepto, no un párrafo
+
+En ese mismo lote entró esta indicación clínica, copiada entera de la ficha:
+
+> "Potente tratamiento para reducir la celulitis, activa los drenajes de
+> lipólisis y reduce la flacidez de la piel para obtener los mejores resultados
+> de adelgazamiento"
+
+Es texto de folleto, y como registro compartido no sirve para nada: ningún otro
+producto va a volver a escribir esa frase, así que nunca se reutiliza. Las
+indicaciones se escriben como **conceptos cortos y reutilizables** —`Celulitis`,
+`Flacidez`, `Lipólisis`— que es lo que hace que el vocabulario crezca en vez de
+inflarse.
+
+Eso no contradice la regla de no inventar: los conceptos salen de la frase de la
+ficha, no de tu criterio sobre qué debería tratar el producto.
 
 ## Lo que nunca se agrupa
 
@@ -232,3 +282,4 @@ Se continúa en orden alfabético desde la siguiente a `CELLULITE`, en lotes de 
 - No aprueba productos: todo sale `PENDING`.
 - No corrige la redacción de términos que ya existen en el vocabulario.
 - No completa un dato clínico que la ficha no trae.
+- No escribe dos redacciones del mismo concepto en un mismo lote.
