@@ -64,3 +64,8 @@ node_modules/
 # CA certificates downloaded from a database provider's dashboard. Public, but
 # they rotate and belong to whoever runs the migration, not to the repository.
 /certs/
+
+# Catalogue migration working directory. Holds the vocabulary dumped from
+# production and the JSON the extractor writes for each batch — derived state,
+# regenerated before every batch, and clinical data besides.
+/tmp/
