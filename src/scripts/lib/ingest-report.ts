@@ -59,6 +59,20 @@ export function emptyPlan(): Plan {
   }
 }
 
+type TypeConflict = Plan['typeConflicts'][number]
+
+/** One entry per distinct disagreement, keeping every product that hit it. */
+function groupConflicts(rows: TypeConflict[]): Map<string, TypeConflict[]> {
+  const grouped = new Map<string, TypeConflict[]>()
+  for (const row of rows) {
+    const key = `${row.id}|${row.existing}|${row.incoming}`
+    const bucket = grouped.get(key)
+    if (bucket) bucket.push(row)
+    else grouped.set(key, [row])
+  }
+  return grouped
+}
+
 /** `20260814T183000Z`, which sorts chronologically as plain text. */
 function stamp(at: Date): string {
   return at.toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z')
@@ -146,15 +160,19 @@ export function renderReport({ dryRun, plan, results, at }: ReportInput): string
   }
 
   if (plan.typeConflicts.length > 0) {
-    lines.push(`## ⚠ TIPOS EN CONFLICTO (${plan.typeConflicts.length})`)
+    lines.push(`## ⚠ TIPOS EN CONFLICTO (${groupConflicts(plan.typeConflicts).size})`)
     lines.push('')
     lines.push(
       `El registro compartido **no se ${would('tocó', 'tocaría')}**: cuelga de productos que la`,
     )
     lines.push('doctora ya aprobó. Se resuelve a mano desde el admin.')
     lines.push('')
-    for (const row of plan.typeConflicts) {
-      lines.push(`- **${row.term}** (ID: ${row.id})`)
+    // Grouped: a term shared by seven products produced seven identical lines,
+    // and the decision to take is still one.
+    for (const [, group] of groupConflicts(plan.typeConflicts)) {
+      const [row] = group
+      const shared = group.length > 1 ? ` — lo traen ${group.length} productos` : ''
+      lines.push(`- **${row.term}** (ID: ${row.id})${shared}`)
       lines.push(`  en base: \`${row.existing}\` · la ficha dice: \`${row.incoming}\``)
     }
     lines.push('')

@@ -105,4 +105,24 @@ describe('renderReport — lo que necesita ojo humano', () => {
     expect(report).toContain('absoluta')
     expect(report).toMatch(/no se (tocó|modificó)/i)
   })
+
+  it('agrupa el mismo conflicto en vez de repetirlo por producto', () => {
+    // Un término compartido por siete productos daba siete líneas idénticas, y
+    // la decisión que hay que tomar sigue siendo una sola.
+    const repeated: Plan = {
+      ...emptyPlan(),
+      typeConflicts: Array.from({ length: 7 }, () => ({
+        term: 'Enfermedades crónico-degenerativas en descontrol',
+        existing: 'relativa',
+        incoming: 'absoluta',
+        id: 26,
+      })),
+    }
+
+    const report = renderReport({ dryRun: false, plan: repeated, results, at })
+    const mentions = report.match(/Enfermedades crónico-degenerativas en descontrol/g) ?? []
+
+    expect(mentions).toHaveLength(1)
+    expect(report).toContain('7 productos')
+  })
 })
