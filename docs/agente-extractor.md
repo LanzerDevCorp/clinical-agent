@@ -101,8 +101,12 @@ resuelva. No adivinar: omitir es una señal, inventar es un error silencioso.
 
 Una descripción tiene **un solo tipo** en toda la base. Si el vocabulario ya trae
 esa descripción con un tipo distinto al que dice esta ficha, se reutiliza la
-descripción existente y se anota la discrepancia en `notes` (ver más abajo). La
-regla de resolución es del cargador: gana la más restrictiva.
+descripción existente y se anota la discrepancia en `notes` (ver más abajo).
+
+El cargador **no resuelve** esa discrepancia: no reescribe un registro que ya
+existe, porque cuelga de productos que la doctora ya aprobó. Solo la reporta, y
+la decide un humano desde el admin. Por eso la nota en `notes` importa: es lo
+único que va a quedar escrito sobre el caso.
 
 ## Contrato de salida
 
