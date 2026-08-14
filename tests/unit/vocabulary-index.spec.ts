@@ -61,6 +61,64 @@ describe('createVocabularyIndex — igualdad exacta (regla 3)', () => {
   })
 })
 
+describe('createVocabularyIndex — parecidos que el umbral de 0.80 dejaba pasar', () => {
+  it('reporta dos contraindicaciones que solo difieren en el último término', () => {
+    // Caso real del primer lote: 4 de 6 tokens compartidos = 0.67, por debajo
+    // del 0.80 viejo. Entraron las dos sin que nadie lo notara hasta revisarlas
+    // a ojo. Y no son lo mismo: "inflamación" contiene a "supurante", así que
+    // fusionarlas del lado equivocado afloja una restricción de seguridad.
+    const index = createVocabularyIndex([
+      { id: 8, text: 'Heridas, úlceras, lesiones infectadas o dermatosis supurante' },
+    ])
+
+    const resolution = index.resolve('Heridas, úlceras, lesiones infectadas o zonas de inflamación')
+
+    expect(resolution.kind).toBe('near')
+    if (resolution.kind === 'near') expect(resolution.matchedId).toBe(8)
+  })
+
+  it('reporta un texto que es reformulación de otro, aunque el puntaje no llegue', () => {
+    // Contención: todos los tokens del nuevo ya están en el existente. Es
+    // reformulación pura, y se detecta sin depender del umbral.
+    const index = createVocabularyIndex([
+      { id: 40, text: 'Tomar paracetamol en caso de febrícula o molestar leve' },
+    ])
+
+    const resolution = index.resolve('En caso de febrícula, tomar paracetamol')
+
+    expect(resolution.kind).toBe('near')
+    if (resolution.kind === 'near') expect(resolution.matchedId).toBe(40)
+  })
+
+  it('detecta la contención en la otra dirección', () => {
+    const index = createVocabularyIndex([{ id: 41, text: 'En caso de febrícula, tomar paracetamol' }])
+
+    expect(index.resolve('Tomar paracetamol en caso de febrícula o molestar leve').kind).toBe('near')
+  })
+
+  it('la contención no se salta el veto numérico', () => {
+    // "Reposo 24 horas" contiene los tokens de "Reposo horas", pero los números
+    // mandan: cantidades distintas son registros distintos, sin excepción.
+    const index = createVocabularyIndex([{ id: 42, text: 'Reposo absoluto 24 horas' }])
+
+    expect(index.resolve('Reposo absoluto 48 horas')).toEqual({ kind: 'new' })
+  })
+
+  it('no reporta dos textos que apenas comparten palabras', () => {
+    // El par de la albúmina puntúa 0.43 y sigue sin reportarse: bajar el umbral
+    // hasta ahí llenaría el reporte de ruido. Ese caso lo resuelve la doctora.
+    const index = createVocabularyIndex([
+      { id: 3, text: 'Hipersensibilidad conocida a la albúmina o intolerancia a cualquier componente de la fórmula.' },
+    ])
+
+    const resolution = index.resolve(
+      'Hipersensibilidad a la albúmina, proteínas de huevo u otros componentes de la fórmula.',
+    )
+
+    expect(resolution).toEqual({ kind: 'new' })
+  })
+})
+
 describe('createVocabularyIndex — números (reglas 4 y 5)', () => {
   const records = [
     { id: 3, text: 'No realizar ejercicio durante las primeras 12 horas' },

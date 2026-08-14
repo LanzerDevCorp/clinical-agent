@@ -42,8 +42,21 @@ export interface VocabularyIndex {
   readonly size: number
 }
 
-/** Below this score two texts are unrelated enough not to be worth reporting. */
-const NEAR_THRESHOLD = 0.8
+/**
+ * Below this score two texts are unrelated enough not to be worth reporting.
+ *
+ * It sat at 0.80 and let a real pair through: "Heridas, úlceras, lesiones
+ * infectadas o dermatosis supurante" against "…o zonas de inflamación" shares 4
+ * of 6 tokens — 0.67 — so both entered the catalogue unreported. They are not
+ * the same thing (inflammation contains suppuration, not the other way round),
+ * which is exactly why a human had to see the pair.
+ *
+ * 0.65 was measured, not guessed: across the whole catalogue only two pairs
+ * score above 0.55, so the looser threshold costs no measurable noise. And since
+ * a near miss only reports — it never merges — the threshold decides how much
+ * gets reviewed, not what is correct.
+ */
+const NEAR_THRESHOLD = 0.65
 
 export function normalizeCanonicalText(str: string): string {
   return str
@@ -114,6 +127,22 @@ function significantTokens(text: string): string[] {
   )
 }
 
+/**
+ * True when one text's significant tokens are all present in the other.
+ *
+ * A restatement scores badly on plain overlap: "En caso de febrícula, tomar
+ * paracetamol" against "Tomar paracetamol en caso de febrícula o molestar leve"
+ * only reaches 0.67, because the longer text carries two extra words that drag
+ * the ratio down. But every word of the shorter one is already in the longer,
+ * which is what restatement looks like — and unlike a ratio, containment does
+ * not depend on where the threshold sits.
+ */
+function oneContainsTheOther(tokens1: string[], tokens2: string[]): boolean {
+  if (tokens1.length === 0 || tokens2.length === 0) return false
+  const [shorter, longer] = tokens1.length <= tokens2.length ? [tokens1, tokens2] : [tokens2, tokens1]
+  return shorter.every((token) => longer.includes(token))
+}
+
 function tokenSimilarity(str1: string, str2: string): number {
   const tokens1 = significantTokens(str1)
   const tokens2 = significantTokens(str2)
@@ -160,14 +189,19 @@ export function createVocabularyIndex(records: EntityRecord[]): VocabularyIndex 
       if (exact !== undefined) return { kind: 'exact', id: exact }
 
       const numbers = numbersIn(normalized)
+      const tokens = significantTokens(value)
 
       for (const candidate of all) {
-        // Numeric veto: different quantities are different records, however alike
-        // the wording. "12 horas" and "24 horas" are not a doubtful pair — they
-        // are simply two records, so this case is not even worth reporting.
+        // Numeric veto first: different quantities are different records, however
+        // alike the wording, and that holds for containment too — "Reposo 24
+        // horas" contains every token of "Reposo horas" and is still not it.
         if (!sameNumbers(numbers, candidate.numbers)) continue
 
-        if (tokenSimilarity(value, candidate.text) >= NEAR_THRESHOLD) {
+        const alike =
+          tokenSimilarity(value, candidate.text) >= NEAR_THRESHOLD ||
+          oneContainsTheOther(tokens, significantTokens(candidate.text))
+
+        if (alike) {
           return { kind: 'near', matched: candidate.text, matchedId: candidate.id }
         }
       }
