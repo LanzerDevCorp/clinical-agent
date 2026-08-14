@@ -63,10 +63,11 @@ vivos.
 - **No se pierde ningún registro existente.** El script preserva `validationStatus`,
   descripción, notas y relaciones al actualizar. Esa preservación no se toca.
 - **El script no reescribe un registro compartido que ya existe.** Sobre
-  contraindicaciones, cuidados posteriores, advertencias y efectos adversos solo
-  puede crear registros nuevos o enlazar los que ya están. Nunca cambia el texto
-  ni el tipo de uno existente, porque ese registro cuelga de productos que la
-  doctora ya aprobó. Una discrepancia se reporta; no se resuelve escribiendo.
+  contraindicaciones, cuidados posteriores, advertencias, efectos adversos **y
+  protocolos** solo puede crear registros nuevos o enlazar los que ya están. Nunca
+  cambia el contenido de uno existente, porque ese registro cuelga de productos
+  que la doctora ya aprobó. Una discrepancia se reporta; no se resuelve
+  escribiendo.
 - **El agente no aprueba productos.** Todo entra `PENDING`; aprobar es de la
   doctora.
 
@@ -96,7 +97,15 @@ vivos.
 
 ## Qué hacer con el reporte
 
-El script deja tres clases de cosas sin resolver, a propósito:
+Cada corrida escribe uno en `tmp/migration/reports/`, con marca de tiempo y sin
+pisar el anterior — el del ensayo lleva `-ensayo` en el nombre, para no confundir
+"esto pasaría" con "esto pasó". Ahí está el resultado archivo por archivo y todo
+lo que el script se negó a decidir.
+
+Si algo falló, la corrida termina igual y sale con **código 1**. Un archivo roto
+no detiene a los otros nueve, pero tampoco se disimula.
+
+El script deja cinco clases de cosas sin resolver, a propósito:
 
 **Casi-duplicados.** Un término nuevo que se parece a uno existente pero no es
 idéntico. El script **no fusiona**: crea el registro nuevo y lo reporta. El
@@ -107,6 +116,16 @@ dos registros y no hay nada que discutir — eso ni siquiera se reporta.
 permite decidir. El script las crea como `absoluta` —el lado seguro— y las
 reporta. El agente las lista para que la doctora las confirme o las baje a
 `relativa`.
+
+**Tipos en conflicto.** La ficha tipa una contraindicación distinto de como ya
+está en la base. El registro existente **no se toca**: cuelga de productos
+aprobados. Se reporta y lo resuelve un humano desde el admin.
+
+**Protocolos en conflicto.** Ese nombre ya existe con otro contenido clínico
+—otra zona, otra profundidad, otra dosis—. El protocolo guardado **no se toca**.
+El script lista campo por campo qué dice la base y qué dice la ficha, para que se
+decida si son el mismo protocolo o si el nuevo necesita un nombre que los
+distinga. Ver la nota de abajo sobre por qué esto importa tanto acá.
 
 **Errores por archivo.** Un producto que falló no detiene la corrida, pero el
 script termina con código 1. El agente reporta cuáles fallaron y por qué, sin
@@ -119,31 +138,53 @@ lectura del código las contradice, es defecto del código, no de este documento
 
 | Regla | Estado |
 | --- | --- |
-| Modo de ensayo (`--dry-run`) que informa sin escribir, marcando qué registros compartidos tocaría | pendiente |
-| Precargar el vocabulario de la base una vez, no consultar por término y por producto | pendiente |
-| Resolver por **igualdad exacta** normalizada; nada de fusión difusa automática | pendiente |
-| Conservar los tokens numéricos al comparar (hoy `filter(w => w.length > 2)` los descarta) | pendiente |
-| Veto numérico: conjuntos de números distintos ⇒ registros distintos, sin importar la similitud | pendiente |
-| El tipo de contraindicación llega en el JSON; sin él, crear `absoluta` y reportar | pendiente |
-| Una descripción, un solo tipo: si hay discrepancia con un registro existente, reportarla sin escribir | pendiente |
-| Terminar la corrida completa y salir con `1` si hubo errores | pendiente |
-| Escribir un reporte con el resultado por archivo | pendiente |
+| Modo de ensayo (`--dry-run`) que informa sin escribir, marcando qué registros compartidos tocaría | **ya implementado** |
+| Precargar el vocabulario de la base una vez, no consultar por término y por producto | **ya implementado** |
+| Resolver por **igualdad exacta** normalizada; nada de fusión difusa automática | **ya implementado** |
+| Conservar los tokens numéricos al comparar (hoy `filter(w => w.length > 2)` los descarta) | **ya implementado** |
+| Veto numérico: conjuntos de números distintos ⇒ registros distintos, sin importar la similitud | **ya implementado** |
+| El tipo de contraindicación llega en el JSON; sin él, crear `absoluta` y reportar | **ya implementado** |
+| Una descripción, un solo tipo: si hay discrepancia con un registro existente, reportarla sin escribir | **ya implementado** |
+| Terminar la corrida completa y salir con `1` si hubo errores | **ya implementado** |
+| Escribir un reporte con el resultado por archivo | **ya implementado** |
 | Preservar aliases, estado, descripción y relaciones de los productos existentes | **ya implementado** |
 | Upsert por `canonicalName` en mayúsculas | **ya implementado** |
 
-### El defecto que originó estas reglas
+### Los defectos que originaron estas reglas
 
-`tokenSimilarity` filtra tokens con `w.length > 2`, lo que descarta todo número de
-una o dos cifras antes de comparar. Verificado ejecutando el algoritmo:
+**El matcher descartaba los números.** `tokenSimilarity` filtraba con
+`w.length > 2`, lo que saca todo número de una o dos cifras antes de comparar:
 
 ```
-1.00  "…primeras 12 horas…"  vs  "…primeras 24 horas…"     → fusionaría
-1.00  "…solar por 24 horas"  vs  "…solar por 48 horas"     → fusionaría
+1.00  "…primeras 12 horas…"  vs  "…primeras 24 horas…"     → fusionaba
+1.00  "…solar por 24 horas"  vs  "…solar por 48 horas"     → fusionaba
 0.00  "Embarazo"             vs  "Lactancia"               → separa, correcto
 ```
 
-El matcher no es malo en general: es ciego exactamente donde vive la precisión
-clínica.
+No era malo en general: era ciego exactamente donde vive la precisión clínica.
+
+**Y el parecido alcanzaba para fusionar.** El primer ensayo, sobre una sola ficha,
+enlazó `ExoCoBio Inc, Corea del Sur` a `HUGEL Inc., Corea del Sur`: dos empresas
+coreanas distintas. Comparten `inc`, `corea`, `del` y `sur` — 4 de 5 tokens,
+exactamente 0.80. El sufijo geográfico bastaba para atribuirle el producto al
+laboratorio equivocado, en silencio.
+
+Por eso ahora **solo la igualdad exacta enlaza**. Un parecido crea el registro
+nuevo y queda reportado: unir dos términos que sí eran el mismo cuesta un minuto
+en el admin, y separar dos que nunca lo fueron exige encontrar qué se movió.
+
+### El nombre es la identidad de un protocolo
+
+`protocols.name` es lo único con que el script distingue un protocolo de otro, y
+**no tiene índice único** en la base: nada impide que dos protocolos distintos
+terminen con el mismo nombre. Si eso pasa, para el script son un solo registro.
+
+Antes eso se resolvía actualizando lo que encontrara, y el resultado era que el
+segundo producto en usar un nombre se quedaba con las zonas, la profundidad y la
+dosis del primero — sobre presentaciones ya aprobadas, y sin decir nada.
+
+Por eso el nombre lo compone el extractor, con la obligación de que dos
+protocolos distintos nunca lo compartan, y por eso acá se enlaza sin escribir.
 
 ## Un caso aislado que se resuelve a mano
 

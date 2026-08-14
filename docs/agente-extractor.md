@@ -14,6 +14,21 @@ Quien lee esta información al final es un vendedor o un paciente, que no tienen
 el criterio de la doctora para detectar un dato inventado. Un campo vacío es
 visible y se corrige. Un campo inventado parece correcto y no se corrige nunca.
 
+### Un dato clínico no es lo mismo que la etiqueta de un registro
+
+La regla de arriba protege el **contenido clínico**: dosis, plazos, zonas,
+profundidades, contraindicaciones. Eso no se inventa jamás.
+
+No aplica al **nombre con que se identifica un registro**. Un protocolo necesita
+un nombre para existir en la base y para que la doctora lo reconozca en el admin;
+ninguna ficha trae ese nombre escrito, y los 13 protocolos que ya están cargados
+lo demuestran — `Protocolo Revitalizante y Antioxidante AEC` no sale de ningún
+datasheet, lo compuso quien cargó ese producto.
+
+Omitir un nombre no es prudencia: deja el registro sin poder crearse. Componerlo
+a partir de lo que la ficha sí dice es lo correcto, y no afirma nada clínico que
+la ficha no afirme.
+
 ## Entrada
 
 1. **Un lote de máximo 10 fichas** de `real-products/`, en orden alfabético.
@@ -107,6 +122,37 @@ El cargador **no resuelve** esa discrepancia: no reescribe un registro que ya
 existe, porque cuelga de productos que la doctora ya aprobó. Solo la reporta, y
 la decide un humano desde el admin. Por eso la nota en `notes` importa: es lo
 único que va a quedar escrito sobre el caso.
+
+## Los protocolos llevan nombre, y lo ponés vos
+
+`name` es **obligatorio** en cada protocolo. Sin él el registro no se puede crear
+—`Protocols.ts` lo exige— y el cargador aborta ese archivo.
+
+La convención sale de los 13 ya cargados: `Protocolo` + el efecto clínico + el
+producto.
+
+```
+Protocolo Revitalizante y Antioxidante AEC
+Protocolo Relajación Muscular Botulax
+Protocolo Mesoterapia Lipolítica Cafeína
+```
+
+El efecto clínico sale de la ficha —de sus indicaciones, de lo que el producto
+declara hacer— no de tu criterio sobre qué debería hacer.
+
+**Dos protocolos distintos nunca llevan el mismo nombre.** Si un producto tiene
+varias presentaciones con protocolos que difieren en zona, profundidad o dosis,
+cada nombre tiene que distinguirlas:
+
+```
+Protocolo Volumizador CELOSOME SOFT
+Protocolo Volumizador CELOSOME MID
+Protocolo Volumizador CELOSOME STRONG
+```
+
+Esto no es prolijidad. El cargador identifica los protocolos **por nombre**: dos
+protocolos distintos que comparten nombre son un solo registro en la base, y el
+segundo se queda sin sus zonas y su profundidad propias.
 
 ## Contrato de salida
 
