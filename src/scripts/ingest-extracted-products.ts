@@ -16,6 +16,7 @@ import {
   type FileResult,
   type Plan,
 } from './lib/ingest-report'
+import { mergePresentations } from './lib/merge-presentations'
 import {
   describeProtocolDifference,
   type ProtocolShape,
@@ -588,22 +589,10 @@ async function run() {
           payloadData.activeIngredients = Array.from(new Set([...getIds(existingDoc.activeIngredients), ...ingredientIds]))
         }
         if (existingDoc.presentations && existingDoc.presentations.length > 0) {
-          payloadData.presentations = existingDoc.presentations.map((existingPres: any, idx: number) => {
-            const newPres = cleanedPresentations[idx] || cleanedPresentations[0] || {}
-
-            const getIds = (arr: any) => (!arr || !Array.isArray(arr) ? [] : arr.map((item) => (typeof item === 'object' ? item.id : item)))
-            const mergeIds = (existingArr: any, newArr: any) => Array.from(new Set([...getIds(existingArr), ...getIds(newArr)]))
-
-            return {
-              ...existingPres,
-              contraindications: mergeIds(existingPres.contraindications, newPres.contraindications),
-              postCareNotes: mergeIds(existingPres.postCareNotes, newPres.postCareNotes),
-              safetyWarnings: mergeIds(existingPres.safetyWarnings, newPres.safetyWarnings),
-              adverseEffects: mergeIds(existingPres.adverseEffects, newPres.adverseEffects),
-              clinicalIndications: mergeIds(existingPres.clinicalIndications, newPres.clinicalIndications),
-              protocols: newPres.protocols && newPres.protocols.length > 0 ? getIds(newPres.protocols) : getIds(existingPres.protocols),
-            }
-          })
+          payloadData.presentations = mergePresentations(
+            existingDoc.presentations,
+            cleanedPresentations,
+          )
         }
 
         ctx.plan.products.push({ name: payloadData.canonicalName, action: 'update' })
