@@ -21,6 +21,7 @@
     "db:local:seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/scripts/seed-local.ts",
     "db:local:seed:fiction": "cross-env SEED_DATASET=fiction NODE_OPTIONS=--no-deprecation payload run src/scripts/seed-local.ts",
     "db:local:fixture": "node src/scripts/extract-real-catalogue.mjs",
+    "db:local:mcp-key": "cross-env NODE_OPTIONS=--no-deprecation payload run src/scripts/create-mcp-readonly-key.ts",
     "db:vocabulary": "node src/scripts/dump-vocabulary.mjs",
     "db:local:reset": "supabase db reset && pnpm payload migrate && pnpm run db:local:seed",
     "db:reset-safety": "tsx --env-file=.env src/scripts/reset-clinical-safety.ts",
