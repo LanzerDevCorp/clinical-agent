@@ -41,13 +41,21 @@ export const Protocols: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    // Los tres van vacíos cuando la ficha no trae el dato, y por eso ninguno es
+    // obligatorio. Exigirlos no producía protocolos más completos: producía
+    // registros de relleno —"Sin zona especificada", "Sin vía especificada"— que
+    // ensucian el catálogo y no dicen nada. Un campo vacío se ve, y la doctora lo
+    // completa desde el admin cuando corresponde.
+    //
+    // No requiere migración: las relaciones hasMany viven como filas en
+    // `protocols_rels`, no como columnas de `protocols`, así que `required` es
+    // validación de aplicación y nada más.
     {
       name: 'zones',
       label: 'Zonas de aplicación',
       type: 'relationship',
       relationTo: 'application-zones',
       hasMany: true,
-      required: true,
     },
     {
       name: 'routes',
@@ -55,7 +63,6 @@ export const Protocols: CollectionConfig = {
       type: 'relationship',
       relationTo: 'administration-routes',
       hasMany: true,
-      required: true,
     },
     {
       name: 'techniques',
@@ -63,7 +70,6 @@ export const Protocols: CollectionConfig = {
       type: 'relationship',
       relationTo: 'application-techniques',
       hasMany: true,
-      required: true,
     },
     {
       name: 'visibleEffectsOnset',

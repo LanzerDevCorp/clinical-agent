@@ -75,9 +75,9 @@ beforeAll(async () => {
   const protocol = await payload.create({
     collection: 'protocols', data: {
       clientShareable: true, name: `Runtime shareable ${seed}`,
-      zones: sourceProtocol.zones.map((item) => typeof item === 'number' ? item : item.id),
-      routes: sourceProtocol.routes.map((item) => typeof item === 'number' ? item : item.id),
-      techniques: sourceProtocol.techniques.map((item) => typeof item === 'number' ? item : item.id),
+      zones: (sourceProtocol.zones ?? []).map((item) => typeof item === 'number' ? item : item.id),
+      routes: (sourceProtocol.routes ?? []).map((item) => typeof item === 'number' ? item : item.id),
+      techniques: (sourceProtocol.techniques ?? []).map((item) => typeof item === 'number' ? item : item.id),
       visibleEffectsOnset: '24 hours', effectDuration: '4 months', recommendedDose: '0.2 mL',
       injectionDepth: 'Deep dermis', sessionsMin: 1, sessionsMax: 3, frequency: 'Every 30 days',
     },

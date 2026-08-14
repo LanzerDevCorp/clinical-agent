@@ -29,6 +29,16 @@ Omitir un nombre no es prudencia: deja el registro sin poder crearse. Componerlo
 a partir de lo que la ficha sí dice es lo correcto, y no afirma nada clínico que
 la ficha no afirme.
 
+### Omitir zonas, vías y técnicas está bien
+
+Son el caso contrario al nombre: si la ficha no las declara, se omiten y el campo
+queda **vacío** en la base. No hay que rellenarlas con nada, ni con un texto
+genérico, ni con lo que declara otro producto parecido.
+
+El cargador tampoco inventa: dejó de crear registros como `Sin vía especificada`,
+justamente porque un relleno parece un dato y no se corrige nunca. Un campo vacío
+lo ve la doctora y lo completa si corresponde.
+
 ## Entrada
 
 1. **Un lote de máximo 10 fichas** de `real-products/`, en orden alfabético.

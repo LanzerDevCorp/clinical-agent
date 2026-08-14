@@ -145,6 +145,7 @@ lectura del código las contradice, es defecto del código, no de este documento
 | Veto numérico: conjuntos de números distintos ⇒ registros distintos, sin importar la similitud | **ya implementado** |
 | El tipo de contraindicación llega en el JSON; sin él, crear `absoluta` y reportar | **ya implementado** |
 | Una descripción, un solo tipo: si hay discrepancia con un registro existente, reportarla sin escribir | **ya implementado** |
+| Un dato ausente deja el campo vacío; nunca se crea un registro de relleno | **ya implementado** |
 | Terminar la corrida completa y salir con `1` si hubo errores | **ya implementado** |
 | Escribir un reporte con el resultado por archivo | **ya implementado** |
 | Preservar aliases, estado, descripción y relaciones de los productos existentes | **ya implementado** |
@@ -172,6 +173,23 @@ laboratorio equivocado, en silencio.
 Por eso ahora **solo la igualdad exacta enlaza**. Un parecido crea el registro
 nuevo y queda reportado: unir dos términos que sí eran el mismo cuesta un minuto
 en el admin, y separar dos que nunca lo fueron exige encontrar qué se movió.
+
+### Un campo vacío es un dato; un registro de relleno es una mentira
+
+Cuando la ficha no declaraba zona, vía o técnica, el cargador creaba registros
+como `Sin zona especificada` o `Sin vía especificada` y enlazaba el protocolo a
+ellos. Eso hacía dos daños. El protocolo quedaba diciendo algo falso —que su vía
+de administración es "sin vía especificada"— y además el registro quedaba en el
+catálogo, ofrecido al próximo producto como si fuera un término clínico real.
+
+Ahora esos campos van **vacíos**. Un hueco se ve en el admin y la doctora lo
+completa; un relleno parece un dato y no se corrige nunca. Es la misma razón por
+la que el extractor omite en vez de inferir.
+
+Por eso `zones`, `routes` y `techniques` dejaron de ser obligatorios en
+`Protocols.ts`. No hizo falta migración: las relaciones `hasMany` viven como
+filas en `protocols_rels`, no como columnas de `protocols`, así que `required`
+era validación de aplicación y nada más.
 
 ### El nombre es la identidad de un protocolo
 

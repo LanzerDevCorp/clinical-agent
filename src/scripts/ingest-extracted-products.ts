@@ -312,9 +312,12 @@ async function getOrCreateProtocol(
     return []
   }
 
+  // Sin relleno: si la ficha no trae zona, vía o técnica, el campo va vacío.
+  // Un registro "Sin zona especificada" no es el dato ausente, es un dato falso
+  // que además queda en el catálogo para que lo reutilice el próximo producto.
+  // Vacío se ve, y lo completa la doctora.
   const rawZones = protoData.zones || protoData.zone
-  let zoneNames = parseStringOrArray(rawZones)
-  if (zoneNames.length === 0) zoneNames = ['Sin zona especificada']
+  const zoneNames = parseStringOrArray(rawZones)
 
   const zoneIds: number[] = []
   for (const zName of zoneNames) {
@@ -323,8 +326,7 @@ async function getOrCreateProtocol(
   }
 
   const rawRoutes = protoData.routes || protoData.route
-  let routeNames = parseStringOrArray(rawRoutes)
-  if (routeNames.length === 0) routeNames = ['Sin vía especificada']
+  const routeNames = parseStringOrArray(rawRoutes)
 
   const routeIds: number[] = []
   for (const rName of routeNames) {
@@ -333,8 +335,7 @@ async function getOrCreateProtocol(
   }
 
   const rawTechs = protoData.techniques || protoData.technique
-  let techNames = parseStringOrArray(rawTechs)
-  if (techNames.length === 0) techNames = ['Sin técnica especificada']
+  const techNames = parseStringOrArray(rawTechs)
 
   const techIds: number[] = []
   for (const tName of techNames) {
@@ -362,7 +363,8 @@ async function getOrCreateProtocol(
     depth: 0,
   })
 
-  const detail = `(Zonas: ${zoneNames.join(', ')} | Vías: ${routeNames.join(', ')} | Técnicas: ${techNames.join(', ')})`
+  const list = (names: string[]) => (names.length > 0 ? names.join(', ') : '—')
+  const detail = `(Zonas: ${list(zoneNames)} | Vías: ${list(routeNames)} | Técnicas: ${list(techNames)})`
 
   if (existing.docs.length > 0) {
     const found = existing.docs[0]

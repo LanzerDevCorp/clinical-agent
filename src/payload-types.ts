@@ -315,9 +315,9 @@ export interface Protocol {
   id: number;
   clientShareable: boolean;
   name: string;
-  zones: (number | ApplicationZone)[];
-  routes: (number | AdministrationRoute)[];
-  techniques: (number | ApplicationTechnique)[];
+  zones?: (number | ApplicationZone)[] | null;
+  routes?: (number | AdministrationRoute)[] | null;
+  techniques?: (number | ApplicationTechnique)[] | null;
   visibleEffectsOnset?: string | null;
   effectDuration?: string | null;
   recommendedDose?: string | null;

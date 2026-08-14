@@ -152,7 +152,11 @@ const detailPopulate = {
   },
 } as const
 
+// Un protocolo puede no traer zonas, vías ni técnicas: la ficha del producto no
+// siempre las declara, y el catálogo prefiere el campo vacío antes que un
+// registro de relleno. Ausente y vacío son lo mismo acá, y ninguno es un error.
 function relationNames(records: Protocol['zones']): string[] {
+  if (!records) return []
   if (!records.every((record): record is Exclude<typeof record, number> => typeof record !== 'number')) throw new Error('ID_ONLY_RELATION')
   return records.map((record) => record.name)
 }
