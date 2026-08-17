@@ -1,7 +1,9 @@
 # Agente Extractor
 
-Lee fichas técnicas de `real-products/*.md` y emite un JSON estructurado por
-producto en `tmp/migration/extracted/`, que el Agente Cargador ingiere después.
+Lee **dos fuentes** —la ficha técnica del producto en `real-products/*.md` y el
+catálogo clínico que lo cubre en `catalogs/indices/*.md`— y emite un JSON
+estructurado por producto en `tmp/migration/extracted/`, que el Agente Cargador
+ingiere después.
 
 No toca la base de datos. Opera solo sobre archivos.
 
@@ -43,7 +45,9 @@ lo ve la doctora y lo completa si corresponde.
 
 1. **Un lote de máximo 10 fichas** de `real-products/`, en orden alfabético.
    El límite existe para que la doctora pueda revisar por tandas.
-2. **El vocabulario actual de producción**, en `tmp/migration/vocabulary.json`, que
+2. **Los catálogos clínicos de `catalogs/indices/*.md`** que cubren esos
+   productos. **No son opcionales**: ver la sección siguiente.
+3. **El vocabulario actual de producción**, en `tmp/migration/vocabulary.json`, que
    produce `pnpm db:vocabulary`. Se regenera **antes de cada lote**: el lote
    anterior ya cargó sus términos en producción.
 
@@ -82,6 +86,65 @@ archivo sobrevive a la terminal que lo generó.
 El volcado aborta si detecta el dataset ficticio, y siempre imprime la lista de
 productos: el guard atrapa el seed inventado, pero no puede atrapar un producto
 tipeado a mano. Hay que mirar la lista.
+
+## La ficha sola no alcanza: los catálogos clínicos también son fuente
+
+**Cada producto se arma leyendo su ficha Y el catálogo clínico que lo cubre.**
+Los catálogos viven en `catalogs/indices/*.md`, uno por familia —`enzimas.md`,
+`rellenos.md`, `Lipolíticos.md`, `regenerativos.md`, `despigmentantes.md`,
+`Skin boosters.md`, `hidratantes.md`, `toxinas.md`, `capilar.md`, `Hilos PDO.md`—
+y hay que buscar en cuál está el producto antes de empezar.
+
+Traen dos cosas que las fichas casi nunca traen:
+
+- **Secciones compartidas por familia** —`Cuidados Post Aplicación`,
+  `Contraindicaciones`, `Efectos Adversos`, `Protocolo de Aplicación`— que
+  arrancan con una línea `Aplica a:` diciendo a qué productos alcanzan. Esa línea
+  es la que manda: puede decir *todos los productos*, *todos los skin boosters*, o
+  nombrar productos uno por uno.
+- **Datos por producto** que la ficha omite: composición, mecanismo de acción,
+  indicaciones, presentación.
+
+### Por qué esto no es opcional
+
+El lote 2 se extrajo sin leer los catálogos y los 10 productos entraron **sin una
+sola advertencia de seguridad**, 7 de ellos **sin cuidados posteriores**. No era
+que el dato no existiera: `despigmentantes.md` tiene 6 cuidados post-aplicación
+que dicen `Aplica a: GLUTATHIONE` con todas las letras, y `enzimas.md` tiene
+contraindicaciones, efectos adversos y recomendaciones que aplican a los CLH y a
+COLLAGENASE. Se perdieron porque nadie los pidió.
+
+### El contenido manda sobre el encabezado
+
+Un encabezado no decide a qué campo va lo que tiene debajo. **Lo decide el texto.**
+Esto vale para las dos fuentes, y no es teoría: ya pasó en el lote 2.
+
+- `FAT BURNER` y `GLUTATHIONE` tienen una sección `RECOMENDACIONES:` cuyo
+  contenido es *"No aplicar en heridas…"*, *"Contraindicado en pacientes
+  hipertensos…"*. Son **contraindicaciones**, aunque el título diga otra cosa.
+- `COLLAGENASE` usa **el mismo encabezado** para *"Tomar abundante agua"*,
+  *"Radiofrecuencia 72 horas después"*. Ahí sí son **cuidados posteriores**.
+- `CELOSOME` titula `REACCIONES:` un bloque que dice *"No debe aplicarse…"*,
+  *"No utilizar durante embarazo"*. Son **contraindicaciones**, no efectos
+  adversos. En `CELOSOME X-SHAPE` el mismo título sí trae *"Dolor leve.
+  Inflamación."*, que sí son efectos adversos.
+
+Los catálogos además nombran los productos distinto a como están en la base
+(`Deoxycholic 10%` en el catálogo, `DEOXICHOLIC 10%` en el registro). Se empareja
+por producto, no por cadena exacta; las tablas de los índices traen las dos
+columnas justamente para eso.
+
+### Cuando la fuente misma es ambigua
+
+Si un ítem está en un campo que no le corresponde y no hay forma de resolverlo
+leyendo, **se copia donde la fuente lo puso y se anota en `notes`**. No se
+reubica por criterio propio.
+
+El caso testigo es `Barbicuello. (opcional).`, que las dos fichas CLH listan bajo
+`RECOMENDACIONES:` entre cuidados reales. Parece una zona anatómica, no un
+cuidado. `catalogs/indices/enzimas.md` lo marca con asterisco y sin nota al pie, y
+`reporte_dudas.md` lo tiene como duda abierta: nadie sabe a qué se refiere.
+Inventarle un lugar es peor que dejarlo señalado.
 
 ## El vocabulario manda
 
