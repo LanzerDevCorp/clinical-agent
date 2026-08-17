@@ -26,7 +26,8 @@
     "db:vocabulary": "node src/scripts/dump-vocabulary.mjs",
     "db:local:reset": "supabase db reset && pnpm payload migrate && pnpm run db:local:seed",
     "db:reset-safety": "tsx --env-file=.env src/scripts/reset-clinical-safety.ts",
-    "check:gateway-model": "tsx src/scripts/check-gateway-model.ts"
+    "check:gateway-model": "tsx src/scripts/check-gateway-model.ts",
+    "db:vocabulary:audit": "tsx --env-file=.env src/scripts/audit-vocabulary.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.85.1",

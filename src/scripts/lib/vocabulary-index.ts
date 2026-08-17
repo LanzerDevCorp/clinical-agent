@@ -167,6 +167,83 @@ function tokenSimilarity(str1: string, str2: string): number {
   return matches / Math.max(tokens1.length, tokens2.length)
 }
 
+/** Two existing records that resemble each other, for a human to judge. */
+export interface NearPair {
+  a: EntityRecord
+  b: EntityRecord
+  /** Token similarity, 0 to 1. Reported even when containment is what matched. */
+  score: number
+  /** True when every significant token of the shorter text is in the longer. */
+  containment: boolean
+  /**
+   * True when the two texts mention different quantities.
+   *
+   * These are never merge candidates — that is the numeric veto, and it holds.
+   * They are reported anyway, in their own bucket: two records that say the same
+   * thing about different plazos are either a real clinical distinction or an
+   * inconsistency between two products, and only a human tells those apart.
+   */
+  numericConflict: boolean
+}
+
+/**
+ * Every resembling pair inside one collection, compared all against all.
+ *
+ * This is the question `resolve` cannot answer. It matches an *incoming* term
+ * against what exists, which is the right question while a batch is loading and
+ * the wrong one afterwards: the records already in the catalogue were never
+ * compared with each other. The albumin pair — ids 3 and 11, both approved in
+ * production, scoring 0.43 — is what that blind spot looks like.
+ *
+ * `threshold` is deliberately a parameter. The loader's 0.65 decides what
+ * interrupts a load; an audit read by a human can afford a lower floor, because
+ * its output is a list to review, not a record to create.
+ */
+export function findNearPairs(
+  records: EntityRecord[],
+  threshold: number = NEAR_THRESHOLD,
+): NearPair[] {
+  const prepared = records.map((record) => ({
+    record,
+    tokens: significantTokens(record.text),
+    numbers: numbersIn(normalizeCanonicalText(record.text)),
+  }))
+
+  const pairs: NearPair[] = []
+
+  for (let i = 0; i < prepared.length; i++) {
+    for (let j = i + 1; j < prepared.length; j++) {
+      const left = prepared[i]
+      const right = prepared[j]
+
+      const score = tokenSimilarity(left.record.text, right.record.text)
+      const containment = oneContainsTheOther(left.tokens, right.tokens)
+      if (score < threshold && !containment) continue
+
+      pairs.push({
+        a: left.record,
+        b: right.record,
+        score,
+        containment,
+        numericConflict: !sameNumbers(left.numbers, right.numbers),
+      })
+    }
+  }
+
+  // Merge candidates first, strongest resemblance first inside each group.
+  //
+  // Sorting by score alone buries the useful rows: "Vitamina B1 (Tiamina)" and
+  // "Vitamina B3 (Niacina)" share every non-numeric token and score a perfect
+  // 1.00, so the pairs the numeric veto already ruled out would fill the top of
+  // every page. They are still worth printing — two records that differ only in a
+  // plazo may be a real distinction or an inconsistency — but they are worth
+  // printing last.
+  return pairs.sort((x, y) => {
+    if (x.numericConflict !== y.numericConflict) return x.numericConflict ? 1 : -1
+    return y.score - x.score
+  })
+}
+
 export function createVocabularyIndex(records: EntityRecord[]): VocabularyIndex {
   const byNormalized = new Map<string, number>()
   const all: Array<EntityRecord & { normalized: string; numbers: Set<string> }> = []
