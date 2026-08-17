@@ -161,6 +161,30 @@ concentraciones y plazos.
 La explicitud gana sobre la prolijidad. Un registro de más se ve y se corrige en
 un minuto; una distinción clínica borrada es invisible.
 
+## Una ficha es un producto
+
+**Cada archivo de `real-products/` produce exactamente un JSON.** Dos fichas nunca
+se fusionan en un producto con dos presentaciones, por parecidos que sean sus
+ingredientes.
+
+El caso que lo definió son `CLH LIPASE 1500` y `CLH liquida`: el mismo cóctel de
+tres enzimas en dos formas farmacéuticas. El extractor los resolvió distinto en
+dos corridas —una vez uno, otra vez dos— y ninguna lectura de la ficha zanjaba
+cuál era la correcta.
+
+**Lo decidió la doctora: dos productos.** La regla general que deja es que el
+recorte comercial no se deduce de la composición. Quien decide si dos formas son
+un producto o dos es quien vende el catálogo, y esa decisión ya está tomada al
+escribir la ficha: si hay dos fichas, hay dos productos.
+
+Las `presentations` son los formatos que **una misma ficha** declara —viales de
+distinto volumen, concentraciones, una presentación descontinuada—, no un lugar
+donde meter otra ficha.
+
+Que dos productos compartan contraindicaciones, indicaciones o efectos adversos
+no es un problema: para eso existe el vocabulario. Se copian carácter por
+carácter y el cargador los enlaza al mismo registro compartido.
+
 ## Contraindicaciones: el tipo se decide acá
 
 Cada contraindicación sale con su tipo, leído del texto de la ficha:
