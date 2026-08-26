@@ -29,9 +29,15 @@
  *
  * Plain .mjs on purpose — it never loads Payload, so it needs neither the config
  * nor tsx to run.
+ *
+ * Second use: dumping the live local catalogue for promotion to production
+ * (see promote-catalogue-to-production.ts). That flow points FIXTURE_SOURCE_URL
+ * at the app's own local database on purpose — local IS the reviewed state being
+ * promoted there — and sets FIXTURE_OUT_PATH so the committed fixture never gets
+ * overwritten by a promotion run.
  */
 import { createRequire } from 'node:module'
-import { writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -43,17 +49,21 @@ const pg = createRequire(require.resolve('@payloadcms/db-postgres'))('pg')
 const SCRATCH_URL =
   process.env.FIXTURE_SOURCE_URL || 'postgresql://postgres:postgres@127.0.0.1:54322/neonref_seed'
 
-if (!/@(localhost|127\.0\.0\.1|\[::1\]|host\.docker\.internal)[:/]/.test(SCRATCH_URL)) {
+const isLocalSource = /@(localhost|127\.0\.0\.1|\[::1\]|host\.docker\.internal)[:/]/.test(SCRATCH_URL)
+
+// Read-only script, so a remote source only needs an explicit opt-in — no backup/dry-run
+// ceremony, unlike ALLOW_REMOTE_DATABASE for the write-side scripts. Used to verify a
+// promotion after the fact: dump production and diff it against the fixture that drove it.
+if (!isLocalSource && process.env.FIXTURE_ALLOW_REMOTE !== '1') {
   throw new Error(
-    `Refusing to read from "${SCRATCH_URL}". This script only ever reads a local scratch database.`,
+    `Refusing to read from "${SCRATCH_URL}". This script only ever reads a local scratch ` +
+      'database unless FIXTURE_ALLOW_REMOTE=1 is set on the command.',
   )
 }
 
-const OUT = path.join(
-  path.dirname(fileURLToPath(import.meta.url)),
-  'fixtures',
-  'real-catalogue.json',
-)
+const OUT = process.env.FIXTURE_OUT_PATH
+  ? path.resolve(process.env.FIXTURE_OUT_PATH)
+  : path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'real-catalogue.json')
 
 const client = new pg.Client(SCRATCH_URL)
 await client.connect()
@@ -216,6 +226,7 @@ const fixture = {
   products,
 }
 
+mkdirSync(path.dirname(OUT), { recursive: true })
 writeFileSync(OUT, JSON.stringify(fixture, null, 2) + '\n', 'utf8')
 await client.end()
 

@@ -69,3 +69,4 @@ node_modules/
 # production and the JSON the extractor writes for each batch — derived state,
 # regenerated before every batch, and clinical data besides.
 /tmp/
+.env*

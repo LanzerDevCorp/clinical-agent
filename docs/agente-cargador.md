@@ -73,6 +73,11 @@ vivos.
 
 ## Secuencia
 
+Para limitar una corrida a archivos concretos, repetir `--file` con el basename:
+`pnpm db:ingest -- --file TRANEXAMICUM.json --file GLUTATHIONE.json`. Solo acepta
+JSON directos de `tmp/migration/extracted/`, los conserva en el orden solicitado y
+valida la selección antes de inicializar Payload.
+
 1. **Refrescar la base local desde producción**, si viene de un lote ya promovido.
    Es lo que garantiza que local sea copia exacta antes de empezar. Los comandos
    están en el encabezado de `src/scripts/extract-real-catalogue.mjs`, y terminan

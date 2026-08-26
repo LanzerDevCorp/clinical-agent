@@ -1,6 +1,5 @@
 import 'dotenv/config'
-import { getPayload } from 'payload'
-import configPromise from '../payload.config'
+import type { getPayload } from 'payload'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs'
@@ -22,6 +21,7 @@ import {
   type ProtocolShape,
 } from './lib/protocol-difference'
 import { createVocabularyIndex, type VocabularyIndex } from './lib/vocabulary-index'
+import { parseIngestArguments, selectExtractedFiles } from './lib/extracted-file-selector'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -402,13 +402,20 @@ async function getOrCreateProtocol(
 }
 
 async function run() {
-  const dryRun = process.argv.includes('--dry-run')
-
-  console.log('Inicializando Payload CMS...')
-  const payload = await getPayload({ config: configPromise })
+  const { dryRun, requestedFiles } = parseIngestArguments(process.argv.slice(2))
 
   const extractedDir = path.resolve(dirname, '../../tmp/migration/extracted')
-  const files = readdirSync(extractedDir).filter((f) => f.endsWith('.json'))
+  const directJsonFiles = readdirSync(extractedDir, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.json'))
+    .map((entry) => entry.name)
+  const files = selectExtractedFiles(directJsonFiles, requestedFiles)
+
+  console.log('Inicializando Payload CMS...')
+  const [{ getPayload }, { default: configPromise }] = await Promise.all([
+    import('payload'),
+    import('../payload.config'),
+  ])
+  const payload = await getPayload({ config: configPromise })
 
   if (dryRun) {
     console.log('\n=== ENSAYO — no se escribe nada ===')

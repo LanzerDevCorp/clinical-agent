@@ -27,7 +27,10 @@
     "db:local:reset": "supabase db reset && pnpm payload migrate && pnpm run db:local:seed",
     "db:reset-safety": "tsx --env-file=.env src/scripts/reset-clinical-safety.ts",
     "check:gateway-model": "tsx src/scripts/check-gateway-model.ts",
-    "db:vocabulary:audit": "tsx --env-file=.env src/scripts/audit-vocabulary.ts"
+    "db:vocabulary:audit": "tsx --env-file=.env src/scripts/audit-vocabulary.ts",
+    "db:promotion:extract": "cross-env FIXTURE_SOURCE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres FIXTURE_OUT_PATH=tmp/migration/promotion/local-catalogue.json node src/scripts/extract-real-catalogue.mjs",
+    "db:promotion:dry-run": "cross-env NODE_OPTIONS=--no-deprecation payload run src/scripts/promote-catalogue-to-production.ts",
+    "db:promotion:apply": "cross-env PROMOTE_CONFIRM=yes NODE_OPTIONS=--no-deprecation payload run src/scripts/promote-catalogue-to-production.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.85.1",
