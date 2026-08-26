@@ -72,7 +72,9 @@ async function seedAdminUser() {
 
   await payload.create({
     collection: 'users',
-    data: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
+    // Explicit, because the field's own default is 'user' — new accounts start
+    // at the lower privilege, but the seed's own admin account should not.
+    data: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD, role: 'admin' },
   })
   console.log(`Admin user created: ${ADMIN_EMAIL}`)
 }

@@ -2,9 +2,10 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import path from 'path'
-import { buildConfig } from 'payload'
+import { buildConfig, type Config } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { adminOnly } from './access/adminOnly'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -116,6 +117,28 @@ import { es } from 'payload/i18n/es'
 import { en } from 'payload/i18n/en'
 
 /**
+ * `mcpPlugin` injects `payload-mcp-api-keys` with no admin/access options of its
+ * own (checked its source — the collection it returns is a plain object literal).
+ * A plugin is just `(config) => config`, so the only way to reach what an
+ * earlier plugin added is a later one — but `buildConfig` does not run plugins
+ * in array order, it re-sorts them by an `.order` property first
+ * (`node_modules/payload/dist/config/build.js`), and `mcpPlugin` sets its own to
+ * `10` specifically to run late. Array position alone would put this plugin
+ * BEFORE `mcpPlugin` (default order 0) — confirmed by it silently no-op'ing,
+ * the collection not existing yet — so it needs a higher order to actually run
+ * after.
+ */
+function hideApiKeysFromNonAdmins(config: Config): Config {
+  const apiKeys = config.collections?.find((collection) => collection.slug === 'payload-mcp-api-keys')
+  if (!apiKeys) return config
+
+  apiKeys.admin = { ...apiKeys.admin, hidden: ({ user }) => user?.role !== 'admin' }
+  apiKeys.access = { read: adminOnly, create: adminOnly, update: adminOnly, delete: adminOnly }
+  return config
+}
+hideApiKeysFromNonAdmins.order = 20
+
+/**
  * Payload reads the auth cookie only when the request's Origin appears on this
  * list, and skips it silently otherwise (`config.csrf.includes(origin)` in
  * payload/dist/auth/extractJWT.js). The list is never empty because of the
@@ -215,5 +238,6 @@ export default buildConfig({
         products: { enabled: { find: true, create: true, update: true, delete: false } },
       },
     }),
+    hideApiKeysFromNonAdmins,
   ],
 })
