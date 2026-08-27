@@ -171,8 +171,8 @@ export interface PayloadMcpApiKeyAuthOperations {
 export interface User {
   id: number;
   role: 'admin' | 'user';
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -197,8 +197,8 @@ export interface User {
 export interface Media {
   id: number;
   alt: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
   url?: string | null;
   thumbnailURL?: string | null;
   filename?: string | null;
@@ -216,8 +216,8 @@ export interface Media {
 export interface Laboratory {
   id: number;
   name: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -227,11 +227,11 @@ export interface ProductType {
   id: number;
   name: string;
   /**
-   * Clave estable que usan las fixtures y el script de ingesta para referirse a este tipo. No debe cambiar una vez asignada.
+   * Se genera automáticamente a partir del nombre. Clave estable que usan las fixtures y la ingesta.
    */
   slug: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -240,8 +240,8 @@ export interface ProductType {
 export interface ActiveIngredient {
   id: number;
   name: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -250,8 +250,8 @@ export interface ActiveIngredient {
 export interface ApplicationZone {
   id: number;
   name: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -260,8 +260,8 @@ export interface ApplicationZone {
 export interface AdministrationRoute {
   id: number;
   name: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -270,8 +270,8 @@ export interface AdministrationRoute {
 export interface ApplicationTechnique {
   id: number;
   name: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -281,8 +281,8 @@ export interface Contraindication {
   id: number;
   description: string;
   type: 'absoluta' | 'relativa';
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -291,8 +291,8 @@ export interface Contraindication {
 export interface AdverseEffect {
   id: number;
   description: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -301,8 +301,8 @@ export interface AdverseEffect {
 export interface ClinicalIndication {
   id: number;
   name: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -311,8 +311,8 @@ export interface ClinicalIndication {
 export interface PostCareNote {
   id: number;
   description: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -321,8 +321,8 @@ export interface PostCareNote {
 export interface SafetyWarning {
   id: number;
   description: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -342,8 +342,8 @@ export interface Protocol {
   sessionsMin?: number | null;
   sessionsMax?: number | null;
   frequency?: string | null;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -390,8 +390,8 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * API keys control which collections, resources, tools, and prompts MCP clients can access
@@ -764,8 +764,8 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   role?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -787,8 +787,8 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
   url?: T;
   thumbnailURL?: T;
   filename?: T;
@@ -805,8 +805,8 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface LaboratoriesSelect<T extends boolean = true> {
   name?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -815,8 +815,8 @@ export interface LaboratoriesSelect<T extends boolean = true> {
 export interface ProductTypesSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -824,8 +824,8 @@ export interface ProductTypesSelect<T extends boolean = true> {
  */
 export interface ActiveIngredientsSelect<T extends boolean = true> {
   name?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -833,8 +833,8 @@ export interface ActiveIngredientsSelect<T extends boolean = true> {
  */
 export interface ApplicationZonesSelect<T extends boolean = true> {
   name?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -842,8 +842,8 @@ export interface ApplicationZonesSelect<T extends boolean = true> {
  */
 export interface AdministrationRoutesSelect<T extends boolean = true> {
   name?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -851,8 +851,8 @@ export interface AdministrationRoutesSelect<T extends boolean = true> {
  */
 export interface ApplicationTechniquesSelect<T extends boolean = true> {
   name?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -861,8 +861,8 @@ export interface ApplicationTechniquesSelect<T extends boolean = true> {
 export interface ContraindicationsSelect<T extends boolean = true> {
   description?: T;
   type?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -870,8 +870,8 @@ export interface ContraindicationsSelect<T extends boolean = true> {
  */
 export interface AdverseEffectsSelect<T extends boolean = true> {
   description?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -879,8 +879,8 @@ export interface AdverseEffectsSelect<T extends boolean = true> {
  */
 export interface ClinicalIndicationsSelect<T extends boolean = true> {
   name?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -888,8 +888,8 @@ export interface ClinicalIndicationsSelect<T extends boolean = true> {
  */
 export interface PostCareNotesSelect<T extends boolean = true> {
   description?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -897,8 +897,8 @@ export interface PostCareNotesSelect<T extends boolean = true> {
  */
 export interface SafetyWarningsSelect<T extends boolean = true> {
   description?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -917,8 +917,8 @@ export interface ProtocolsSelect<T extends boolean = true> {
   sessionsMin?: T;
   sessionsMax?: T;
   frequency?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -966,8 +966,8 @@ export interface ProductsSelect<T extends boolean = true> {
             };
         id?: T;
       };
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

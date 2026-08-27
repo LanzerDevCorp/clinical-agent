@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+
 export const SafetyWarnings: CollectionConfig = {
   slug: 'safety-warnings',
   labels: {
@@ -27,5 +29,6 @@ export const SafetyWarnings: CollectionConfig = {
       required: true,
       unique: true,
     },
+    hiddenCreatedAt,
   ],
 }

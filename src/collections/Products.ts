@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { internalUsersOnly } from '../access/internalUsersOnly'
 import { syncProductToJson } from '../hooks/syncProductToJson'
+import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -252,5 +253,6 @@ export const Products: CollectionConfig = {
         },
       ],
     },
+    hiddenCreatedAt,
   ],
 }

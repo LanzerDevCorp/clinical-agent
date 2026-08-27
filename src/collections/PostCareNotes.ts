@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+
 export const PostCareNotes: CollectionConfig = {
   slug: 'post-care-notes',
   labels: {
@@ -27,5 +29,6 @@ export const PostCareNotes: CollectionConfig = {
       required: true,
       unique: true,
     },
+    hiddenCreatedAt,
   ],
 }

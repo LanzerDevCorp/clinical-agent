@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+
 /**
  * The product "type" used to be a hardcoded `select` on Products (a PG enum), so
  * adding one — "Gel", say — meant a code change, a migration and a deploy. It is
@@ -8,6 +10,11 @@ import type { CollectionConfig } from 'payload'
  * `slug` is the stable key. Fixtures and the ingest script refer to a type by
  * its slug, never its id, so renaming `name` is safe but changing `slug` breaks
  * every fixture that names it.
+ *
+ * The doctor only ever fills in "Nombre". `slug` is derived from it automatically
+ * by a `beforeValidate` hook and shown read-only — it is normalised on the way
+ * in when present, and generated from `name` when left blank, so a create with
+ * just a name still satisfies `required`.
  */
 export const ProductTypes: CollectionConfig = {
   slug: 'product-types',
@@ -23,7 +30,7 @@ export const ProductTypes: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'slug'],
+    defaultColumns: ['name'],
     group: {
       es: 'Catálogos Maestros',
       en: 'Catálogos Maestros',
@@ -44,18 +51,35 @@ export const ProductTypes: CollectionConfig = {
       unique: true,
       index: true,
       admin: {
+        readOnly: true,
+        disableListColumn: true,
         description:
-          'Clave estable que usan las fixtures y el script de ingesta para referirse a este tipo. ' +
-          'No debe cambiar una vez asignada.',
+          'Se genera automáticamente a partir del nombre. Clave estable que usan ' +
+          'las fixtures y la ingesta.',
       },
       hooks: {
         beforeValidate: [
-          ({ value }) =>
-            typeof value === 'string'
-              ? value.trim().toLowerCase().replace(/\s+/g, '_')
-              : value,
+          ({ value, siblingData }) => {
+            const raw =
+              typeof value === 'string' && value.trim() !== ''
+                ? value
+                : typeof siblingData?.name === 'string'
+                  ? siblingData.name
+                  : ''
+
+            const normalized = raw
+              .normalize('NFD')
+              .replace(/[̀-ͯ]/g, '')
+              .trim()
+              .toLowerCase()
+              .replace(/\s+/g, '_')
+              .replace(/[^a-z0-9_]/g, '')
+
+            return normalized === '' ? value : normalized
+          },
         ],
       },
     },
+    hiddenCreatedAt,
   ],
 }

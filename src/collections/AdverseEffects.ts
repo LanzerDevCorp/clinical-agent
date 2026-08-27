@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+
 export const AdverseEffects: CollectionConfig = {
   slug: 'adverse-effects',
   labels: {
@@ -26,5 +28,6 @@ export const AdverseEffects: CollectionConfig = {
       type: 'textarea',
       required: true,
     },
+    hiddenCreatedAt,
   ],
 }

@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { internalUsersOnly } from '../access/internalUsersOnly'
+import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
 
 export const Protocols: CollectionConfig = {
   slug: 'protocols',
@@ -106,5 +107,6 @@ export const Protocols: CollectionConfig = {
       label: 'Frecuencia de aplicación',
       type: 'text',
     },
+    hiddenCreatedAt,
   ],
 }

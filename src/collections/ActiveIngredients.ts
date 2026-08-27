@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+
 export const ActiveIngredients: CollectionConfig = {
   slug: 'active-ingredients',
   labels: {
@@ -26,5 +28,6 @@ export const ActiveIngredients: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    hiddenCreatedAt,
   ],
 }

@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { adminOnly, adminOnlyField } from '../access/adminOnly'
 import { ownDocumentOrAdmin } from '../access/ownDocumentOrAdmin'
+import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -54,5 +55,6 @@ export const Users: CollectionConfig = {
         position: 'sidebar',
       },
     },
+    hiddenCreatedAt,
   ],
 }

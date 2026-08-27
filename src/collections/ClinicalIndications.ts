@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+
 export const ClinicalIndications: CollectionConfig = {
   slug: 'clinical-indications',
   labels: {
@@ -27,5 +29,6 @@ export const ClinicalIndications: CollectionConfig = {
       required: true,
       unique: true,
     },
+    hiddenCreatedAt,
   ],
 }

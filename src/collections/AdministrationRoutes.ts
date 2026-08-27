@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+
 export const AdministrationRoutes: CollectionConfig = {
   slug: 'administration-routes',
   labels: {
@@ -26,5 +28,6 @@ export const AdministrationRoutes: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    hiddenCreatedAt,
   ],
 }

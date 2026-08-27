@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+
 export const ApplicationZones: CollectionConfig = {
   slug: 'application-zones',
   labels: {
@@ -26,5 +28,6 @@ export const ApplicationZones: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    hiddenCreatedAt,
   ],
 }

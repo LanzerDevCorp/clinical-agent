@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: {
@@ -28,6 +30,7 @@ export const Media: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    hiddenCreatedAt,
   ],
   upload: true,
 }
