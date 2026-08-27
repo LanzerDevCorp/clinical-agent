@@ -31,7 +31,7 @@ export const Products: CollectionConfig = {
       es: 'Catálogo Clínico',
       en: 'Catálogo Clínico',
     },
-    defaultColumns: ['canonicalName', 'productType', 'laboratory', 'validationStatus', 'approvedBy'],
+    defaultColumns: ['canonicalName', 'productType', 'laboratory', 'validationStatus'],
     components: {
       edit: {
         beforeDocumentControls: ['@/components/ProductPdfAction'],
@@ -79,6 +79,7 @@ export const Products: CollectionConfig = {
       admin: {
         readOnly: true,
         position: 'sidebar',
+        disableListColumn: true,
         description: 'Quién aprobó este producto. Se completa automáticamente.',
       },
     },
@@ -89,6 +90,7 @@ export const Products: CollectionConfig = {
       admin: {
         readOnly: true,
         position: 'sidebar',
+        disableListColumn: true,
         date: {
           displayFormat: 'yyyy-MM-dd HH:mm',
         },
