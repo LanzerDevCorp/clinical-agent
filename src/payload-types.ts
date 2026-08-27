@@ -217,13 +217,7 @@ export interface Laboratory {
   id: number;
   name: string;
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }
@@ -239,13 +233,7 @@ export interface ProductType {
    */
   slug: string;
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }
@@ -257,13 +245,7 @@ export interface ActiveIngredient {
   id: number;
   name: string;
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }
@@ -275,13 +257,7 @@ export interface ApplicationZone {
   id: number;
   name: string;
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }
@@ -293,13 +269,7 @@ export interface AdministrationRoute {
   id: number;
   name: string;
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }
@@ -311,13 +281,7 @@ export interface ApplicationTechnique {
   id: number;
   name: string;
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }
@@ -330,13 +294,7 @@ export interface Contraindication {
   description: string;
   type: 'absoluta' | 'relativa';
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }
@@ -348,13 +306,7 @@ export interface AdverseEffect {
   id: number;
   description: string;
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }
@@ -366,13 +318,7 @@ export interface ClinicalIndication {
   id: number;
   name: string;
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }
@@ -384,13 +330,7 @@ export interface PostCareNote {
   id: number;
   description: string;
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }
@@ -402,13 +342,7 @@ export interface SafetyWarning {
   id: number;
   description: string;
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }
@@ -431,13 +365,7 @@ export interface Protocol {
   sessionsMax?: number | null;
   frequency?: string | null;
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }
@@ -449,9 +377,6 @@ export interface Product {
   id: number;
   validationStatus: 'PENDING' | 'APPROVED';
   validationNotes?: string | null;
-  /**
-   * Quién aprobó este producto. Se completa automáticamente.
-   */
   approvedBy?: (number | null) | User;
   approvedAt?: string | null;
   canonicalName: string;
@@ -492,13 +417,7 @@ export interface Product {
       }[]
     | null;
   createdAt: string;
-  /**
-   * Quién creó este registro. Se completa automáticamente.
-   */
   createdBy?: (number | null) | User;
-  /**
-   * Quién hizo la última modificación a este registro. Se completa automáticamente.
-   */
   updatedBy?: (number | null) | User;
   updatedAt: string;
 }

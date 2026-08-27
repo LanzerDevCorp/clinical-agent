@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { internalUsersOnly } from '../access/internalUsersOnly'
+import { systemManagedField } from '../access/systemManaged'
 import { syncProductToJson } from '../hooks/syncProductToJson'
 import { createdBy, updatedBy } from './fields/attribution'
 import { stampApproval } from './hooks/stampApproval'
@@ -76,24 +77,26 @@ export const Products: CollectionConfig = {
       label: 'Aprobado por',
       type: 'relationship',
       relationTo: 'users',
+      access: {
+        create: systemManagedField,
+        update: systemManagedField,
+      },
       admin: {
-        readOnly: true,
-        position: 'sidebar',
+        hidden: true,
         disableListColumn: true,
-        description: 'Quién aprobó este producto. Se completa automáticamente.',
       },
     },
     {
       name: 'approvedAt',
       label: 'Fecha de aprobación',
       type: 'date',
+      access: {
+        create: systemManagedField,
+        update: systemManagedField,
+      },
       admin: {
-        readOnly: true,
-        position: 'sidebar',
+        hidden: true,
         disableListColumn: true,
-        date: {
-          displayFormat: 'yyyy-MM-dd HH:mm',
-        },
       },
     },
     {
