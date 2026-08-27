@@ -217,6 +217,14 @@ export interface Laboratory {
   id: number;
   name: string;
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -231,6 +239,14 @@ export interface ProductType {
    */
   slug: string;
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -241,6 +257,14 @@ export interface ActiveIngredient {
   id: number;
   name: string;
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -251,6 +275,14 @@ export interface ApplicationZone {
   id: number;
   name: string;
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -261,6 +293,14 @@ export interface AdministrationRoute {
   id: number;
   name: string;
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -271,6 +311,14 @@ export interface ApplicationTechnique {
   id: number;
   name: string;
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -282,6 +330,14 @@ export interface Contraindication {
   description: string;
   type: 'absoluta' | 'relativa';
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -292,6 +348,14 @@ export interface AdverseEffect {
   id: number;
   description: string;
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -302,6 +366,14 @@ export interface ClinicalIndication {
   id: number;
   name: string;
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -312,6 +384,14 @@ export interface PostCareNote {
   id: number;
   description: string;
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -322,6 +402,14 @@ export interface SafetyWarning {
   id: number;
   description: string;
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -343,6 +431,14 @@ export interface Protocol {
   sessionsMax?: number | null;
   frequency?: string | null;
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -353,6 +449,11 @@ export interface Product {
   id: number;
   validationStatus: 'PENDING' | 'APPROVED';
   validationNotes?: string | null;
+  /**
+   * Quién aprobó este producto. Se completa automáticamente.
+   */
+  approvedBy?: (number | null) | User;
+  approvedAt?: string | null;
   canonicalName: string;
   description?: string | null;
   productType?: (number | null) | ProductType;
@@ -391,6 +492,14 @@ export interface Product {
       }[]
     | null;
   createdAt: string;
+  /**
+   * Quién creó este registro. Se completa automáticamente.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Quién hizo la última modificación a este registro. Se completa automáticamente.
+   */
+  updatedBy?: (number | null) | User;
   updatedAt: string;
 }
 /**
@@ -806,6 +915,8 @@ export interface MediaSelect<T extends boolean = true> {
 export interface LaboratoriesSelect<T extends boolean = true> {
   name?: T;
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**
@@ -816,6 +927,8 @@ export interface ProductTypesSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**
@@ -825,6 +938,8 @@ export interface ProductTypesSelect<T extends boolean = true> {
 export interface ActiveIngredientsSelect<T extends boolean = true> {
   name?: T;
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**
@@ -834,6 +949,8 @@ export interface ActiveIngredientsSelect<T extends boolean = true> {
 export interface ApplicationZonesSelect<T extends boolean = true> {
   name?: T;
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**
@@ -843,6 +960,8 @@ export interface ApplicationZonesSelect<T extends boolean = true> {
 export interface AdministrationRoutesSelect<T extends boolean = true> {
   name?: T;
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**
@@ -852,6 +971,8 @@ export interface AdministrationRoutesSelect<T extends boolean = true> {
 export interface ApplicationTechniquesSelect<T extends boolean = true> {
   name?: T;
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**
@@ -862,6 +983,8 @@ export interface ContraindicationsSelect<T extends boolean = true> {
   description?: T;
   type?: T;
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**
@@ -871,6 +994,8 @@ export interface ContraindicationsSelect<T extends boolean = true> {
 export interface AdverseEffectsSelect<T extends boolean = true> {
   description?: T;
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**
@@ -880,6 +1005,8 @@ export interface AdverseEffectsSelect<T extends boolean = true> {
 export interface ClinicalIndicationsSelect<T extends boolean = true> {
   name?: T;
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**
@@ -889,6 +1016,8 @@ export interface ClinicalIndicationsSelect<T extends boolean = true> {
 export interface PostCareNotesSelect<T extends boolean = true> {
   description?: T;
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**
@@ -898,6 +1027,8 @@ export interface PostCareNotesSelect<T extends boolean = true> {
 export interface SafetyWarningsSelect<T extends boolean = true> {
   description?: T;
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**
@@ -918,6 +1049,8 @@ export interface ProtocolsSelect<T extends boolean = true> {
   sessionsMax?: T;
   frequency?: T;
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**
@@ -927,6 +1060,8 @@ export interface ProtocolsSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   validationStatus?: T;
   validationNotes?: T;
+  approvedBy?: T;
+  approvedAt?: T;
   canonicalName?: T;
   description?: T;
   productType?: T;
@@ -967,6 +1102,8 @@ export interface ProductsSelect<T extends boolean = true> {
         id?: T;
       };
   createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
 }
 /**

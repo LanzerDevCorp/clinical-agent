@@ -1,6 +1,8 @@
 import type { CollectionConfig } from 'payload'
 
 import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+import { createdBy, updatedBy } from './fields/attribution'
+import { stampAttribution } from './hooks/stampAttribution'
 
 export const AdministrationRoutes: CollectionConfig = {
   slug: 'administration-routes',
@@ -21,6 +23,9 @@ export const AdministrationRoutes: CollectionConfig = {
       en: 'Catálogos Maestros',
     },
   },
+  hooks: {
+    beforeChange: [stampAttribution],
+  },
   fields: [
     {
       name: 'name',
@@ -29,5 +34,7 @@ export const AdministrationRoutes: CollectionConfig = {
       required: true,
     },
     hiddenCreatedAt,
+    createdBy,
+    updatedBy,
   ],
 }

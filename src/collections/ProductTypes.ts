@@ -1,6 +1,8 @@
 import type { CollectionConfig } from 'payload'
 
 import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+import { createdBy, updatedBy } from './fields/attribution'
+import { stampAttribution } from './hooks/stampAttribution'
 
 /**
  * The product "type" used to be a hardcoded `select` on Products (a PG enum), so
@@ -35,6 +37,9 @@ export const ProductTypes: CollectionConfig = {
       es: 'Catálogos Maestros',
       en: 'Catálogos Maestros',
     },
+  },
+  hooks: {
+    beforeChange: [stampAttribution],
   },
   fields: [
     {
@@ -81,5 +86,7 @@ export const ProductTypes: CollectionConfig = {
       },
     },
     hiddenCreatedAt,
+    createdBy,
+    updatedBy,
   ],
 }

@@ -1,6 +1,8 @@
 import type { CollectionConfig } from 'payload'
 import { internalUsersOnly } from '../access/internalUsersOnly'
 import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+import { createdBy, updatedBy } from './fields/attribution'
+import { stampAttribution } from './hooks/stampAttribution'
 
 export const Protocols: CollectionConfig = {
   slug: 'protocols',
@@ -24,6 +26,9 @@ export const Protocols: CollectionConfig = {
       en: 'Catálogo Clínico',
     },
     defaultColumns: ['name', 'frequency'],
+  },
+  hooks: {
+    beforeChange: [stampAttribution],
   },
   fields: [
     {
@@ -108,5 +113,7 @@ export const Protocols: CollectionConfig = {
       type: 'text',
     },
     hiddenCreatedAt,
+    createdBy,
+    updatedBy,
   ],
 }

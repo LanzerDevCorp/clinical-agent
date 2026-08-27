@@ -1,6 +1,8 @@
 import type { CollectionConfig } from 'payload'
 
 import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+import { createdBy, updatedBy } from './fields/attribution'
+import { stampAttribution } from './hooks/stampAttribution'
 
 export const Contraindications: CollectionConfig = {
   slug: 'contraindications',
@@ -21,6 +23,9 @@ export const Contraindications: CollectionConfig = {
       en: 'Seguridad Clínica',
     },
   },
+  hooks: {
+    beforeChange: [stampAttribution],
+  },
   fields: [
     {
       name: 'description',
@@ -39,5 +44,7 @@ export const Contraindications: CollectionConfig = {
       ],
     },
     hiddenCreatedAt,
+    createdBy,
+    updatedBy,
   ],
 }

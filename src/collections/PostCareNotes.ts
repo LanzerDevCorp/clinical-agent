@@ -1,6 +1,8 @@
 import type { CollectionConfig } from 'payload'
 
 import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
+import { createdBy, updatedBy } from './fields/attribution'
+import { stampAttribution } from './hooks/stampAttribution'
 
 export const PostCareNotes: CollectionConfig = {
   slug: 'post-care-notes',
@@ -21,6 +23,9 @@ export const PostCareNotes: CollectionConfig = {
       en: 'Seguridad Clínica',
     },
   },
+  hooks: {
+    beforeChange: [stampAttribution],
+  },
   fields: [
     {
       name: 'description',
@@ -30,5 +35,7 @@ export const PostCareNotes: CollectionConfig = {
       unique: true,
     },
     hiddenCreatedAt,
+    createdBy,
+    updatedBy,
   ],
 }

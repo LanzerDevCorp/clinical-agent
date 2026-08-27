@@ -1,6 +1,9 @@
 import type { CollectionConfig } from 'payload'
 import { internalUsersOnly } from '../access/internalUsersOnly'
 import { syncProductToJson } from '../hooks/syncProductToJson'
+import { createdBy, updatedBy } from './fields/attribution'
+import { stampApproval } from './hooks/stampApproval'
+import { stampAttribution } from './hooks/stampAttribution'
 import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
 
 export const Products: CollectionConfig = {
@@ -19,6 +22,7 @@ export const Products: CollectionConfig = {
     },
   },
   hooks: {
+    beforeChange: [stampAttribution, stampApproval],
     afterChange: [syncProductToJson],
   },
   admin: {
@@ -27,7 +31,7 @@ export const Products: CollectionConfig = {
       es: 'Catálogo Clínico',
       en: 'Catálogo Clínico',
     },
-    defaultColumns: ['canonicalName', 'productType', 'laboratory', 'validationStatus'],
+    defaultColumns: ['canonicalName', 'productType', 'laboratory', 'validationStatus', 'approvedBy'],
     components: {
       edit: {
         beforeDocumentControls: ['@/components/ProductPdfAction'],
@@ -65,6 +69,29 @@ export const Products: CollectionConfig = {
       type: 'textarea',
       admin: {
         position: 'sidebar',
+      },
+    },
+    {
+      name: 'approvedBy',
+      label: 'Aprobado por',
+      type: 'relationship',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        description: 'Quién aprobó este producto. Se completa automáticamente.',
+      },
+    },
+    {
+      name: 'approvedAt',
+      label: 'Fecha de aprobación',
+      type: 'date',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        date: {
+          displayFormat: 'yyyy-MM-dd HH:mm',
+        },
       },
     },
     {
@@ -254,5 +281,7 @@ export const Products: CollectionConfig = {
       ],
     },
     hiddenCreatedAt,
+    createdBy,
+    updatedBy,
   ],
 }
