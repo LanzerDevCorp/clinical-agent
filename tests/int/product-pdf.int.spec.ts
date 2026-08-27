@@ -14,7 +14,7 @@ const completeProduct: Product = {
   canonicalName: 'Ácido hialurónico',
   validationStatus: 'PENDING',
   validationNotes: 'Revisar ficha técnica.',
-  productType: 'liofilizado',
+  productType: { id: 99010, name: 'Liofilizado', slug: 'liofilizado', createdAt: 'PRODUCT-TYPE-CREATED-SENTINEL', updatedAt: 'PRODUCT-TYPE-UPDATED-SENTINEL' },
   laboratory: { id: 99001, name: 'Laboratorio Clínico', createdAt: 'LAB-CREATED-SENTINEL', updatedAt: 'LAB-UPDATED-SENTINEL' },
   activeIngredients: [{ id: 99002, name: 'Hialuronato de sodio', createdAt: 'INGREDIENT-CREATED-SENTINEL', updatedAt: 'INGREDIENT-UPDATED-SENTINEL' }],
   aliases: [{ id: 'PRODUCT-ALIAS-ROW-SENTINEL', term: 'AH' }],
@@ -104,8 +104,9 @@ describe('Product PDF review model', () => {
     })
     const serialized = JSON.stringify(model)
     for (const forbidden of [
-      '99001', '99002', '99003', '99004', '99005', '99006', '99007', '99008', '99009',
+      '99001', '99002', '99003', '99004', '99005', '99006', '99007', '99008', '99009', '99010',
       'PRODUCT-ALIAS-ROW-SENTINEL', 'PRESENTATION-ROW-SENTINEL', 'PRESENTATION-ALIAS-ROW-SENTINEL',
+      'PRODUCT-TYPE-CREATED-SENTINEL', 'PRODUCT-TYPE-UPDATED-SENTINEL',
       'LAB-CREATED-SENTINEL', 'INGREDIENT-CREATED-SENTINEL', 'CONTRA-CREATED-SENTINEL',
       'ADVERSE-CREATED-SENTINEL', 'NOTE-CREATED-SENTINEL', 'PROTOCOL-CREATED-SENTINEL',
       'ZONE-CREATED-SENTINEL', 'ROUTE-CREATED-SENTINEL', 'TECHNIQUE-CREATED-SENTINEL',

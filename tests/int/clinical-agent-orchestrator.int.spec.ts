@@ -80,7 +80,9 @@ function reader(results: {
         validationStatus: 'APPROVED',
         canonicalName: detail.product.canonicalName,
         description: detail.product.description,
-        productType: detail.product.productType,
+        productType: detail.product.productType === null
+          ? null
+          : { id: 1, name: detail.product.productType },
         laboratory: { id: 1, name: detail.product.laboratory },
         presentations: [{
           id: detail.presentation.id,

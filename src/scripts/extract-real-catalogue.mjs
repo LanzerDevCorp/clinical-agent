@@ -73,6 +73,10 @@ const column = (list, col = 'name') => list.map((r) => r[col])
 
 // Simple catalogues: a name or a description, nothing else.
 const laboratories = column(await rows('select name from laboratories order by id'))
+const productTypes = (await rows('select name, slug from product_types order by id')).map((r) => ({
+  name: r.name,
+  slug: r.slug,
+}))
 const activeIngredients = column(await rows('select name from active_ingredients order by id'))
 const applicationZones = column(await rows('select name from application_zones order by id'))
 const administrationRoutes = column(await rows('select name from administration_routes order by id'))
@@ -103,6 +107,7 @@ const byId = async (sql, col) => {
   return map
 }
 const labById = await byId('select id, name from laboratories', 'name')
+const productTypeSlugById = await byId('select id, slug from product_types', 'slug')
 const ingredientById = await byId('select id, name from active_ingredients', 'name')
 const zoneById = await byId('select id, name from application_zones', 'name')
 const routeById = await byId('select id, name from administration_routes', 'name')
@@ -170,7 +175,7 @@ const products = (await rows('select * from products order by id')).map((p) => {
     // validationNotes intentionally omitted; see the header.
     validationStatus: p.validation_status,
     description: p.description,
-    productType: p.product_type,
+    productType: productTypeSlugById.get(p.product_type_id),
     laboratory: labById.get(p.laboratory_id),
     activeIngredients: productRels
       .filter((r) => r.parent_id === p.id && r.path === 'activeIngredients')
@@ -213,6 +218,7 @@ const products = (await rows('select * from products order by id')).map((p) => {
 
 const fixture = {
   laboratories,
+  productTypes,
   activeIngredients,
   applicationZones,
   administrationRoutes,

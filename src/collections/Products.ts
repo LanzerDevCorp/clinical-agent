@@ -86,15 +86,8 @@ export const Products: CollectionConfig = {
             {
               name: 'productType',
               label: 'Tipo de producto',
-              type: 'select',
-              options: [
-                { label: 'Liofilizado', value: 'liofilizado' },
-                { label: 'Líquido', value: 'liquido' },
-                { label: 'Hilos PDO', value: 'hilos_pdo' },
-                { label: 'Dispositivo Médico', value: 'dispositivo_medico' },
-                { label: 'Insumo de Aplicación', value: 'insumo' },
-                { label: 'Otro', value: 'otro' },
-              ],
+              type: 'relationship',
+              relationTo: 'product-types',
             },
             {
               name: 'laboratory',

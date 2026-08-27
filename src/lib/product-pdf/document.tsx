@@ -14,14 +14,6 @@ const styles = StyleSheet.create({
   approved: { color: '#166534', fontFamily: 'Helvetica-Bold' },
 })
 
-const productTypeLabels: Record<string, string> = {
-  liofilizado: 'Liofilizado',
-  liquido: 'Líquido',
-  hilos_pdo: 'Hilos PDO',
-  dispositivo_medico: 'Dispositivo Médico',
-  insumo: 'Insumo de Aplicación',
-  otro: 'Otro',
-}
 const presentationStatusLabels: Record<string, string> = {
   activa: 'Activa',
   descontinuada: 'Descontinuada',
@@ -102,7 +94,7 @@ export function ProductPdfDocument({ model }: { model: ProductPdfViewModel }) {
           <Field label="Estado de validación" value={formatLabel(traceability.validationStatus, validationStatusLabels)} />
           <Field label="Notas de validación" value={traceability.validationNotes} />
           <Field label="Descripción" value={general.description} />
-          <Field label="Tipo de producto" value={formatLabel(general.productType, productTypeLabels)} />
+          <Field label="Tipo de producto" value={general.productType} />
           <Field label="Laboratorio" value={general.laboratory} />
           <Field label="Ingredientes activos" value={general.activeIngredients} />
           <Field label="Sinónimos" value={general.aliases} />

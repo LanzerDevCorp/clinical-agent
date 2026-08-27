@@ -71,6 +71,7 @@ export interface Config {
     users: User;
     media: Media;
     laboratories: Laboratory;
+    'product-types': ProductType;
     'active-ingredients': ActiveIngredient;
     'application-zones': ApplicationZone;
     'administration-routes': AdministrationRoute;
@@ -93,6 +94,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     laboratories: LaboratoriesSelect<false> | LaboratoriesSelect<true>;
+    'product-types': ProductTypesSelect<false> | ProductTypesSelect<true>;
     'active-ingredients': ActiveIngredientsSelect<false> | ActiveIngredientsSelect<true>;
     'application-zones': ApplicationZonesSelect<false> | ApplicationZonesSelect<true>;
     'administration-routes': AdministrationRoutesSelect<false> | AdministrationRoutesSelect<true>;
@@ -219,6 +221,20 @@ export interface Laboratory {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-types".
+ */
+export interface ProductType {
+  id: number;
+  name: string;
+  /**
+   * Clave estable que usan las fixtures y el script de ingesta para referirse a este tipo. No debe cambiar una vez asignada.
+   */
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "active-ingredients".
  */
 export interface ActiveIngredient {
@@ -339,7 +355,7 @@ export interface Product {
   validationNotes?: string | null;
   canonicalName: string;
   description?: string | null;
-  productType?: ('liofilizado' | 'liquido' | 'hilos_pdo' | 'dispositivo_medico' | 'insumo' | 'otro') | null;
+  productType?: (number | null) | ProductType;
   laboratory: number | Laboratory;
   activeIngredients?: (number | ActiveIngredient)[] | null;
   aliases?:
@@ -424,6 +440,20 @@ export interface PayloadMcpApiKey {
     create?: boolean | null;
     /**
      * Allow clients to update laboratories.
+     */
+    update?: boolean | null;
+  };
+  productTypes?: {
+    /**
+     * Allow clients to find product-types.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create product-types.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update product-types.
      */
     update?: boolean | null;
   };
@@ -625,6 +655,10 @@ export interface PayloadLockedDocument {
         value: number | Laboratory;
       } | null)
     | ({
+        relationTo: 'product-types';
+        value: number | ProductType;
+      } | null)
+    | ({
         relationTo: 'active-ingredients';
         value: number | ActiveIngredient;
       } | null)
@@ -771,6 +805,16 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface LaboratoriesSelect<T extends boolean = true> {
   name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-types_select".
+ */
+export interface ProductTypesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -945,6 +989,13 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         create?: T;
       };
   laboratories?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  productTypes?:
     | T
     | {
         find?: T;

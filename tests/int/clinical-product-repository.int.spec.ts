@@ -403,6 +403,18 @@ describe('ClinicalProductRepository details and protocol sharing', () => {
     expect(JSON.stringify(result)).not.toContain('78')
   })
 
+  it('resolves the product type relationship to its name, and to null when the product has none', async () => {
+    const withoutType = await createHarness({ detail })
+      .repository.getProductDetails({ productId: 7, presentationId: 'active' })
+    expect(withoutType).toMatchObject({ ok: true, data: { product: { productType: null } } })
+
+    const typed = structuredClone(detail)
+    ;(typed as { productType?: unknown }).productType = { id: 90, name: 'Gel', slug: 'gel' }
+    const withType = await createHarness({ detail: typed })
+      .repository.getProductDetails({ productId: 7, presentationId: 'active' })
+    expect(withType).toMatchObject({ ok: true, data: { product: { productType: 'Gel' } } })
+  })
+
   it('returns TEMPORARY_FAILURE for an ID-only required relationship without follow-up reads', async () => {
     const idOnly = structuredClone(detail)
     ;(idOnly.presentations![0].protocols![0] as typeof protocol).zones = [71] as never

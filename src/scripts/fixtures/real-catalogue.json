@@ -10,6 +10,15 @@
     "Laboratorio MCCM, España",
     "Bellatoxel, Corea del Sur"
   ],
+  "productTypes": [
+    { "name": "Liofilizado", "slug": "liofilizado" },
+    { "name": "Líquido", "slug": "liquido" },
+    { "name": "Hilos PDO", "slug": "hilos_pdo" },
+    { "name": "Dispositivo Médico", "slug": "dispositivo_medico" },
+    { "name": "Insumo de Aplicación", "slug": "insumo" },
+    { "name": "Otro", "slug": "otro" },
+    { "name": "Gel", "slug": "gel" }
+  ],
   "activeIngredients": [
     "Vitamina A (Retinol)",
     "Vitamina E (Tocopherol)",

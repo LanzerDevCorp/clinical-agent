@@ -155,6 +155,9 @@ interface IngestContext {
   vocab: Record<EntityCollection, VocabularyIndex>
   /** Type of each contraindication already in the base, to detect a disagreement. */
   existingContraindicationTypes: Map<number, string>
+  /** Product-type ids keyed by slug. The type catalogue is a fixed CRUD list, not
+   *  something ingest invents: an unknown slug falls back to `otro`. */
+  productTypeIdBySlug: Map<string, number>
   plan: Plan
   /** Stand-in ids for records a dry run only pretends to create. Always negative. */
   nextPlannedId: () => number
@@ -429,6 +432,14 @@ async function run() {
     depth: 0,
   })
 
+  const productTypeDocs = await payload.find({ collection: 'product-types', limit: 0, depth: 0 })
+  const productTypeIdBySlug = new Map<string, number>(
+    productTypeDocs.docs.map((doc) => [doc.slug, doc.id as number]),
+  )
+  if (!productTypeIdBySlug.has('otro')) {
+    throw new Error('El catálogo de tipos de producto no tiene el tipo "otro" (fallback obligatorio).')
+  }
+
   const ctx: IngestContext = {
     payload,
     dryRun,
@@ -436,6 +447,7 @@ async function run() {
     existingContraindicationTypes: new Map(
       contraindicationDocs.docs.map((doc) => [doc.id as number, (doc as any).type]),
     ),
+    productTypeIdBySlug,
     plan: emptyPlan(),
     nextPlannedId: () => --plannedId,
   }
@@ -550,7 +562,9 @@ async function run() {
       const payloadData: any = {
         canonicalName: productData.canonicalName.toUpperCase(),
         description: productData.description || null,
-        productType: productData.productType || 'otro',
+        productType:
+          ctx.productTypeIdBySlug.get((productData.productType || '').trim().toLowerCase()) ??
+          ctx.productTypeIdBySlug.get('otro')!,
         laboratory: labId,
         activeIngredients: ingredientIds,
         aliases: productData.aliases || [],
@@ -588,7 +602,10 @@ async function run() {
           payloadData.validationNotes = existingDoc.validationNotes
         }
         if (existingDoc.productType) {
-          payloadData.productType = existingDoc.productType
+          payloadData.productType =
+            typeof existingDoc.productType === 'object'
+              ? existingDoc.productType.id
+              : existingDoc.productType
         }
         if (existingDoc.laboratory) {
           payloadData.laboratory = typeof existingDoc.laboratory === 'object' ? existingDoc.laboratory.id : existingDoc.laboratory

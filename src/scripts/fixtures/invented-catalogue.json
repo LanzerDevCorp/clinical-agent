@@ -1,5 +1,14 @@
 {
   "laboratories": ["Laboratorio Vértice", "Biotecna Andina", "Dermalux Ibérica"],
+  "productTypes": [
+    { "name": "Liofilizado", "slug": "liofilizado" },
+    { "name": "Líquido", "slug": "liquido" },
+    { "name": "Hilos PDO", "slug": "hilos_pdo" },
+    { "name": "Dispositivo Médico", "slug": "dispositivo_medico" },
+    { "name": "Insumo de Aplicación", "slug": "insumo" },
+    { "name": "Otro", "slug": "otro" },
+    { "name": "Gel", "slug": "gel" }
+  ],
   "activeIngredients": [
     "Ácido hialurónico reticulado",
     "Policaprolactona",

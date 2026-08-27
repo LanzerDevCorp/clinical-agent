@@ -98,8 +98,10 @@ type Product = Record<string, unknown> & {
   presentations?: Presentation[]
 }
 
+type ProductType = { name: string; slug: string }
 type Fixture = {
   laboratories: string[]
+  productTypes: ProductType[]
   activeIngredients: string[]
   applicationZones: string[]
   administrationRoutes: string[]
@@ -134,6 +136,7 @@ console.log(`\nDataset: ${requested} (${DATASETS[requested]})`)
 // last would trip foreign keys that are perfectly correct.
 const COLLECTIONS_IN_DELETE_ORDER = [
   'products',
+  'product-types',
   'protocols',
   'active-ingredients',
   'contraindications',
@@ -197,6 +200,14 @@ const described = (
   )
 
 const laboratories = await named('laboratories', fixture.laboratories)
+// Keyed by slug, not name: fixtures and the ingest script refer to a type by
+// its stable slug.
+const productTypes = await createIndexed(
+  'product-types',
+  fixture.productTypes ?? [],
+  (row) => ({ name: row.name, slug: row.slug }),
+  (row) => row.slug,
+)
 const ingredients = await named('active-ingredients', fixture.activeIngredients)
 const zones = await named('application-zones', fixture.applicationZones)
 const routes = await named('administration-routes', fixture.administrationRoutes)
@@ -242,16 +253,18 @@ console.log('')
 for (const product of fixture.products) {
   const {
     laboratory,
+    productType,
     activeIngredients: productIngredients,
     presentations,
     ...rest
-  } = product
+  } = product as Product & { productType?: string }
 
   const created = await payload.create({
     collection: 'products',
     data: {
       ...rest,
       laboratory: idsFor([laboratory], laboratories, 'product laboratory')[0],
+      productType: productType ? idsFor([productType], productTypes, 'product productType')[0] : undefined,
       activeIngredients: idsFor(productIngredients, ingredients, 'product activeIngredients'),
       presentations: (presentations ?? []).map((presentation) => {
         const {

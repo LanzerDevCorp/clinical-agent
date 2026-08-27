@@ -6,6 +6,7 @@ import type {
   Contraindication,
   Laboratory,
   Product,
+  ProductType,
   Protocol,
 } from '@/payload-types'
 
@@ -87,7 +88,11 @@ export function toProductPdfViewModel(product: Product): ProductPdfViewModel {
     },
     general: {
       description: value((product as any).description),
-      productType: value(product.productType),
+      productType: value(
+        product.productType && typeof product.productType === 'object'
+          ? (product.productType as ProductType).name
+          : null,
+      ),
       laboratory: laboratory.name,
       activeIngredients: named(product.activeIngredients as (number | ActiveIngredient)[] | null | undefined, 'activeIngredients'),
       aliases: records(product.aliases, (alias) => alias.term),

@@ -139,6 +139,7 @@ const detailSelect = {
 } as const
 const detailPopulate = {
   laboratories: { name: true },
+  'product-types': { name: true },
   'active-ingredients': { name: true },
   contraindications: { description: true, type: true },
   'adverse-effects': { description: true },
@@ -284,7 +285,11 @@ export function createClinicalProductRepository(
         return { ok: true, data: {
           product: {
             id: String(product.id), canonicalName: product.canonicalName,
-            description: product.description ?? null, productType: product.productType ?? null,
+            description: product.description ?? null,
+            productType:
+              product.productType && typeof product.productType === 'object'
+                ? product.productType.name
+                : null,
             laboratory: product.laboratory.name,
             ...(activeIngredients ? { activeIngredients } : {}),
           },
