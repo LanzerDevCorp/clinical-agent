@@ -3,6 +3,7 @@ import * as migration_20260812_000001_clinical_agent_admission from './20260812_
 import * as migration_20260826_200000_add_user_role from './20260826_200000_add_user_role';
 import * as migration_20260827_000000_product_types_collection from './20260827_000000_product_types_collection';
 import * as migration_20260827_000001_audit_fields from './20260827_000001_audit_fields';
+import * as migration_20260831_000000_categories_collection from './20260831_000000_categories_collection';
 
 export const migrations = [
   {
@@ -29,5 +30,10 @@ export const migrations = [
     up: migration_20260827_000001_audit_fields.up,
     down: migration_20260827_000001_audit_fields.down,
     name: '20260827_000001_audit_fields'
+  },
+  {
+    up: migration_20260831_000000_categories_collection.up,
+    down: migration_20260831_000000_categories_collection.down,
+    name: '20260831_000000_categories_collection'
   },
 ];

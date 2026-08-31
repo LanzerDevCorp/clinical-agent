@@ -32,7 +32,7 @@ export const Products: CollectionConfig = {
       es: 'Catálogo Clínico',
       en: 'Catálogo Clínico',
     },
-    defaultColumns: ['canonicalName', 'productType', 'laboratory', 'validationStatus'],
+    defaultColumns: ['canonicalName', 'productType', 'category', 'laboratory', 'validationStatus'],
     components: {
       edit: {
         beforeDocumentControls: ['@/components/ProductPdfAction'],
@@ -121,6 +121,12 @@ export const Products: CollectionConfig = {
               label: 'Tipo de producto',
               type: 'relationship',
               relationTo: 'product-types',
+            },
+            {
+              name: 'category',
+              label: 'Categoría',
+              type: 'relationship',
+              relationTo: 'categories',
             },
             {
               name: 'laboratory',

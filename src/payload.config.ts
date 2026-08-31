@@ -11,6 +11,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Laboratories } from './collections/Laboratories'
 import { ProductTypes } from './collections/ProductTypes'
+import { Categories } from './collections/Categories'
 import { ActiveIngredients } from './collections/ActiveIngredients'
 import { ApplicationZones } from './collections/ApplicationZones'
 import { AdministrationRoutes } from './collections/AdministrationRoutes'
@@ -199,6 +200,7 @@ export default buildConfig({
     Media,
     Laboratories,
     ProductTypes,
+    Categories,
     ActiveIngredients,
     ApplicationZones,
     AdministrationRoutes,
@@ -228,6 +230,7 @@ export default buildConfig({
         media: { enabled: { find: true, create: true, update: false, delete: false } },
         laboratories: { enabled: { find: true, create: true, update: true, delete: false } },
         'product-types': { enabled: { find: true, create: true, update: true, delete: false } },
+        categories: { enabled: { find: true, create: true, update: true, delete: false } },
         'active-ingredients': { enabled: { find: true, create: true, update: true, delete: false } },
         'application-zones': { enabled: { find: true, create: true, update: true, delete: false } },
         'administration-routes': { enabled: { find: true, create: true, update: true, delete: false } },

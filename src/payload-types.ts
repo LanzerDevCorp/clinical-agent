@@ -72,6 +72,7 @@ export interface Config {
     media: Media;
     laboratories: Laboratory;
     'product-types': ProductType;
+    categories: Category;
     'active-ingredients': ActiveIngredient;
     'application-zones': ApplicationZone;
     'administration-routes': AdministrationRoute;
@@ -95,6 +96,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     laboratories: LaboratoriesSelect<false> | LaboratoriesSelect<true>;
     'product-types': ProductTypesSelect<false> | ProductTypesSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
     'active-ingredients': ActiveIngredientsSelect<false> | ActiveIngredientsSelect<true>;
     'application-zones': ApplicationZonesSelect<false> | ApplicationZonesSelect<true>;
     'administration-routes': AdministrationRoutesSelect<false> | AdministrationRoutesSelect<true>;
@@ -226,6 +228,22 @@ export interface Laboratory {
  * via the `definition` "product-types".
  */
 export interface ProductType {
+  id: number;
+  name: string;
+  /**
+   * Se genera automáticamente a partir del nombre. Clave estable que usan las fixtures y la ingesta.
+   */
+  slug: string;
+  createdAt: string;
+  createdBy?: (number | null) | User;
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
   id: number;
   name: string;
   /**
@@ -382,6 +400,7 @@ export interface Product {
   canonicalName: string;
   description?: string | null;
   productType?: (number | null) | ProductType;
+  category?: (number | null) | Category;
   laboratory: number | Laboratory;
   activeIngredients?: (number | ActiveIngredient)[] | null;
   aliases?:
@@ -482,6 +501,20 @@ export interface PayloadMcpApiKey {
     create?: boolean | null;
     /**
      * Allow clients to update product-types.
+     */
+    update?: boolean | null;
+  };
+  categories?: {
+    /**
+     * Allow clients to find categories.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create categories.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update categories.
      */
     update?: boolean | null;
   };
@@ -687,6 +720,10 @@ export interface PayloadLockedDocument {
         value: number | ProductType;
       } | null)
     | ({
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
         relationTo: 'active-ingredients';
         value: number | ActiveIngredient;
       } | null)
@@ -852,6 +889,18 @@ export interface ProductTypesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  createdAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "active-ingredients_select".
  */
 export interface ActiveIngredientsSelect<T extends boolean = true> {
@@ -984,6 +1033,7 @@ export interface ProductsSelect<T extends boolean = true> {
   canonicalName?: T;
   description?: T;
   productType?: T;
+  category?: T;
   laboratory?: T;
   activeIngredients?: T;
   aliases?:
@@ -1052,6 +1102,13 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         update?: T;
       };
   productTypes?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  categories?:
     | T
     | {
         find?: T;
