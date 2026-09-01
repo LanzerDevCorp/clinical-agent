@@ -58,7 +58,7 @@ pnpm db:local:seed:fiction   # reseed only, invented catalogue
 `src/scripts/seed-local.ts` replays a fixture from `src/scripts/fixtures/` through
 Payload's API. Two exist, and `SEED_DATASET` picks between them:
 
-- **`real-catalogue.json`** (default) — the 13 products the production catalogue
+- **`real-catalogue.json`** (default) — the 72 products the production catalogue
   holds, extracted from a Supabase dump. Catalogue only: no users, no sessions, no
   admission events, and `validationNotes` is dropped because it carries internal
   team notes. The product facts themselves are manufacturer datasheets, the same
