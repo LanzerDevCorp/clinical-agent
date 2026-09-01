@@ -112,6 +112,10 @@ const byId = async (sql, col) => {
 }
 const labById = await byId('select id, name from laboratories', 'name')
 const productTypeSlugById = await byId('select id, slug from product_types', 'slug')
+// The categories collection itself is migration-owned, not extracted here (see
+// 20260831_000000_categories_collection.ts) — only the per-product assignment
+// travels through the fixture, keyed by the same slug the local migration seeds.
+const categorySlugById = await byId('select id, slug from categories', 'slug')
 const ingredientById = await byId('select id, name from active_ingredients', 'name')
 const zoneById = await byId('select id, name from application_zones', 'name')
 const routeById = await byId('select id, name from administration_routes', 'name')
@@ -180,6 +184,7 @@ const products = (await rows('select * from products order by id')).map((p) => {
     validationStatus: p.validation_status,
     description: p.description,
     productType: productTypeSlugById.get(p.product_type_id),
+    category: categorySlugById.get(p.category_id),
     laboratory: labById.get(p.laboratory_id),
     activeIngredients: productRels
       .filter((r) => r.parent_id === p.id && r.path === 'activeIngredients')

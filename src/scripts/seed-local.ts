@@ -94,6 +94,7 @@ type Presentation = Record<string, unknown> & { canonicalName: string }
 type Product = Record<string, unknown> & {
   canonicalName: string
   laboratory: string
+  category?: string
   activeIngredients?: string[]
   presentations?: Presentation[]
 }
@@ -208,6 +209,16 @@ const productTypes = await createIndexed(
   (row) => ({ name: row.name, slug: row.slug }),
   (row) => row.slug,
 )
+// Categories are migration-owned (see 20260831_000000_categories_collection.ts),
+// not fixture-owned: read what the migration already seeded instead of wiping
+// and recreating it the way the entity collections below are.
+const { docs: categoryDocs } = await payload.find({
+  collection: 'categories',
+  pagination: false,
+  limit: 1000,
+})
+const categories = new Map(categoryDocs.map((c) => [c.slug, c.id as number]))
+
 const ingredients = await named('active-ingredients', fixture.activeIngredients)
 const zones = await named('application-zones', fixture.applicationZones)
 const routes = await named('administration-routes', fixture.administrationRoutes)
@@ -254,6 +265,7 @@ for (const product of fixture.products) {
   const {
     laboratory,
     productType,
+    category,
     activeIngredients: productIngredients,
     presentations,
     ...rest
@@ -265,6 +277,7 @@ for (const product of fixture.products) {
       ...rest,
       laboratory: idsFor([laboratory], laboratories, 'product laboratory')[0],
       productType: productType ? idsFor([productType], productTypes, 'product productType')[0] : undefined,
+      category: category ? idsFor([category], categories, 'product category')[0] : undefined,
       activeIngredients: idsFor(productIngredients, ingredients, 'product activeIngredients'),
       presentations: (presentations ?? []).map((presentation) => {
         const {

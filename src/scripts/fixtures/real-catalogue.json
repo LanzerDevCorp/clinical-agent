@@ -2652,6 +2652,7 @@
       "validationStatus": "APPROVED",
       "description": "AEC es un tratamiento de Mesoterapia Regenerativa, es un complejo con Vitamina A, E y C; que previene el envejecimiento, revierte las señales del fotoenvejecimiento y mejora la barrera protectora de la piel.",
       "productType": "liquido",
+      "category": "regenerativos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Vitamina A (Retinol)",
@@ -2917,6 +2918,7 @@
       "validationStatus": "APPROVED",
       "description": "ARTICHOKE es un tratamiento de Mesoterapia Lipolítica. Ayuda a estimular la circulación linfática, reduciendo la retención de líquidos. Su principal activo es la Alcachofa que es utilizada para tratar la celulitis y la grasa localizada. Este activo integra propiedades desintoxicantes y diuréticas.",
       "productType": "liquido",
+      "category": "lipoliticos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Extracto de Alcachofa"
@@ -2990,6 +2992,7 @@
       "validationStatus": "APPROVED",
       "description": "Tratamiento de Mesoterapia Regenerativa, con altas propiedades estimuladoras de colágeno. Tiene propiedades antioxidantes y drenantes, y por su efecto drenante, es utilizada en tratamientos lipolíticos y disminución de celulitis.",
       "productType": "liquido",
+      "category": "regenerativos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Centella Asiática"
@@ -3217,6 +3220,7 @@
       "validationStatus": "APPROVED",
       "description": "Tratamiento de Mesoterapia Capilar. La Vitamina B7 (Biotina) es eficaz en combatir la caída y el adelgazamiento del cabello, ya que fortalece el cabello y nutre el folículo piloso para evitar la caída, actuando como astringente natural del cuero cabelludo. ",
       "productType": "liquido",
+      "category": "capilar",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Biotina (Vitamina B7 / Vitamina H)"
@@ -3453,6 +3457,7 @@
       "validationStatus": "APPROVED",
       "description": "CAFFEINE es un tratamiento de Mesoterapia Lipolítica. Este producto contiene propiedades lipolíticas y su elevado poder de absorción promueve mejores resultados en tratamientos de pérdida de peso. Mejora la circulación sanguínea, estimulando la circulación de retorno y consecuentemente drena los tejidos.",
       "productType": "liquido",
+      "category": "lipoliticos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Cafeína"
@@ -3526,6 +3531,7 @@
       "validationStatus": "APPROVED",
       "description": "CELLESTABYL es un tratamiento de Mesoterapia Lipolítica, tiene una combinación de activos eficaces para combatir la celulitis y depósitos pequeños de grasa localizada.",
       "productType": "liquido",
+      "category": "regenerativos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Vitamina B6 (Piridoxina)",
@@ -3594,6 +3600,7 @@
       "validationStatus": "APPROVED",
       "description": "El coctel Cellulite es una combinación de activos diseñada para complementar los tratamientos dirigidos a la grasa localizada y la celulitis. Su fórmula, que integra L-Carnitina, Cafeína, Silicio Orgánico y Centella Asiática, proporciona una acción lipolítica y reafirmante, favoreciendo una piel con mayor firmeza, elasticidad y una apariencia más uniforme.",
       "productType": "liquido",
+      "category": "lipoliticos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "L-Carnitina",
@@ -3972,6 +3979,7 @@
       "validationStatus": "APPROVED",
       "description": "CLH LIPASE, es una Fórmula Liofilizada. Coctel que combina tres enzimas; colagenasa, lipasa y hialuronidasa. Reduce el tejido adiposo localizado y contribuye a eliminar la celulitis, fibrosis y flacidez.",
       "productType": "liofilizado",
+      "category": "enzimas",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Colagenasa 1500 UI",
@@ -4045,6 +4053,7 @@
       "validationStatus": "APPROVED",
       "description": "Fórmula líquida · Cocktail 10 ml. Coctel que combina tres enzimas; colagenasa, lipasa y hialuronidasa. Reduce el tejido adiposo localizado y contribuye a eliminar la celulitis, fibrosis y flacidez.",
       "productType": "liquido",
+      "category": "enzimas",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Lipasa",
@@ -4112,6 +4121,7 @@
       "validationStatus": "APPROVED",
       "description": "Ayuda a descomponer el tejido fibroso disolviendo el colágeno. Al eliminar estas fibras de colágeno solidificadas y descomponer las células grasas se contribuye a relajar el tejido.",
       "productType": "liofilizado",
+      "category": "enzimas",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Colagenasa 1500 UI"
@@ -4181,6 +4191,7 @@
       "validationStatus": "APPROVED",
       "description": "El DNA es un ingrediente activo biológico con altas propiedades regeneradoras, que promueven la reestructura del tejido epidérmico.",
       "productType": "liquido",
+      "category": "hidratantes",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "ADN Sódico"
@@ -4314,6 +4325,7 @@
       "validationStatus": "APPROVED",
       "description": "FAT BURNER es un tratamiento de Mesoterapia Lipolítica. Es un Coctel de Cafeína, Silicio Orgánico, Hialuronidasa y Centella Asiática que actúa en tratamientos para reducir celulitis y grasa localizada. Sus propiedades lipolíticas presentan excelentes resultados en el adelgazamiento.",
       "productType": "liquido",
+      "category": "lipoliticos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Cafeína",
@@ -4376,6 +4388,7 @@
       "validationStatus": "APPROVED",
       "description": "GLUTATIONE es un tratamiento de Mesoterapia Despigmentante. Actúa como importante antioxidante en el cuerpo humano, previniendo los daños causados por radicales libres. Es un componente esencial en los tratamientos de despigmentación debido a su capacidad de inhibir la síntesis de melanina.",
       "productType": "liquido",
+      "category": "despigmentantes",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Glutatión"
@@ -4435,6 +4448,7 @@
       "validationStatus": "APPROVED",
       "description": "Los hilos de polidioxanona (PDO) son finas hebras que se introducen dentro y bajo la piel generando efectos de soporte para mejorar la flacidez de los tejidos y de estimulación del colágeno.",
       "productType": "hilos_pdo",
+      "category": "hilos_pdo",
       "laboratory": "RED REJUVENECE",
       "activeIngredients": [
         "Polidioxanona (PDO)"
@@ -5199,6 +5213,7 @@
       "validationStatus": "APPROVED",
       "description": "El ácido hialurónico es un agente altamente hidratante, que estimula la función de los fibroblastos y la síntesis de colágeno, disminuyendo arrugas y líneas de expresión. Además, proporciona luminosidad, elasticidad y reestructura el tejido dañado. No reticulado.",
       "productType": "gel",
+      "category": "hidratantes",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Ácido Hialurónico No Reticulado 20 mg/ml (2%)"
@@ -5256,6 +5271,7 @@
       "validationStatus": "APPROVED",
       "description": "HYALURONIDASE LIQUID es un tratamiento de Mesoterapia Lipolítica. Actúa eliminando la retención de líquidos y contribuye en la reducción de adipocitos, ejerciendo una acción de reestructura en el tejido conectivo y reequilibra la piel afectada por la hidrolipodistrofia.",
       "productType": "liquido",
+      "category": "lipoliticos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Hialuronidasa"
@@ -5323,6 +5339,7 @@
       "validationStatus": "APPROVED",
       "description": "HYALURONIDASE tiene una elevada actividad enzimática y funciona como agente difusor de otros ingredientes. Actúa directamente sobre la eliminación de la retención hídrica y sobre la reducción de las adiposidades. La hialuronidasa actúa como despolimerizador de los glicosaminoglicanos.",
       "productType": "liofilizado",
+      "category": "enzimas",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Hialuronidasa 1500 UI"
@@ -5389,6 +5406,7 @@
       "validationStatus": "APPROVED",
       "description": "L-CARNITINE es un tratamiento de Mesoterapia Lipolítica, es un aminoácido que se produce naturalmente en el cuerpo. Su aplicación para uso cosmético mejora la síntesis energética, aumenta la tolerancia al esfuerzo y transforma la grasa del organismo en energía.",
       "productType": "liquido",
+      "category": "lipoliticos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "L-Carnitina"
@@ -5571,6 +5589,7 @@
       "validationStatus": "APPROVED",
       "description": "Enzima que actúa sobre el metabolismo de los triglicéridos, ayudando a disolver la grasa localizada acumulada. La lipasa ayuda a descomponer la grasa en moléculas más pequeñas, siendo más fácil para el cuerpo movilizarlas y luego liberarlas.",
       "productType": "liofilizado",
+      "category": "enzimas",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Lipasa 1500 UI"
@@ -5637,6 +5656,7 @@
       "validationStatus": "APPROVED",
       "description": "LIPO FIRMING es un tratamiento de Mesoterapia Lipolítica, tiene una combinación de activos que aportan firmeza a los tejidos, además de una acción estimuladora de colágeno y elastina.",
       "productType": "liquido",
+      "category": "lipoliticos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "DMAE (Dimetilaminoetanol)",
@@ -5825,6 +5845,7 @@
       "validationStatus": "APPROVED",
       "description": "MELANOUT es un tratamiento de Mesoterapia Despigmentante, es un coctel de antioxidantes de gran alcance. Reduce hiperpigmentación, manchas y cicatrices de acné.",
       "productType": "liquido",
+      "category": "despigmentantes",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Ácido tranexámico",
@@ -5892,6 +5913,7 @@
       "validationStatus": "APPROVED",
       "description": "FINASTERIDE actúa inhibiendo la enzima 5-alfa reductasa, responsable de convertir la testosterona en dihidrotestosterona (DHT), el metabolito que acelera la miniaturización y caída del cabello.",
       "productType": "liquido",
+      "category": "capilar",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Finasteride 0,02%"
@@ -5956,6 +5978,7 @@
       "validationStatus": "APPROVED",
       "description": "El MINOXIDIL es un activo utilizado en mesoterapia capilar como auxiliar en el tratamiento de la calvicie.",
       "productType": "liquido",
+      "category": "capilar",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Minoxidil 0,5%"
@@ -6221,6 +6244,7 @@
       "validationStatus": "APPROVED",
       "description": "PHOSPHATILDYCHOLINE es un tratamiento de Mesoterapia Lipolítica. Es un fosfolípido emulsionante de la grasa, que actúa directamente sobre los adipocitos y contribuye a desintegrar los depósitos de grasa localizada del cuerpo.",
       "productType": "liquido",
+      "category": "lipoliticos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Fosfatidilcolina (Lecitina)"
@@ -6343,6 +6367,7 @@
       "validationStatus": "APPROVED",
       "description": "PROF HAIR es un tratamiento de Mesoterapia Capilar, una combinación de ingredientes que fortalecen y nutren el folículo capilar, promoviendo el crecimiento del cabello.",
       "productType": "liquido",
+      "category": "capilar",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Glutatión",
@@ -6400,6 +6425,7 @@
       "validationStatus": "PENDING",
       "description": "TRANEXAMICUM es un tratamiento de Mesoterapia Despigmentante, ha sido especialmente formulado para equilibrar el tono de piel.",
       "productType": "liofilizado",
+      "category": "despigmentantes",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Ácido tranexámico"
@@ -6450,6 +6476,7 @@
       "validationStatus": "PENDING",
       "description": "VITAMINA C es un tratamiento de Mesoterapia Regenerativa con propiedades aclarantes y antioxidantes; neutraliza los radicales libres que causan el estrés oxidativo de la piel.",
       "productType": "liquido",
+      "category": "regenerativos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Vitamina C (Ácido Ascórbico)"
@@ -6507,6 +6534,7 @@
       "validationStatus": "PENDING",
       "description": "ULTRA HILO está formulado para combatir el envejecimiento y promover la biorremodelación y estimulación del área facial y cuello.",
       "productType": "liquido",
+      "category": "bioestimuladores",
       "laboratory": "Cosmoderma",
       "activeIngredients": [
         "AH alto peso molecular 32 mg / 2 ml",
@@ -6547,6 +6575,7 @@
       "validationStatus": "APPROVED",
       "description": "Relleno dérmico bioestimulador formulado a base de microesferas de polidioxanona (PDO) biocompatibles y reabsorbibles. Diseñado para atenuar arrugas leves a moderadas, restaurar la elasticidad cutánea, inducir neocolagénesis sostenida y producir un efecto lifting biológico sin aportar volumen excesivo.",
       "productType": "liofilizado",
+      "category": "bioestimuladores",
       "laboratory": "Metabiomed, Corea del Sur",
       "activeIngredients": [
         "Polidioxanona (PDO)"
@@ -6620,6 +6649,7 @@
       "validationStatus": "PENDING",
       "description": "Dispositivo inyectable de tecnología dual a base de microesferas de Hidroxiapatita de Calcio (CaHA) sintética de última generación suspendidas en gel portador. Funciona de manera versátil como potente bioestimulador de colágeno o como generador de soporte estructural y volumen inmediato según el protocolo de dilución y plano anatómico.",
       "productType": "otro",
+      "category": "bioestimuladores",
       "laboratory": "Cosmoderma",
       "activeIngredients": [
         "Hidroxiapatita de Calcio (CaHA)"
@@ -6679,6 +6709,7 @@
       "validationStatus": "PENDING",
       "description": "Tratamiento biorevitalizante y regenerativo avanzado formulado a base de exosomas de origen vegetal derivados de Centella asiatica purificados mediante tecnología de filtración tangencial, combinados con un complejo activador de PDRN, péptidos biomiméticos, ácido hialurónico y niacinamida. Potencia la regeneración celular, repara la barrera cutánea dañada y mejora la textura y luminosidad dérmica.",
       "productType": "liofilizado",
+      "category": "bioestimuladores",
       "laboratory": "Cosmoderma",
       "activeIngredients": [
         "Exosomas de Centella asiatica — 40 mg",
@@ -6746,6 +6777,7 @@
       "validationStatus": "PENDING",
       "description": "Toxina botulínica Tipo A purificada al 99.98% de alta estabilidad formulada con tecnología de deshidratación al vacío de residuo ultrafino, lo que le confiere una apariencia casi imperceptible en el fondo del vial y una excelente resistencia a la degradación dentro de la cadena de frío.",
       "productType": "liofilizado",
+      "category": "toxinas",
       "laboratory": "WIZMEDI CO., LTD., Corea del Sur",
       "activeIngredients": [
         "Clostridium botulinum Tipo A: 100 UI",
@@ -6801,6 +6833,7 @@
       "validationStatus": "PENDING",
       "description": "Toxina botulínica Tipo A de nueva generación con pureza certificada del 99.98% y ultra purificación proteica que minimiza la presencia de proteínas complejas inactivas, reduciendo drásticamente el riesgo de formación de anticuerpos neutralizantes y resistencia terapéutica a largo plazo.",
       "productType": "liofilizado",
+      "category": "toxinas",
       "laboratory": "WIZMEDI CO., LTD., Corea del Sur",
       "activeIngredients": [
         "Clostridium botulinum Tipo A: 100 UI",
@@ -6857,6 +6890,7 @@
       "validationStatus": "PENDING",
       "description": "Línea completa de ácido hialurónico monofásico reticulado inteligente con lidocaína incorporada, caracterizada por su alta viscoelasticidad, excelente biocompatibilidad, facilidad de extrusión y baja tasa de degradación enzimática.",
       "productType": "otro",
+      "category": "rellenos",
       "laboratory": "Techderm",
       "activeIngredients": [
         "Ácido Hialurónico Reticulado 20 mg/ml",
@@ -7003,6 +7037,7 @@
       "validationStatus": "PENDING",
       "description": "Gel de ácido hialurónico de ultra alta densidad y reticulación optimizada para la corrección de defectos volumétricos mayores, remodelación de contornos y relleno corporal o facial supraperióstico profundo.",
       "productType": "otro",
+      "category": "rellenos",
       "laboratory": "Techderm",
       "activeIngredients": [
         "Ácido Hialurónico Reticulado 20 mg/ml",
@@ -7045,6 +7080,7 @@
       "validationStatus": "PENDING",
       "description": "Es un implante inyectable de origen no animal y alta pureza con tecnología de reticulación avanzada.",
       "productType": "otro",
+      "category": "rellenos",
       "laboratory": "Cosmoderma",
       "activeIngredients": [
         "Ácido Hialurónico Reticulado 24 mg/ml",
@@ -7168,6 +7204,7 @@
       "validationStatus": "PENDING",
       "description": "Formulación exclusiva de ácido hialurónico optimizada mediante reología flexible y cohesividad media diseñada para la mucosa labial dinámica. Aporta volumen natural, definición del arco de Cupido, perfilado del borde bermellón e hidratación profunda sin sensación de rigidez ni nódulos.",
       "productType": "otro",
+      "category": "rellenos",
       "laboratory": "Cosmoderma",
       "activeIngredients": [
         "Ácido Hialurónico Reticulado 24 mg/ml",
@@ -7226,6 +7263,7 @@
       "validationStatus": "PENDING",
       "description": "Relleno de ácido hialurónico estructural de máxima firmeza viscoelástica (alto módulo de almacenamiento G') y mínima capacidad de hinchazón hidrofílica, formulado específicamente para rinomodelación no quirúrgica. Proporciona soporte rígido en el dorso nasal, proyección de la punta y rectificación del perfil sin migración lateral del producto.",
       "productType": "otro",
+      "category": "rellenos",
       "laboratory": "Cosmoderma",
       "activeIngredients": [
         "Ácido Hialurónico Reticulado 24 mg/ml",
@@ -7283,6 +7321,7 @@
       "validationStatus": "PENDING",
       "description": "Gel de ácido hialurónico altamente reticulado desarrollado para remodelación y aumento volumétrico corporal seguro y mínimamente invasivo. Permite esculpir glúteos, caderas, pantorrillas y corregir depresiones post-traumáticas o celulíticas severas con resultados inmediatos.",
       "productType": "gel",
+      "category": "rellenos",
       "laboratory": "Cosmoderma",
       "activeIngredients": [
         "Ácido Hialurónico Reticulado 24 mg/ml"
@@ -7342,6 +7381,7 @@
       "validationStatus": "PENDING",
       "description": "Gama coreana de implantes dérmicos formulados con ácido hialurónico estabilizado y lidocaína que emplea tecnología de reticulación multicapa para garantizar volumen uniforme, degradación simétrica y óptima integración tisular.",
       "productType": "otro",
+      "category": "rellenos",
       "laboratory": "WIZMEDI CO., LTD., Corea del Sur",
       "activeIngredients": [
         "Ácido Hialurónico Reticulado 24 mg/ml",
@@ -7487,6 +7527,7 @@
       "validationStatus": "PENDING",
       "description": "SOFIDERM RESURRECTION, es una fórmula revitalizante avanzada que contiene trehalosa activa.\nProtege eficazmente la célula de la epidermis para prevenir el envejecimiento de la piel, hidratarla y hacer que luzca más brillante, suave y naturalmente saludable.\nPermite que la piel retenga la humedad y esté mucho más hidratada y sana.",
       "productType": "liquido",
+      "category": "skin_boosters",
       "laboratory": "Techderm",
       "activeIngredients": [
         "Hialuronato de sodio (10 mg/ml.)",
@@ -7541,6 +7582,7 @@
       "validationStatus": "PENDING",
       "description": "SOFIDERM WRINKLE FIGHTER, es un Skin Bookter que contiene ácido hialurónico, argireline y pentaptido-18. Esta fórmula es un tratamiento eficaz de las líneas de expresión. Se encarga de reducir la aparición de arrugas, como líneas de la frente, patas de gallo y pliegues nasolabiales.",
       "productType": "otro",
+      "category": "skin_boosters",
       "laboratory": "Techderm",
       "activeIngredients": [
         "Ácido Hialurónico",
@@ -7583,6 +7625,7 @@
       "validationStatus": "PENDING",
       "description": "Cóctel profesional despigmentante formulado para unificar el tono cutáneo, reducir la intensidad de manchas hipercrómicas resistentes (melasma, lentigos solares, hiperpigmentación postinflamatoria) y devolver la luminosidad a pieles fotoenvejecidas.",
       "productType": "liquido",
+      "category": "despigmentantes",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Arbutina",
@@ -7727,6 +7770,7 @@
       "validationStatus": "APPROVED",
       "description": "Solución tensora y reafirmante a base de Dimetilaminoetanol al 3%. Actúa como precursor de la acetilcolina, incrementando el tono de la microfibra muscular dérmica y promoviendo un efecto lifting inmediato y sostenido en tejidos con flacidez.",
       "productType": "liquido",
+      "category": "regenerativos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "DMAE (Dimetilaminoetanol)"
@@ -7795,6 +7839,7 @@
       "validationStatus": "PENDING",
       "description": "Concentrado de Vitamina A (Retinol) purificado para mesoterapia. Estimula la proliferación de queratinocitos, regula la secreción sebácea, normaliza la queratinización y estimula la síntesis de colágeno dérmico.",
       "productType": "liquido",
+      "category": "regenerativos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Vitamina A (Retinol)"
@@ -7846,6 +7891,7 @@
       "validationStatus": "PENDING",
       "description": "Solución lipolítica y reductiva avanzada que combina enzimas proteolíticas, fosfolípidos y extractos botánicos para inducir lipólisis celular localizada, activar la microcirculación y favorecer el drenaje linfático en depósitos grasos resistentes faciales y corporales.",
       "productType": "liquido",
+      "category": "otros_productos",
       "laboratory": "Laboratorio no especificado",
       "activeIngredients": [
         "Papaína",
@@ -7907,6 +7953,7 @@
       "validationStatus": "PENDING",
       "description": "Peeling químico dermatológico bifásico (fase lipofílica y fase hidrofílica) no fotosensibilizante de exfoliación media controlada que renueva la epidermis, atenúa cicatrices de acné, minimiza poros y aporta luminosidad extrema (\"efecto cristal\") sin generar pelado descamativo severo ni tiempo de inactividad social.",
       "productType": "solucion_topica_bifasica",
+      "category": "otros_productos",
       "laboratory": "SOONSU, Corea del Sur",
       "activeIngredients": [
         "TCA al 35% (Ácido Tricloroacético)",
@@ -7976,6 +8023,7 @@
       "canonicalName": "WICKED SNOW WHITE",
       "validationStatus": "PENDING",
       "productType": "solucion_despigmentante_topica",
+      "category": "otros_productos",
       "laboratory": "WIZMEDI CO., LTD., Corea del Sur",
       "activeIngredients": [
         "PDRN de salmón",
@@ -8031,6 +8079,7 @@
       "validationStatus": "APPROVED",
       "description": "DEOXYCHOLIC (Desoxicolato de sodio), también conocido como ácido desoxicólico es un ácido biliar que potencia la acción de la lipasa presente en el organismo. Por lo que, las grasas se vuelven más solubles en agua, facilitando su eliminación.",
       "productType": "solucion_lipolitica_inyectable",
+      "category": "lipoliticos",
       "laboratory": "Laboratorio MCCM",
       "activeIngredients": [
         "Desoxicolato de sodio"
@@ -8090,6 +8139,7 @@
       "validationStatus": "APPROVED",
       "description": "Dispositivo médico motorizado para microneedling percutáneo, equipado con cabezal de movimiento oscilatorio vertical de alta velocidad y profundidad de penetración regulable de 0,25 mm a 2,5 mm. Diseñado para realizar microperforaciones controladas en la piel, favoreciendo la respuesta natural de reparación y regeneración cutánea.",
       "productType": "dispositivo_medico_electromecanico",
+      "category": "dermapen",
       "laboratory": "GLOWPEN PRO",
       "aliases": [
         {
@@ -8153,6 +8203,7 @@
       "validationStatus": "APPROVED",
       "description": "Agujas de diferentes medidas para uso en mesoterapia, aplicación de rellenos dérmicos u otros activos. Productos estériles y desechables. ",
       "productType": "insumo_de_aplicacion_descartable_esteril",
+      "category": "dermapen",
       "laboratory": "Laboratorio no especificado",
       "presentations": [
         {
@@ -8210,6 +8261,7 @@
       "validationStatus": "APPROVED",
       "description": "Aditamento flexible y de punta roma diseñado para facilitar la aplicación de productos de medicina estética de manera controlada y uniforme, ayudando a minimizar el trauma, el sangrado y la aparición de hematomas en comparación con una aguja convencional.",
       "productType": "insumo_de_aplicacion_descartable_esteril",
+      "category": "dermapen",
       "laboratory": "Laboratorio no especificado",
       "presentations": [
         {
@@ -8242,6 +8294,7 @@
       "canonicalName": "REPUESTO DERMAPEN",
       "validationStatus": "PENDING",
       "productType": "consumible_esteril_de_un_solo_uso",
+      "category": "dermapen",
       "laboratory": "Laboratorio no especificado",
       "presentations": [
         {
@@ -8263,6 +8316,7 @@
       "validationStatus": "APPROVED",
       "description": "Pequeña válvula de 3 conexiones utilizada para intercambiar o redirigir productos de una jeringa a otra evitando el derrame del producto. ",
       "productType": "accesorioaditamento",
+      "category": "dermapen",
       "laboratory": "Laboratorio no especificado"
     }
   ]
