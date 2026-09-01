@@ -5,20 +5,24 @@
  * fixture is a dead artifact: nobody could refresh it when production moves. It
  * exists to be run rarely and to leave no trace when it is done.
  *
+ * Production is hosted Supabase Postgres. Get the dump with
+ * scripts/db/backup-production.sh, which produces
+ * backups/supabase-full-<stamp>.dump among its artifacts.
+ *
  * It reads a *scratch* database — never the app's own. Restore the dump into one
  * first, inside the container the local Supabase already runs:
  *
- *   docker cp backups/neon-full-<stamp>.dump supabase_db_clinical-agent:/tmp/neon.dump
+ *   docker cp backups/supabase-full-<stamp>.dump supabase_db_clinical-agent:/tmp/prod.dump
  *   docker exec supabase_db_clinical-agent psql -U postgres -d postgres \
- *     -c "DROP DATABASE IF EXISTS neonref_seed;" -c "CREATE DATABASE neonref_seed;"
- *   docker exec supabase_db_clinical-agent pg_restore -U postgres -d neonref_seed \
- *     --no-owner --no-privileges /tmp/neon.dump
+ *     -c "DROP DATABASE IF EXISTS prodref_seed;" -c "CREATE DATABASE prodref_seed;"
+ *   docker exec supabase_db_clinical-agent pg_restore -U postgres -d prodref_seed \
+ *     --no-owner --no-privileges /tmp/prod.dump
  *
  *   pnpm db:local:fixture
  *
  *   docker exec supabase_db_clinical-agent psql -U postgres -d postgres \
- *     -c "DROP DATABASE neonref_seed;"
- *   docker exec supabase_db_clinical-agent rm -f /tmp/neon.dump
+ *     -c "DROP DATABASE prodref_seed;"
+ *   docker exec supabase_db_clinical-agent rm -f /tmp/prod.dump
  *
  * On Git Bash those docker paths need MSYS_NO_PATHCONV=1, or /tmp is rewritten
  * into a Windows path before docker ever sees it.
@@ -47,7 +51,7 @@ const require = createRequire(import.meta.url)
 const pg = createRequire(require.resolve('@payloadcms/db-postgres'))('pg')
 
 const SCRATCH_URL =
-  process.env.FIXTURE_SOURCE_URL || 'postgresql://postgres:postgres@127.0.0.1:54322/neonref_seed'
+  process.env.FIXTURE_SOURCE_URL || 'postgresql://postgres:postgres@127.0.0.1:54322/prodref_seed'
 
 const isLocalSource = /@(localhost|127\.0\.0\.1|\[::1\]|host\.docker\.internal)[:/]/.test(SCRATCH_URL)
 
