@@ -37,16 +37,26 @@ TIMESTAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 log() { printf '  %s\n' "$*"; }
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
 
+# A shell-only parser (sed/awk) reads one line at a time, which breaks on
+# SUPABASE_CA_CERT: a PEM certificate is a quoted value spanning many lines,
+# the same multi-line-in-quotes convention Next.js documents for private keys.
+# dotenv (already a project dependency) parses that correctly, and unlike
+# @next/env it never expands `$` — see the credential note in CLAUDE.md about
+# @next/env eating a `$` in a value; a CA certificate cannot contain one, but
+# there is no reason to route through the expander at all here.
 read_var_from_env_files() {
   local name="$1"
   local file value
   for file in "${REPO_ROOT}/.env.production.local" "${REPO_ROOT}/.env"; do
     [[ -f "${file}" ]] || continue
-    value="$(sed -n "s/^[[:space:]]*${name}[[:space:]]*=[[:space:]]*//p" "${file}" | tail -n 1)"
+    value="$(node -e '
+      const fs = require("fs")
+      const path = require("path")
+      const dotenv = require(path.join(process.argv[1], "node_modules", "dotenv"))
+      const parsed = dotenv.parse(fs.readFileSync(process.argv[2], "utf8"))
+      process.stdout.write(parsed[process.argv[3]] || "")
+    ' "${REPO_ROOT}" "${file}" "${name}" 2>/dev/null)"
     [[ -n "${value}" ]] || continue
-    value="${value%\"}"; value="${value#\"}"
-    value="${value%\'}"; value="${value#\'}"
-    value="${value%$'\r'}"
     printf '%s' "${value}"
     return 0
   done
@@ -67,12 +77,17 @@ if [[ -z "${SUPABASE_CA_CERT:-}" ]]; then
 fi
 [[ -n "${SUPABASE_CA_CERT}" ]] || die "SUPABASE_CA_CERT resolved to an empty value."
 
-# Supabase's pgbouncer pooler rejects pg_dump the way Neon's did. Unlike Neon,
-# there is no reliable string rewrite from pooler host to direct host, so this
-# fails loudly instead of guessing wrong. Get the direct connection string
-# from Supabase dashboard -> Project Settings -> Database -> Connection string.
-if [[ "${DATABASE_URL}" == *"pooler.supabase.com"* ]]; then
-  die "DATABASE_URL points at the Supabase pooler, which pg_dump does not support. Use the direct connection string (db.<project-ref>.supabase.co) instead."
+# Supabase's Transaction pooler (port 6543) rejects pg_dump the way Neon's did
+# — no session/prepared-statement support. The Session pooler (port 5432, same
+# host) is fine: it holds one backend per connection like a direct session
+# does. It also matters here for a second, unrelated reason: the direct host
+# (db.<project-ref>.supabase.co) is IPv6-only, and networks without IPv6
+# egress (this one included — see any probe-error-*.log with "Network
+# unreachable") cannot reach it at all. The Session pooler is IPv4, so it is
+# the fix for that too. Get it from Supabase dashboard -> Connect -> Session
+# pooler (not Transaction).
+if [[ "${DATABASE_URL}" == *"pooler.supabase.com"* ]] && [[ "${DATABASE_URL}" == *":6543"* ]]; then
+  die "DATABASE_URL points at the Supabase Transaction pooler (port 6543), which pg_dump does not support. Use the Session pooler (port 5432) connection string instead — Supabase dashboard -> Connect -> Session pooler."
 fi
 
 CERT_DIR="$(mktemp -d)"
@@ -117,12 +132,16 @@ DOCKER_CERT_MOUNT=(-v "${CERT_DIR}:/certs:ro")
 
 # --- Detect the server major version ----------------------------------------
 
+mkdir -p "${BACKUP_DIR}"
+PROBE_LOG="${BACKUP_DIR}/probe-error-${TIMESTAMP}.log"
+
 echo "==> Probing the production database"
 PROBE_IMAGE="postgres:17-alpine"
 SERVER_VERSION_NUM="$(
   docker run --rm -e PGURL "${DOCKER_CERT_MOUNT[@]}" "${PROBE_IMAGE}" \
-    psql "${PGURL}" -tAc "SHOW server_version_num" 2>/dev/null | tr -d '[:space:]'
-)" || die "Could not reach production. Check DATABASE_URL, SUPABASE_CA_CERT and your network."
+    psql "${PGURL}" -tAc "SHOW server_version_num" 2>"${PROBE_LOG}" | tr -d '[:space:]'
+)" || die "Could not reach production. The real error (may include the host, never the password) is in ${PROBE_LOG} — open it yourself, it never needs to be pasted anywhere."
+[[ -s "${PROBE_LOG}" ]] && rm -f "${PROBE_LOG}"
 [[ "${SERVER_VERSION_NUM}" =~ ^[0-9]+$ ]] || die "Unexpected server_version_num: '${SERVER_VERSION_NUM}'"
 
 PG_MAJOR=$(( SERVER_VERSION_NUM / 10000 ))
@@ -130,8 +149,6 @@ PG_IMAGE="postgres:${PG_MAJOR}-alpine"
 log "Server is Postgres ${PG_MAJOR} — using ${PG_IMAGE} for the dump."
 
 # --- Record what we expect the backup to contain ----------------------------
-
-mkdir -p "${BACKUP_DIR}"
 
 echo "==> Counting rows in the tables that must survive"
 docker run --rm -e PGURL "${DOCKER_CERT_MOUNT[@]}" "${PG_IMAGE}" psql "${PGURL}" -v ON_ERROR_STOP=1 -c "
