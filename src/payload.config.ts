@@ -116,7 +116,6 @@ function databasePoolOptions() {
 }
 
 import { es } from 'payload/i18n/es'
-import { en } from 'payload/i18n/en'
 
 /**
  * `mcpPlugin` injects `payload-mcp-api-keys` with no admin/access options of its
@@ -185,7 +184,12 @@ export default buildConfig({
   cors: '*',
   csrf: trustedOrigins(),
   i18n: {
-    supportedLanguages: { es, en },
+    // Only Spanish is supported on purpose: every collection's `en` label is a
+    // literal duplicate of its `es` one, never real content. With a single
+    // supported language, getRequestLanguage() can't match the visitor's
+    // Accept-Language header, so it always falls through to fallbackLanguage
+    // instead of rendering English for an English-locale browser.
+    supportedLanguages: { es },
     fallbackLanguage: 'es',
   },
   admin: {
