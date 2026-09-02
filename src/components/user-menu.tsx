@@ -1,6 +1,6 @@
 'use client'
 
-import { CircleUserRound, LogOut } from 'lucide-react'
+import { CircleUserRound, LogOut, UserRound } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -39,6 +39,13 @@ export function UserMenu({ email, canViewCatalog }: { email: string; canViewCata
         <DropdownMenuLabel className="px-3 py-1.5 font-normal whitespace-nowrap text-muted-foreground">
           {email}
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <a href="/admin/account">
+            <UserRound />
+            Perfil
+          </a>
+        </DropdownMenuItem>
         {canViewCatalog && (
           <>
             <DropdownMenuSeparator />
