@@ -55,6 +55,7 @@ node_modules/
 # Agent tooling generated locally
 /.agents/
 /.claude/
+/.pnpm-store/
 /.codegraph/
 /.codex/
 
