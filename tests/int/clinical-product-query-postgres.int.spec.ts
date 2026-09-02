@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { getPayload, type Payload, type PayloadRequest } from 'payload'
 
-import { internalUsersOnly } from '@/access/internalUsersOnly'
+import { adminOrMedico } from '@/access/adminOrMedico'
 import { Products } from '@/collections/Products'
 import { Protocols } from '@/collections/Protocols'
 import config from '@/payload.config'
@@ -10,6 +10,7 @@ import type { User } from '@/payload-types'
 
 let payload: Payload
 let internalUser: User
+let salesUser: User
 let productId: number
 let protocolId: number
 let seededProductId: number, seededProtocolId: number, seededPresentationId: string
@@ -63,15 +64,21 @@ beforeAll(async () => {
 
   const sourceProtocol = protocols.docs[0]
   const seed = Date.now()
-  const [laboratory, ingredient, contraindication, adverseEffect, indication, postCare, warning] = await Promise.all([
-    payload.create({ collection: 'laboratories', data: { name: `Runtime Laboratory ${seed}` } }),
-    payload.create({ collection: 'active-ingredients', data: { name: `Runtime Ingredient ${seed}` } }),
-    payload.create({ collection: 'contraindications', data: { description: `Runtime contraindication ${seed}`, type: 'relativa' } }),
-    payload.create({ collection: 'adverse-effects', data: { description: `Runtime adverse effect ${seed}` } }),
-    payload.create({ collection: 'clinical-indications', data: { name: `Runtime indication ${seed}` } }),
-    payload.create({ collection: 'post-care-notes', data: { description: `Runtime post-care ${seed}` } }),
-    payload.create({ collection: 'safety-warnings', data: { description: `Runtime warning ${seed}` } }),
-  ])
+  const [laboratory, ingredient, contraindication, adverseEffect, indication, postCare, warning, sales] =
+    await Promise.all([
+      payload.create({ collection: 'laboratories', data: { name: `Runtime Laboratory ${seed}` } }),
+      payload.create({ collection: 'active-ingredients', data: { name: `Runtime Ingredient ${seed}` } }),
+      payload.create({ collection: 'contraindications', data: { description: `Runtime contraindication ${seed}`, type: 'relativa' } }),
+      payload.create({ collection: 'adverse-effects', data: { description: `Runtime adverse effect ${seed}` } }),
+      payload.create({ collection: 'clinical-indications', data: { name: `Runtime indication ${seed}` } }),
+      payload.create({ collection: 'post-care-notes', data: { description: `Runtime post-care ${seed}` } }),
+      payload.create({ collection: 'safety-warnings', data: { description: `Runtime warning ${seed}` } }),
+      payload.create({
+        collection: 'users',
+        data: { email: `runtime-sales-${seed}@test.com`, password: 'test-1234', role: 'user' },
+      }),
+    ])
+  salesUser = sales
   const protocol = await payload.create({
     collection: 'protocols', data: {
       clientShareable: true, name: `Runtime shareable ${seed}`,
@@ -119,21 +126,26 @@ afterAll(async () => {
     payload.delete({ collection: 'clinical-indications', id: seededIndicationId }),
     payload.delete({ collection: 'post-care-notes', id: seededPostCareId }),
     payload.delete({ collection: 'safety-warnings', id: seededWarningId }),
+    payload.delete({ collection: 'users', id: salesUser.id }),
   ])
 }, 30_000)
 
 describe('clinical product collection access', () => {
   it.each([
-    ['an authenticated Payload user', { collection: 'users' }, true],
+    ['an admin account', { collection: 'users', role: 'admin' }, true],
+    ['a medico account', { collection: 'users', role: 'medico' }, true],
+    ['a sales (user-role) account', { collection: 'users', role: 'user' }, false],
     ['an unauthenticated request', undefined, false],
     ['an authenticated non-user identity', { collection: 'payload-mcp-api-keys' }, false],
   ])('allows only %s', (_scenario, user, expected) => {
-    expect(internalUsersOnly({ req: { user } } as never)).toBe(expected)
+    expect(adminOrMedico({ req: { user } } as never)).toBe(expected)
   })
 
-  it('applies the same users-only read policy to products and protocols', () => {
-    expect(Products.access?.read).toBe(internalUsersOnly)
-    expect(Protocols.access?.read).toBe(internalUsersOnly)
+  it('applies the same admin-or-medico policy to every operation on products and protocols', () => {
+    for (const operation of ['read', 'create', 'update', 'delete'] as const) {
+      expect(Products.access?.[operation]).toBe(adminOrMedico)
+      expect(Protocols.access?.[operation]).toBe(adminOrMedico)
+    }
   })
 
   it('allows an internal user to read products and protocols with access explicitly enforced', async () => {
@@ -162,6 +174,26 @@ describe('clinical product collection access', () => {
         limit: 1,
         where: { id: { equals: protocolId } },
         ...enforcedReadContext(undefined),
+      }),
+    ).rejects.toMatchObject({ status: 403 })
+  })
+
+  it('denies a sales (user-role) account from reading products and protocols directly', async () => {
+    await expect(
+      payload.find({
+        collection: 'products',
+        limit: 1,
+        where: { id: { equals: productId } },
+        ...enforcedReadContext(salesUser),
+      }),
+    ).rejects.toMatchObject({ status: 403 })
+
+    await expect(
+      payload.find({
+        collection: 'protocols',
+        limit: 1,
+        where: { id: { equals: protocolId } },
+        ...enforcedReadContext(salesUser),
       }),
     ).rejects.toMatchObject({ status: 403 })
   })
@@ -216,5 +248,18 @@ describe('clinical repository Postgres runtime', () => {
       } })
     await expect(repository.canShareProtocol({ productId: seededProductId, presentationId: seededPresentationId,
       protocolId: seededProtocolId })).resolves.toEqual({ ok: true, data: { shareable: true } })
+  })
+
+  it('still answers a sales (user-role) account even though the collection denies it directly', async () => {
+    const req = { payload, user: salesUser } as PayloadRequest
+    const repository = createClinicalProductRepository(req)
+
+    await expect(repository.searchProducts({ query: 'runtime nested alias' })).resolves.toMatchObject({
+      ok: true, data: { kind: 'match', product: { id: String(seededProductId) },
+        presentation: { id: seededPresentationId },
+      },
+    })
+    await expect(repository.getProductDetails({ productId: seededProductId, presentationId: seededPresentationId }))
+      .resolves.toMatchObject({ ok: true, data: { product: { id: String(seededProductId) } } })
   })
 })

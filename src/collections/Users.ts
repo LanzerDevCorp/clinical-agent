@@ -1,11 +1,17 @@
 import type { CollectionConfig } from 'payload'
 import { adminOnly, adminOnlyField } from '../access/adminOnly'
+import { canAccessAdminPanel } from '../access/canAccessAdminPanel'
 import { ownDocumentOrAdmin } from '../access/ownDocumentOrAdmin'
 import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
 
 export const Users: CollectionConfig = {
   slug: 'users',
   access: {
+    // Any authenticated account may open the panel shell — a 'user' (sales)
+    // account still needs the built-in Account view to reach its own profile.
+    // What each role actually sees inside is decided per collection instead
+    // (every catalogue collection is admin-or-medico only).
+    admin: canAccessAdminPanel,
     // A non-admin still edits their own account (e.g. their password) — the
     // collection is hidden from their nav, not locked to them entirely.
     read: ownDocumentOrAdmin,
@@ -44,6 +50,7 @@ export const Users: CollectionConfig = {
       defaultValue: 'user',
       options: [
         { label: 'Administrador', value: 'admin' },
+        { label: 'Médico', value: 'medico' },
         { label: 'Usuario', value: 'user' },
       ],
       access: {

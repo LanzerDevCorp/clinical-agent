@@ -148,7 +148,7 @@ function setup(options: {
 }
 
 describe('clinical agent typed orchestration', () => {
-  it('uses the Flow-1 repository with the original request, user, and access enforcement', async () => {
+  it('uses the Flow-1 repository with the original request and user, bypassing collection access', async () => {
     const user = { id: 'internal-user', collection: 'users' }
     const req = { user } as never
     const calls: Array<Record<string, unknown>> = []
@@ -164,7 +164,7 @@ describe('clinical agent typed orchestration', () => {
     })
 
     await expect(tools.searchProducts({ query: 'product' })).resolves.toEqual({ ok: true, data: { factId: 'search:0', search: { kind: 'empty' } } })
-    expect(calls).toEqual([expect.objectContaining({ overrideAccess: false, req, user })])
+    expect(calls).toEqual([expect.objectContaining({ overrideAccess: true, req, user })])
   })
 
   it('does not permit injected operations to override the request-bound Flow-1 repository', async () => {

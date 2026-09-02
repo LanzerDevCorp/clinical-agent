@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { adminOrMedico } from '../access/adminOrMedico'
 
 import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
 import { createdBy, updatedBy } from './fields/attribution'
@@ -11,6 +12,12 @@ import { stampAttribution } from './hooks/stampAttribution'
  */
 export const Categories: CollectionConfig = {
   slug: 'categories',
+  access: {
+    read: adminOrMedico,
+    create: adminOrMedico,
+    update: adminOrMedico,
+    delete: adminOrMedico,
+  },
   labels: {
     singular: {
       es: 'Categoría',

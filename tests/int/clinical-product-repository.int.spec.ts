@@ -127,7 +127,7 @@ describe('ClinicalProductRepository safe contract', () => {
     expect(JSON.stringify(result)).not.toContain(approvedWithoutActivePresentation.canonicalName)
     expect(find).toHaveBeenCalledWith(expect.objectContaining({
       collection: 'products',
-      overrideAccess: false,
+      overrideAccess: true,
       req,
       user: internalUser,
     }))
@@ -169,7 +169,7 @@ describe('ClinicalProductRepository discovery', () => {
         limit: 21,
         page: 1,
         sort: 'id',
-        overrideAccess: false,
+        overrideAccess: true,
         req,
         user: internalUser,
         where: { validationStatus: { equals: 'APPROVED' } },
@@ -365,7 +365,7 @@ describe('ClinicalProductRepository details and protocol sharing', () => {
     expect(serialized).not.toContain('RAW-NOTES-SENTINEL')
     expect(serialized).not.toContain('RAW-CREATED-SENTINEL')
     expect(findByID).toHaveBeenCalledWith(expect.objectContaining({
-      collection: 'products', depth: 2, id: 7, overrideAccess: false,
+      collection: 'products', depth: 2, id: 7, overrideAccess: true,
       populate: expect.objectContaining({ protocols: expect.any(Object) }),
       req, user: internalUser,
       select: expect.objectContaining({ presentations: expect.any(Object) }),

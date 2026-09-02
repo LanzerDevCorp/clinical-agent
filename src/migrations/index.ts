@@ -4,6 +4,7 @@ import * as migration_20260826_200000_add_user_role from './20260826_200000_add_
 import * as migration_20260827_000000_product_types_collection from './20260827_000000_product_types_collection';
 import * as migration_20260827_000001_audit_fields from './20260827_000001_audit_fields';
 import * as migration_20260831_000000_categories_collection from './20260831_000000_categories_collection';
+import * as migration_20260902_000000_add_medico_role from './20260902_000000_add_medico_role';
 
 export const migrations = [
   {
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20260831_000000_categories_collection.up,
     down: migration_20260831_000000_categories_collection.down,
     name: '20260831_000000_categories_collection'
+  },
+  {
+    up: migration_20260902_000000_add_medico_role.up,
+    down: migration_20260902_000000_add_medico_role.down,
+    name: '20260902_000000_add_medico_role'
   },
 ];

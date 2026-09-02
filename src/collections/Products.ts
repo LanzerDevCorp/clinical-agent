@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { internalUsersOnly } from '../access/internalUsersOnly'
+import { adminOrMedico } from '../access/adminOrMedico'
 import { systemManagedField } from '../access/systemManaged'
 import { syncProductToJson } from '../hooks/syncProductToJson'
 import { createdBy, updatedBy } from './fields/attribution'
@@ -10,7 +10,10 @@ import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
 export const Products: CollectionConfig = {
   slug: 'products',
   access: {
-    read: internalUsersOnly,
+    read: adminOrMedico,
+    create: adminOrMedico,
+    update: adminOrMedico,
+    delete: adminOrMedico,
   },
   labels: {
     singular: {

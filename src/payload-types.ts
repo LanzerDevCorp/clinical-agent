@@ -172,7 +172,7 @@ export interface PayloadMcpApiKeyAuthOperations {
  */
 export interface User {
   id: number;
-  role: 'admin' | 'user';
+  role: 'admin' | 'medico' | 'user';
   createdAt: string;
   updatedAt: string;
   email: string;

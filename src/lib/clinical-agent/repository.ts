@@ -203,9 +203,13 @@ export function createClinicalProductRepository(
   reader: ClinicalProductReader = req.payload,
 ): ClinicalProductRepository {
   async function readEligible({ productId, presentationId }: ProductIdentityInput) {
+    // overrideAccess: true — Products/Protocols read is admin-or-medico only
+    // now, but the chat must keep answering a sales ('user' role) account.
+    // isInternalUserRequest below is this repository's own authorization
+    // boundary, so it does not need to also clear the collection's gate.
     const product = await reader.findByID({
       collection: 'products', id: productId, depth: 2, select: detailSelect,
-      populate: detailPopulate, overrideAccess: false, disableErrors: true, req, user: req.user,
+      populate: detailPopulate, overrideAccess: true, disableErrors: true, req, user: req.user,
     })
     if (!product || product.validationStatus !== 'APPROVED') return null
     const presentation = product.presentations?.find((item) =>
@@ -231,7 +235,7 @@ export function createClinicalProductRepository(
             limit: DISCOVERY_PAGE_SIZE,
             page,
             sort: 'id',
-            overrideAccess: false,
+            overrideAccess: true,
             req,
             user: req.user,
             where: discoveryWhere(),
