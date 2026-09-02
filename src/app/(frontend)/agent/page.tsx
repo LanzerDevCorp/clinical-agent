@@ -21,6 +21,10 @@ export default async function AgentPage() {
   // the chat and then be denied on the first request.
   if (user?.collection !== 'users') redirect('/admin/login')
 
+  // A temporary password (set by an admin, at creation or reset) must be
+  // changed before anything else — including the chat.
+  if (user.mustChangePassword) redirect('/admin/account')
+
   const canViewCatalog = user.role === 'admin' || user.role === 'medico'
 
   return <ClinicalChat userEmail={user.email} canViewCatalog={canViewCatalog} />

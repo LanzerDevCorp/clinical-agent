@@ -147,6 +147,9 @@ export function createClinicalAgentRoute(dependencies: RouteDependencies = {}) {
         return denied(401)
       }
       if (!req?.user?.id) return denied(401)
+      // AgentPage already redirects a temporary-password session away from the
+      // chat; this is the same rule enforced again for a direct call to the route.
+      if (req.user.collection === 'users' && req.user.mustChangePassword) return denied(403)
       const admission = dependencies.admission ?? admissionForRequest(req)
       if (!admission) return denied(503)
       let admitted: AdmissionResult

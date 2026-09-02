@@ -195,6 +195,11 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     dateFormat: "d 'de' MMMM 'de' yyyy, h:mm a",
+    components: {
+      // A 'user' (sales) account has nothing to do on the Dashboard — every
+      // catalogue collection denies it — so it's bounced to its own profile.
+      beforeDashboard: ['@/components/RedirectSalesToAccount'],
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },

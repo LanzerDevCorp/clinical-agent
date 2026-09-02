@@ -74,7 +74,9 @@ async function seedAdminUser() {
     collection: 'users',
     // Explicit, because the field's own default is 'user' — new accounts start
     // at the lower privilege, but the seed's own admin account should not.
-    data: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD, role: 'admin' },
+    // mustChangePassword: false for the same reason — a fresh reset should not
+    // send you to /admin/account before you can do anything.
+    data: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD, role: 'admin', mustChangePassword: false },
   })
   console.log(`Admin user created: ${ADMIN_EMAIL}`)
 }

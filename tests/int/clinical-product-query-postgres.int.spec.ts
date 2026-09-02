@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { getPayload, type Payload, type PayloadRequest } from 'payload'
 
 import { adminOrMedico } from '@/access/adminOrMedico'
+import { Media } from '@/collections/Media'
 import { Products } from '@/collections/Products'
 import { Protocols } from '@/collections/Protocols'
 import config from '@/payload.config'
@@ -141,10 +142,11 @@ describe('clinical product collection access', () => {
     expect(adminOrMedico({ req: { user } } as never)).toBe(expected)
   })
 
-  it('applies the same admin-or-medico policy to every operation on products and protocols', () => {
+  it('applies the same admin-or-medico policy to every operation on products, protocols and media', () => {
     for (const operation of ['read', 'create', 'update', 'delete'] as const) {
       expect(Products.access?.[operation]).toBe(adminOrMedico)
       expect(Protocols.access?.[operation]).toBe(adminOrMedico)
+      expect(Media.access?.[operation]).toBe(adminOrMedico)
     }
   })
 

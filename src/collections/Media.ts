@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-
+import { adminOrMedico } from '../access/adminOrMedico'
 import { hiddenCreatedAt } from './fields/hiddenCreatedAt'
 
 export const Media: CollectionConfig = {
@@ -21,7 +21,10 @@ export const Media: CollectionConfig = {
     },
   },
   access: {
-    read: () => true,
+    read: adminOrMedico,
+    create: adminOrMedico,
+    update: adminOrMedico,
+    delete: adminOrMedico,
   },
   fields: [
     {

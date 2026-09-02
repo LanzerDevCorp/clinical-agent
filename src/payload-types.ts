@@ -172,7 +172,11 @@ export interface PayloadMcpApiKeyAuthOperations {
  */
 export interface User {
   id: number;
-  role: 'admin' | 'medico' | 'user';
+  /**
+   * Se activa solo al crear la cuenta o al resetear la contraseña de otra persona.
+   */
+  mustChangePassword?: boolean | null;
+  role?: ('admin' | 'medico' | 'user') | null;
   createdAt: string;
   updatedAt: string;
   email: string;
@@ -828,6 +832,7 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  mustChangePassword?: T;
   role?: T;
   createdAt?: T;
   updatedAt?: T;
