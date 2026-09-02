@@ -199,6 +199,9 @@ export default buildConfig({
       // A 'user' (sales) account has nothing to do on the Dashboard — every
       // catalogue collection denies it — so it's bounced to its own profile.
       beforeDashboard: ['@/components/RedirectSalesToAccount'],
+      // Every role reaches the chat, so the link back to it sits above the
+      // per-collection nav links instead of behind any of them.
+      beforeNavLinks: ['@/components/AgentNavLink'],
     },
     importMap: {
       baseDir: path.resolve(dirname),
