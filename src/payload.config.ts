@@ -202,6 +202,10 @@ export default buildConfig({
       // Every role reaches the chat, so the link back to it sits above the
       // per-collection nav links instead of behind any of them.
       beforeNavLinks: ['@/components/AgentNavLink'],
+      // Payload's own light/dark toggle (useTheme) otherwise only lives on
+      // the account page, so /admin/login is stuck on the OS/cookie default
+      // with no manual switch.
+      beforeLogin: ['@/components/LoginThemeToggle'],
     },
     importMap: {
       baseDir: path.resolve(dirname),
