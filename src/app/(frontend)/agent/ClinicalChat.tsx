@@ -1,19 +1,24 @@
 'use client'
 
-import { useCallback, useRef, useState } from 'react'
+import { useChat } from '@ai-sdk/react'
+import { DefaultChatTransport, type UIMessage } from 'ai'
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 
+import { ThemeToggle } from '@/components/theme-toggle'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 import type { ClinicalAgentEvent, ClinicalFact } from '@/lib/clinical-agent/agent/contracts'
 
 import { ClinicalFacts, factsToText } from './ClinicalFacts'
-import styles from './clinical-chat.module.css'
+import { requestBodyFromLastUser } from './request-body'
 
-export type Turn = {
-  id: string
-  question: string
-  state: 'processing' | 'done' | 'failed'
-  artifact?: { internal: readonly ClinicalFact[]; client: readonly ClinicalFact[] }
-  error?: string
-}
+export type ClinicalUIMessage = UIMessage<never, { clinical: ClinicalAgentEvent }>
+
+const EXAMPLES = [
+  'Protocolo para tercio medio',
+  'Contraindicaciones de un bioestimulador',
+  'Cómo se reconstituye',
+] as const
 
 /**
  * The route answers with opaque status codes on purpose — it never leaks a
@@ -33,206 +38,230 @@ function messageForStatus(status: number): string {
   return HTTP_MESSAGES[status] ?? 'No se pudo completar la consulta.'
 }
 
-/**
- * Builds the exact body the route accepts. `hasExactKeys` in
- * src/app/api/chat/route.ts rejects any extra key at the body, message, or part
- * level, so nothing beyond these fields may be sent.
- *
- * Only the current question travels. The route accepts `role: 'user'` and
- * nothing else (`isClinicalUserMessage`), so sending the session's history put a
- * list of questions with no answers between them in front of the model, which
- * read them as all still open and answered every one again: the internal panel
- * filled with products nobody had just asked about, and the tool budget ran out
- * before reaching the current question.
- *
- * The cost is that a follow-up cannot lean on what came before — "¿y su dosis?"
- * has no antecedent here. That is the honest shape while the contract carries no
- * assistant turns: a conversation the model cannot see is worse than one it is
- * never offered.
- */
-export function requestBody(question: Turn) {
-  return JSON.stringify({
-    messages: [
-      {
-        id: question.id,
-        role: 'user',
-        parts: [{ type: 'text', text: question.question }],
-      },
-    ],
+function userText(message: ClinicalUIMessage) {
+  return message.parts
+    .filter((part) => part.type === 'text')
+    .map((part) => part.text)
+    .join('')
+}
+
+function clinicalEvents(message: ClinicalUIMessage | undefined): ClinicalAgentEvent[] {
+  if (!message) return []
+  return message.parts.flatMap((part) => (part.type === 'data-clinical' ? [part.data] : []))
+}
+
+type TurnView = {
+  id: string
+  question: string
+  state: 'processing' | 'done' | 'failed'
+  artifact?: { internal: readonly ClinicalFact[]; client: readonly ClinicalFact[] }
+  error?: string
+}
+
+function turnsFromMessages(
+  messages: ClinicalUIMessage[],
+  status: 'submitted' | 'streaming' | 'ready' | 'error',
+  chatError: Error | undefined,
+): TurnView[] {
+  const turns: TurnView[] = []
+
+  for (let index = 0; index < messages.length; index += 1) {
+    const message = messages[index]
+    if (message.role !== 'user') continue
+
+    const next = messages[index + 1]
+    const assistant = next?.role === 'assistant' ? next : undefined
+    const events = clinicalEvents(assistant)
+    const artifact = events.find((event) => event.type === 'artifact')
+    const clinicalError = events.find((event) => event.type === 'error')
+    const last = !messages.slice(index + 1).some((item) => item.role === 'user')
+    const question = userText(message)
+
+    if (artifact && artifact.type === 'artifact') {
+      turns.push({
+        id: message.id,
+        question,
+        state: 'done',
+        artifact: { internal: artifact.internal, client: artifact.client },
+      })
+      continue
+    }
+
+    if (clinicalError && clinicalError.type === 'error') {
+      turns.push({ id: message.id, question, state: 'failed', error: clinicalError.message })
+      continue
+    }
+
+    if (last && (status === 'submitted' || status === 'streaming')) {
+      turns.push({ id: message.id, question, state: 'processing' })
+      continue
+    }
+
+    if (last && status === 'error') {
+      const aborted = chatError?.name === 'AbortError'
+      turns.push({
+        id: message.id,
+        question,
+        state: 'failed',
+        error: aborted
+          ? 'Consulta cancelada.'
+          : chatError?.message || 'No se pudo conectar con el servicio.',
+      })
+      continue
+    }
+
+    turns.push({
+      id: message.id,
+      question,
+      state: 'failed',
+      error: assistant ? 'La consulta terminó sin respuesta.' : 'Consulta cancelada.',
+    })
+  }
+
+  return turns
+}
+
+function clinicalTransport() {
+  return new DefaultChatTransport<ClinicalUIMessage>({
+    api: '/api/chat',
+    prepareSendMessagesRequest: ({ messages }) => ({
+      body: JSON.parse(requestBodyFromLastUser(messages)) as object,
+    }),
+    fetch: async (input, init) => {
+      let response: Response
+      try {
+        response = await globalThis.fetch(input, init)
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') throw error
+        throw new Error('No se pudo conectar con el servicio.')
+      }
+      if (!response.ok) throw new Error(messageForStatus(response.status))
+      if (!response.body) throw new Error('La consulta terminó sin respuesta.')
+      return response
+    },
   })
 }
 
-/**
- * Reads the AI SDK UI message stream. Every frame is `data: <json>` separated by
- * a blank line, and the stream closes with a literal `data: [DONE]`.
- */
-async function* readClinicalEvents(body: ReadableStream<Uint8Array>): AsyncGenerator<ClinicalAgentEvent> {
-  const reader = body.getReader()
-  const decoder = new TextDecoder()
-  let buffer = ''
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) break
-      buffer += decoder.decode(value, { stream: true })
-
-      const frames = buffer.split('\n\n')
-      buffer = frames.pop() ?? ''
-
-      for (const frame of frames) {
-        const line = frame.trim()
-        if (!line.startsWith('data:')) continue
-        const payload = line.slice('data:'.length).trim()
-        if (payload === '[DONE]') continue
-
-        let chunk: unknown
-        try {
-          chunk = JSON.parse(payload)
-        } catch {
-          continue
-        }
-        // The stream also carries lifecycle chunks we do not render.
-        if (
-          chunk
-          && typeof chunk === 'object'
-          && (chunk as { type?: unknown }).type === 'data-clinical'
-        ) {
-          yield (chunk as { data: ClinicalAgentEvent }).data
-        }
-      }
-    }
-  } finally {
-    reader.releaseLock()
-  }
-}
-
 export function ClinicalChat({ userEmail }: { userEmail: string }) {
-  const [turns, setTurns] = useState<Turn[]>([])
   const [draft, setDraft] = useState('')
-  const [busy, setBusy] = useState(false)
-  const abortRef = useRef<AbortController | null>(null)
+  const composerRef = useRef<HTMLTextAreaElement>(null)
+  const transport = useMemo(clinicalTransport, [])
 
-  const updateTurn = useCallback((id: string, patch: Partial<Turn>) => {
-    setTurns((current) => current.map((turn) => (turn.id === id ? { ...turn, ...patch } : turn)))
-  }, [])
+  const { messages, sendMessage, status, stop, error } = useChat<ClinicalUIMessage>({
+    transport,
+  })
 
-  const cancel = useCallback(() => {
-    abortRef.current?.abort()
-  }, [])
+  const busy = status === 'submitted' || status === 'streaming'
+  const turns = turnsFromMessages(messages, status, error)
 
-  const submit = useCallback(
-    async (event: React.FormEvent) => {
-      event.preventDefault()
-      const question = draft.trim()
-      if (!question || busy) return
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && busy) stop()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [busy, stop])
 
-      const pending: Turn = { id: crypto.randomUUID(), question, state: 'processing' }
-      const history = turns
-      setTurns([...history, pending])
-      setDraft('')
-      setBusy(true)
+  const submit = (event: FormEvent) => {
+    event.preventDefault()
+    const question = draft.trim()
+    if (!question || busy) return
+    setDraft('')
+    void sendMessage({ text: question })
+  }
 
-      const controller = new AbortController()
-      abortRef.current = controller
-
-      try {
-        const response = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: requestBody(pending),
-          signal: controller.signal,
-        })
-
-        if (!response.ok || !response.body) {
-          updateTurn(pending.id, { state: 'failed', error: messageForStatus(response.status) })
-          return
-        }
-
-        let answered = false
-        for await (const clinical of readClinicalEvents(response.body)) {
-          if (clinical.type === 'artifact') {
-            answered = true
-            updateTurn(pending.id, {
-              state: 'done',
-              artifact: { internal: clinical.internal, client: clinical.client },
-            })
-          } else if (clinical.type === 'error') {
-            answered = true
-            updateTurn(pending.id, { state: 'failed', error: clinical.message })
-          }
-        }
-
-        // A stream that closes without an artifact or an error is still a failure.
-        if (!answered) {
-          updateTurn(pending.id, { state: 'failed', error: 'La consulta terminó sin respuesta.' })
-        }
-      } catch (error) {
-        const aborted = error instanceof DOMException && error.name === 'AbortError'
-        updateTurn(pending.id, {
-          state: 'failed',
-          error: aborted ? 'Consulta cancelada.' : 'No se pudo conectar con el servicio.',
-        })
-      } finally {
-        abortRef.current = null
-        setBusy(false)
-      }
-    },
-    [busy, draft, turns, updateTurn],
-  )
+  const fillExample = (text: string) => {
+    setDraft(text)
+    composerRef.current?.focus()
+  }
 
   return (
-    <div className={styles.shell}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>Consulta clínica</h1>
-        <span className={styles.user}>{userEmail}</span>
+    <div className="mx-auto flex h-svh max-w-[1200px] flex-col px-6 text-[15px] leading-snug">
+      <header className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border py-4">
+        <h1 className="m-0 text-lg font-semibold tracking-tight">Consulta clínica</h1>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-muted-foreground text-xs">{userEmail}</span>
+          <Button variant="ghost" size="sm" asChild>
+            <a href="/admin">Catálogo</a>
+          </Button>
+          <ThemeToggle />
+        </div>
       </header>
 
-      <div className={styles.thread}>
+      <div className="flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto py-6">
         {turns.length === 0 && (
-          <p className={styles.empty}>
-            Escribe una consulta sobre un producto, una presentación o un protocolo.
-          </p>
+          <div className="text-muted-foreground flex flex-col gap-3">
+            <p className="m-0">Escribe una consulta sobre un producto, una presentación o un protocolo.</p>
+            <div className="flex flex-wrap gap-2">
+              {EXAMPLES.map((example) => (
+                <Button
+                  key={example}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fillExample(example)}
+                >
+                  {example}
+                </Button>
+              ))}
+            </div>
+          </div>
         )}
 
         {turns.map((turn) => (
-          <article key={turn.id} className={styles.turn}>
-            <p className={styles.question}>{turn.question}</p>
+          <article key={turn.id} className="flex flex-col gap-3">
+            <p className="bg-secondary text-secondary-foreground m-0 max-w-[70%] self-end rounded-lg px-3 py-2">
+              {turn.question}
+            </p>
 
             {turn.state === 'processing' && (
-              <p className={styles.status} role="status">
-                Procesando…
+              <p className="text-muted-foreground m-0 text-sm" role="status">
+                Consultando el catálogo…
               </p>
             )}
 
             {turn.state === 'failed' && (
-              <p className={styles.error} role="alert">
-                {turn.error}
-              </p>
+              <div className="border-destructive/40 bg-destructive/10 text-destructive flex flex-wrap items-center gap-2 rounded-md border px-3 py-2 text-sm" role="alert">
+                <span>{turn.error}</span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="xs"
+                  onClick={() => void sendMessage({ text: turn.question })}
+                  disabled={busy}
+                >
+                  Reintentar
+                </Button>
+              </div>
             )}
 
             {turn.state === 'done' && turn.artifact && (
-              <div className={styles.panels}>
-                <section className={styles.panel} aria-label="Datos clínicos internos">
-                  <h2 className={styles.panelTitle}>Datos internos</h2>
-                  <ClinicalFacts facts={turn.artifact.internal} emptyLabel="Sin datos internos." />
+              <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+                <section
+                  className="bg-card flex min-w-0 flex-col gap-2 rounded-md border border-border p-3"
+                  aria-label="Datos clínicos internos"
+                >
+                  <h2 className="text-muted-foreground m-0 text-xs font-semibold tracking-wider uppercase">
+                    Datos internos
+                  </h2>
+                  <ClinicalFacts facts={turn.artifact.internal} emptyLabel="Sin datos internos." onPick={fillExample} />
                 </section>
 
-                <section className={`${styles.panel} ${styles.clientPanel}`} aria-label="Versión para el paciente">
-                  <h2 className={styles.panelTitle}>Para el paciente</h2>
+                <section
+                  className="bg-shareable text-shareable-foreground flex min-w-0 flex-col gap-2 rounded-md border border-l-4 border-l-shareable-rule p-3"
+                  aria-label="Versión para el paciente"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <h2 className="m-0 text-xs font-semibold tracking-wider uppercase">Para el paciente</h2>
+                    {turn.artifact.client.length > 0 && (
+                      <PanelCopy text={factsToText(turn.artifact.client)} />
+                    )}
+                  </div>
                   <ClinicalFacts
                     facts={turn.artifact.client}
                     emptyLabel="Ningún protocolo está autorizado para compartir con el paciente."
+                    copyProtocols
                   />
-                  {turn.artifact.client.length > 0 && (
-                    <button
-                      type="button"
-                      className={styles.share}
-                      onClick={() => navigator.clipboard?.writeText(factsToText(turn.artifact!.client))}
-                    >
-                      Copiar
-                    </button>
-                  )}
                 </section>
               </div>
             )}
@@ -240,25 +269,51 @@ export function ClinicalChat({ userEmail }: { userEmail: string }) {
         ))}
       </div>
 
-      <form className={styles.composer} onSubmit={submit}>
-        <input
-          className={styles.input}
+      <form className="flex items-end gap-2 border-t border-border py-4" onSubmit={submit}>
+        <Textarea
+          ref={composerRef}
+          className="max-h-32 min-h-12"
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+              event.preventDefault()
+              event.currentTarget.form?.requestSubmit()
+            }
+          }}
           placeholder="Escribe tu consulta…"
           disabled={busy}
           aria-label="Consulta"
+          rows={2}
         />
         {busy ? (
-          <button type="button" className={styles.cancel} onClick={cancel}>
+          <Button type="button" variant="outline" onClick={() => stop()}>
             Cancelar
-          </button>
+          </Button>
         ) : (
-          <button type="submit" className={styles.send} disabled={!draft.trim()}>
+          <Button type="submit" disabled={!draft.trim()}>
             Enviar
-          </button>
+          </Button>
         )}
       </form>
     </div>
+  )
+}
+
+function PanelCopy({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false)
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      size="xs"
+      onClick={async () => {
+        await navigator.clipboard?.writeText(text)
+        setCopied(true)
+        window.setTimeout(() => setCopied(false), 2000)
+      }}
+    >
+      {copied ? 'Copiado' : 'Copiar'}
+    </Button>
   )
 }
