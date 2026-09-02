@@ -205,7 +205,7 @@ export default buildConfig({
       // Payload's own light/dark toggle (useTheme) otherwise only lives on
       // the account page, so /admin/login is stuck on the OS/cookie default
       // with no manual switch.
-      beforeLogin: ['@/components/LoginThemeToggle'],
+      beforeLogin: ['@/components/LoginThemeToggle', '@/components/HideForgotPassword'],
     },
     importMap: {
       baseDir: path.resolve(dirname),
