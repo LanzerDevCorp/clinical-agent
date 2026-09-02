@@ -21,5 +21,7 @@ export default async function AgentPage() {
   // the chat and then be denied on the first request.
   if (user?.collection !== 'users') redirect('/admin/login')
 
-  return <ClinicalChat userEmail={user.email} />
+  const canViewCatalog = user.role === 'admin' || user.role === 'medico'
+
+  return <ClinicalChat userEmail={user.email} canViewCatalog={canViewCatalog} />
 }

@@ -5,19 +5,20 @@ import { DefaultChatTransport, type UIMessage } from 'ai'
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 
 import { ThemeToggle } from '@/components/theme-toggle'
+import { UserMenu } from '@/components/user-menu'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import type { ClinicalAgentEvent, ClinicalFact } from '@/lib/clinical-agent/agent/contracts'
 
-import { ClinicalFacts, factsToText } from './ClinicalFacts'
+import { ClinicalFacts } from './ClinicalFacts'
 import { requestBodyFromLastUser } from './request-body'
 
 export type ClinicalUIMessage = UIMessage<never, { clinical: ClinicalAgentEvent }>
 
 const EXAMPLES = [
-  'Protocolo para tercio medio',
-  'Contraindicaciones de un bioestimulador',
-  'Cómo se reconstituye',
+  'Protocolo para Hyaluronic Acid',
+  'Contraindicaciones de Wiztox',
+  'Cómo se reconstituye Rejubella',
 ] as const
 
 /**
@@ -142,7 +143,13 @@ function clinicalTransport() {
   })
 }
 
-export function ClinicalChat({ userEmail }: { userEmail: string }) {
+export function ClinicalChat({
+  userEmail,
+  canViewCatalog,
+}: {
+  userEmail: string
+  canViewCatalog: boolean
+}) {
   const [draft, setDraft] = useState('')
   const composerRef = useRef<HTMLTextAreaElement>(null)
   const transport = useMemo(clinicalTransport, [])
@@ -180,10 +187,7 @@ export function ClinicalChat({ userEmail }: { userEmail: string }) {
       <header className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border py-4">
         <h1 className="m-0 text-lg font-semibold tracking-tight">Consulta clínica</h1>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-muted-foreground text-xs">{userEmail}</span>
-          <Button variant="ghost" size="sm" asChild>
-            <a href="/admin">Catálogo</a>
-          </Button>
+          <UserMenu email={userEmail} canViewCatalog={canViewCatalog} />
           <ThemeToggle />
         </div>
       </header>
@@ -251,12 +255,7 @@ export function ClinicalChat({ userEmail }: { userEmail: string }) {
                   className="bg-shareable text-shareable-foreground flex min-w-0 flex-col gap-2 rounded-md border border-l-4 border-l-shareable-rule p-3"
                   aria-label="Versión para el paciente"
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <h2 className="m-0 text-xs font-semibold tracking-wider uppercase">Para el paciente</h2>
-                    {turn.artifact.client.length > 0 && (
-                      <PanelCopy text={factsToText(turn.artifact.client)} />
-                    )}
-                  </div>
+                  <h2 className="m-0 text-xs font-semibold tracking-wider uppercase">Para el paciente</h2>
                   <ClinicalFacts
                     facts={turn.artifact.client}
                     emptyLabel="Ningún protocolo está autorizado para compartir con el paciente."
@@ -297,23 +296,5 @@ export function ClinicalChat({ userEmail }: { userEmail: string }) {
         )}
       </form>
     </div>
-  )
-}
-
-function PanelCopy({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false)
-  return (
-    <Button
-      type="button"
-      variant="outline"
-      size="xs"
-      onClick={async () => {
-        await navigator.clipboard?.writeText(text)
-        setCopied(true)
-        window.setTimeout(() => setCopied(false), 2000)
-      }}
-    >
-      {copied ? 'Copiado' : 'Copiar'}
-    </Button>
   )
 }
