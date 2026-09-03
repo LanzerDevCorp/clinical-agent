@@ -6,6 +6,7 @@ import * as migration_20260827_000001_audit_fields from './20260827_000001_audit
 import * as migration_20260831_000000_categories_collection from './20260831_000000_categories_collection';
 import * as migration_20260902_000000_add_medico_role from './20260902_000000_add_medico_role';
 import * as migration_20260902_000001_add_must_change_password from './20260902_000001_add_must_change_password';
+import * as migration_20260903_000000_backfill_must_change_password from './20260903_000000_backfill_must_change_password';
 
 export const migrations = [
   {
@@ -47,5 +48,10 @@ export const migrations = [
     up: migration_20260902_000001_add_must_change_password.up,
     down: migration_20260902_000001_add_must_change_password.down,
     name: '20260902_000001_add_must_change_password'
+  },
+  {
+    up: migration_20260903_000000_backfill_must_change_password.up,
+    down: migration_20260903_000000_backfill_must_change_password.down,
+    name: '20260903_000000_backfill_must_change_password'
   },
 ];
