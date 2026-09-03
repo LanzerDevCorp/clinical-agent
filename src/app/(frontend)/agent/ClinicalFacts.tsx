@@ -228,6 +228,79 @@ function Fact({
   return <Search search={fact.value as SearchData} onPick={onPick} />
 }
 
+/**
+ * `getProductDetails` splits one sheet into one `kind:'details'` fact per field
+ * group (contracts.ts), each carrying full product/presentation identity so a
+ * SINGLE scoped fact still says what it's about. A broad question gathers many
+ * of these for the same product, so rendering one `<Details>` per fact repeats
+ * the identity header once per group. Groups are disjoint by construction
+ * (`detailFields.ts`'s `shell()` clears every field but the one it fills), so
+ * merging same-identity facts back into one sheet is safe; the `??`/`||`
+ * fallbacks below just mean "prefer whichever side actually has data" in the
+ * unexpected case two facts do overlap.
+ */
+function mergeDetails(a: ProductDetails, b: ProductDetails): ProductDetails {
+  return {
+    product: {
+      id: a.product.id,
+      canonicalName: a.product.canonicalName,
+      description: a.product.description ?? b.product.description,
+      productType: a.product.productType ?? b.product.productType,
+      laboratory: a.product.laboratory || b.product.laboratory,
+      activeIngredients: a.product.activeIngredients ?? b.product.activeIngredients,
+    },
+    presentation: {
+      id: a.presentation.id,
+      canonicalName: a.presentation.canonicalName,
+      characteristics: a.presentation.characteristics ?? b.presentation.characteristics,
+      certifications: a.presentation.certifications ?? b.presentation.certifications,
+      contraindications: a.presentation.contraindications ?? b.presentation.contraindications,
+      adverseEffects: a.presentation.adverseEffects ?? b.presentation.adverseEffects,
+      clinicalIndications: a.presentation.clinicalIndications ?? b.presentation.clinicalIndications,
+      postCareNotes: a.presentation.postCareNotes ?? b.presentation.postCareNotes,
+      safetyWarnings: a.presentation.safetyWarnings ?? b.presentation.safetyWarnings,
+      reconstitution: a.presentation.reconstitution ?? b.presentation.reconstitution,
+      protocols: a.presentation.protocols.length ? a.presentation.protocols : b.presentation.protocols,
+    },
+  }
+}
+
+export type FactRenderItem =
+  | { kind: 'details'; renderKey: string; details: ProductDetails }
+  | { kind: 'other'; renderKey: string; fact: ClinicalFact }
+
+/**
+ * Collapses every `kind:'details'` fact that shares a product+presentation
+ * identity into one render item, merging their partial sheets into one. A
+ * group renders at the position of its FIRST fact; later same-identity facts
+ * fold in without adding a new position. `search`/`protocol` facts pass
+ * through untouched, one item each, in their original order.
+ */
+export function groupDetailFacts(facts: readonly ClinicalFact[]): FactRenderItem[] {
+  const items: FactRenderItem[] = []
+  const indexByIdentity = new Map<string, number>()
+
+  for (const fact of facts) {
+    if (fact.kind !== 'details') {
+      items.push({ kind: 'other', renderKey: fact.id, fact })
+      continue
+    }
+    const details = fact.value as ProductDetails
+    const identityKey = `${details.product.id}:${details.presentation.id}`
+    const existingIndex = indexByIdentity.get(identityKey)
+    if (existingIndex === undefined) {
+      indexByIdentity.set(identityKey, items.length)
+      items.push({ kind: 'details', renderKey: `details:${identityKey}`, details })
+      continue
+    }
+    const existing = items[existingIndex]
+    if (existing.kind === 'details') {
+      items[existingIndex] = { ...existing, details: mergeDetails(existing.details, details) }
+    }
+  }
+  return items
+}
+
 export function ClinicalFacts({
   facts,
   emptyLabel,
@@ -242,8 +315,10 @@ export function ClinicalFacts({
   if (facts.length === 0) return <p className="text-muted-foreground m-0 text-sm">{emptyLabel}</p>
   return (
     <div className="flex min-w-0 flex-col gap-4">
-      {facts.map((fact) => (
-        <Fact key={fact.id} fact={fact} onPick={onPick} copyProtocols={copyProtocols} />
+      {groupDetailFacts(facts).map((item) => (
+        item.kind === 'details'
+          ? <Details key={item.renderKey} details={item.details} copyProtocols={copyProtocols} />
+          : <Fact key={item.renderKey} fact={item.fact} onPick={onPick} copyProtocols={copyProtocols} />
       ))}
     </div>
   )
@@ -270,7 +345,12 @@ export function protocolToText(protocol: ProtocolSummary): string {
   return lines.join('\n')
 }
 
-/** Plain-text projection used by the copy action, so the clipboard is readable. */
+/**
+ * Plain-text projection used by the copy action, so the clipboard is readable.
+ * Groups same-identity `details` facts first (via `groupDetailFacts`), so a
+ * broad question's several field-group facts print the product name once,
+ * not once per group.
+ */
 export function factsToText(facts: readonly ClinicalFact[]): string {
   const lines: string[] = []
   const push = (label: string, value: unknown) => {
@@ -278,14 +358,15 @@ export function factsToText(facts: readonly ClinicalFact[]): string {
     lines.push(`${label}: ${Array.isArray(value) ? value.join(', ') : String(value)}`)
   }
 
-  for (const fact of facts) {
-    if (fact.kind === 'protocol') lines.push(protocolToText(fact.value as ProtocolSummary))
-    else if (fact.kind === 'details') {
-      const { product, presentation } = fact.value as ProductDetails
+  for (const item of groupDetailFacts(facts)) {
+    if (item.kind === 'details') {
+      const { product, presentation } = item.details
       lines.push(`${product.canonicalName} — ${presentation.canonicalName}`)
       push('Laboratorio', product.laboratory)
       push('Descripción', product.description)
       presentation.protocols.forEach((protocol) => lines.push(protocolToText(protocol)))
+    } else if (item.fact.kind === 'protocol') {
+      lines.push(protocolToText(item.fact.value as ProtocolSummary))
     }
     lines.push('')
   }
