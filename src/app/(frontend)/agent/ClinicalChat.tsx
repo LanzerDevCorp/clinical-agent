@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import type { ClinicalAgentEvent, ClinicalFact } from '@/lib/clinical-agent/agent/contracts'
 
 import { ClinicalFacts } from './ClinicalFacts'
+import { clientEmptyLabel } from './clientEmptyLabel'
 import { requestBodyFromLastUser } from './request-body'
 
 export type ClinicalUIMessage = UIMessage<never, { clinical: ClinicalAgentEvent }>
@@ -258,7 +259,7 @@ export function ClinicalChat({
                   <h2 className="m-0 text-xs font-semibold tracking-wider uppercase">Para el paciente</h2>
                   <ClinicalFacts
                     facts={turn.artifact.client}
-                    emptyLabel="Ningún protocolo está autorizado para compartir con el paciente."
+                    emptyLabel={clientEmptyLabel(turn.artifact.internal)}
                     copyProtocols
                   />
                 </section>

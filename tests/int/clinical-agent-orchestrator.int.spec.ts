@@ -24,6 +24,19 @@ const details: ProductDetails = {
   },
 }
 
+const richDetails: ProductDetails = {
+  product: {
+    id: 'product-2', canonicalName: 'L-CARNITINE', description: 'Lipolytic agent',
+    productType: 'injectable', laboratory: 'Acme Labs',
+  },
+  presentation: {
+    id: 'presentation-2', canonicalName: '10 vials', characteristics: null, certifications: null,
+    clinicalIndications: ['Localized fat reduction'],
+    contraindications: [{ description: 'Pregnancy', type: 'absoluta' }],
+    protocols: [],
+  },
+}
+
 function fakeTimers() {
   let nextId = 0
   let nowMs = 0
@@ -90,6 +103,22 @@ function reader(results: {
           status: 'activa',
           characteristics: detail.presentation.characteristics,
           certifications: detail.presentation.certifications,
+          ...(detail.presentation.contraindications && {
+            contraindications: detail.presentation.contraindications,
+          }),
+          ...(detail.presentation.adverseEffects && {
+            adverseEffects: detail.presentation.adverseEffects.map((description) => ({ description })),
+          }),
+          ...(detail.presentation.clinicalIndications && {
+            clinicalIndications: detail.presentation.clinicalIndications.map((name) => ({ name })),
+          }),
+          ...(detail.presentation.postCareNotes && {
+            postCareNotes: detail.presentation.postCareNotes.map((description) => ({ description })),
+          }),
+          ...(detail.presentation.safetyWarnings && {
+            safetyWarnings: detail.presentation.safetyWarnings.map((description) => ({ description })),
+          }),
+          ...(detail.presentation.reconstitution && { reconstitution: detail.presentation.reconstitution }),
           protocols: detail.presentation.protocols.map((protocol) => ({
             ...protocol,
             clientShareable: (() => {
@@ -232,6 +261,99 @@ describe('clinical agent typed orchestration', () => {
     expect(artifact.client.every((fact) => fact.audience === 'client' && fact.kind === 'protocol')).toBe(true)
     expect(JSON.stringify(artifact.client)).not.toContain('Private protocol')
     expect(JSON.stringify(artifact.client)).toContain('Shareable protocol')
+  })
+
+  it('splits getProductDetails into one fact per field group, each carrying full identity', async () => {
+    const source = reader({ detail: { ok: true, data: richDetails } })
+    const tools = createClinicalTools({ req: { user: { id: 'internal-user', collection: 'users' } } as never, reader: source as never })
+
+    const result = await tools.getProductDetails({ productId: 'product-2', presentationId: 'presentation-2' })
+    if (!result.ok) throw new Error('expected success')
+
+    const byGroup = new Map(result.data.fields.map((field) => [field.group, field]))
+    expect(byGroup.get('identity')).toMatchObject({ factId: 'details:product-2:presentation-2:identity', clientEligible: true })
+    expect(byGroup.get('clinicalIndications')).toMatchObject({ clientEligible: true })
+    expect(byGroup.get('contraindications')).toMatchObject({ clientEligible: false })
+    // No characteristics/certifications on this fixture, so no presentationInfo group.
+    expect(byGroup.has('presentationInfo')).toBe(false)
+
+    const ledger = tools.ledger.snapshot()
+    for (const field of result.data.fields) {
+      const fact = ledger.find((entry) => entry.id === field.factId)
+      expect(fact?.audience).toBe('internal')
+      expect(fact?.clientEligible).toBe(field.clientEligible)
+      const value = fact?.value as ProductDetails
+      expect(value.product.id).toBe('product-2')
+      expect(value.product.canonicalName).toBe('L-CARNITINE')
+      expect(value.presentation.id).toBe('presentation-2')
+    }
+  })
+
+  it('omits internalFactIds for a generic question (full sheet) but narrows when the model scopes to specific groups', async () => {
+    const source = reader({ detail: { ok: true, data: richDetails } })
+
+    const generic = gateway(async function* (request) {
+      await request.tools.getProductDetails({ productId: 'product-2', presentationId: 'presentation-2' })
+      yield { type: 'final', steps: 2, outputTokens: 1, artifact: { clientFactIds: [] } }
+    })
+    const genericRun = setup({ gateway: generic, reader: source })
+    await expect(genericRun.run()).resolves.toEqual({ ok: true })
+    const genericArtifact = genericRun.output.find((event) => event.type === 'artifact') as Extract<ClinicalAgentEvent, { type: 'artifact' }>
+    // Generic question, internalFactIds omitted: every gathered internal group shows.
+    expect(genericArtifact.internal.length).toBeGreaterThanOrEqual(3)
+    expect(genericArtifact.internal.some((fact) => fact.id.endsWith(':contraindications'))).toBe(true)
+
+    const scoped = gateway(async function* (request) {
+      const result = await request.tools.getProductDetails({ productId: 'product-2', presentationId: 'presentation-2' })
+      const clinicalIndicationsFactId = result.ok
+        ? result.data.fields.find((field) => field.group === 'clinicalIndications')?.factId
+        : undefined
+      yield { type: 'final', steps: 2, outputTokens: 1, artifact: { clientFactIds: [], internalFactIds: [clinicalIndicationsFactId] } }
+    })
+    const scopedRun = setup({ gateway: scoped, reader: source })
+    await expect(scopedRun.run()).resolves.toEqual({ ok: true })
+    const scopedArtifact = scopedRun.output.find((event) => event.type === 'artifact') as Extract<ClinicalAgentEvent, { type: 'artifact' }>
+    // Scoped question ("¿para qué sirve?"): only the asked-for group shows, not contraindications.
+    expect(scopedArtifact.internal).toHaveLength(1)
+    expect(scopedArtifact.internal[0].id).toContain(':clinicalIndications')
+  })
+
+  it('lets a non-sensitive details fact reach the client panel but keeps an always-internal one out, even if the model tries', async () => {
+    const source = reader({ detail: { ok: true, data: richDetails } })
+
+    const attemptsBoth = gateway(async function* (request) {
+      const result = await request.tools.getProductDetails({ productId: 'product-2', presentationId: 'presentation-2' })
+      const fields = result.ok ? result.data.fields : []
+      const clinicalIndicationsFactId = fields.find((field) => field.group === 'clinicalIndications')!.factId
+      const contraindicationsFactId = fields.find((field) => field.group === 'contraindications')!.factId
+      yield {
+        type: 'final', steps: 2, outputTokens: 1,
+        artifact: { clientFactIds: [clinicalIndicationsFactId, contraindicationsFactId] },
+      }
+    })
+    const { run, output } = setup({ gateway: attemptsBoth, reader: source })
+
+    // The whole run fails closed: a client selection that includes even one
+    // always-internal fact is an invalid artifact, not a partially-honored one.
+    await expect(run()).resolves.toEqual({ ok: false, code: 'TEMPORARY_FAILURE' })
+    expect(output.find((event) => event.type === 'artifact')).toBeUndefined()
+  })
+
+  it('lets a search fact itself be the final answer on both panels — the listing-question path, no protocol required', async () => {
+    const source = reader()
+    const listing = gateway(async function* (request) {
+      const result = await request.tools.searchProducts({ query: 'Agujas' })
+      const factId = result.ok ? result.data.factId : undefined
+      yield { type: 'final', steps: 1, outputTokens: 1, artifact: { clientFactIds: [factId], internalFactIds: [factId] } }
+    })
+    const { run, output } = setup({ gateway: listing, reader: source })
+
+    await expect(run()).resolves.toEqual({ ok: true })
+    const artifact = output.find((event) => event.type === 'artifact') as Extract<ClinicalAgentEvent, { type: 'artifact' }>
+    expect(artifact.internal).toHaveLength(1)
+    expect(artifact.internal[0].kind).toBe('search')
+    expect(artifact.client).toHaveLength(1)
+    expect(artifact.client[0].kind).toBe('search')
   })
 
   it('rejects partial artifacts and emits no clinical content before final validation', async () => {

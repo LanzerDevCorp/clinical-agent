@@ -235,7 +235,7 @@ function routeHarness(options: {
         onEvent({ type: 'status', status: 'processing' })
         onEvent({
           type: 'artifact',
-          internal: [{ id: 'search:0', audience: 'internal', kind: 'search', value: { kind: 'empty' } }],
+          internal: [{ id: 'search:0', audience: 'internal', kind: 'search', clientEligible: true, value: { kind: 'empty' } }],
           client: [],
         })
         return { ok: true }

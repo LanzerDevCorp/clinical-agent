@@ -4,6 +4,7 @@ import type { ClinicalProductReader } from '../repository'
 import { createClinicalProductRepository } from '../repository'
 import type { ProductDetails, ProtocolSummary, SafeResult, SearchData } from '../contracts'
 import { clinicalAgentLimits, type ClinicalFact, type ClinicalToolset } from './contracts'
+import { isClientEligibleField, productDetailFieldGroups, type ProductDetailField } from './detailFields'
 
 export type ClinicalAgentTimers = {
   setTimeout(callback: () => void, delayMs: number): unknown
@@ -59,8 +60,8 @@ export function createClinicalTools({ req, reader, timers = defaultTimers() }: T
 
   type SearchPayload = { factId: string; search: SearchData }
   type DetailsPayload = {
-    factId: string
     details: ProductDetails
+    fields: readonly { group: ProductDetailField; factId: string; clientEligible: boolean }[]
     clientShareableProtocols: readonly { protocolId: string; factId: string }[]
   }
 
@@ -70,7 +71,9 @@ export function createClinicalTools({ req, reader, timers = defaultTimers() }: T
       const result = await withinToolDeadline(() => source.searchProducts(input))
       if (!result.ok) return result
       const factId = `search:${facts.length}`
-      facts.push({ id: factId, audience: 'internal', kind: 'search', value: result.data })
+      // Never clinically sensitive — a candidate/match list is catalogue data, safe to
+      // hand a patient asking a listing question directly.
+      facts.push({ id: factId, audience: 'internal', kind: 'search', clientEligible: true, value: result.data })
       return { ok: true, data: { factId, search: result.data } }
     },
     async getProductDetails(input) {
@@ -101,14 +104,20 @@ export function createClinicalTools({ req, reader, timers = defaultTimers() }: T
       })
       if (!outcome.ok) return outcome
 
-      const factId = `details:${input.productId}:${input.presentationId}`
-      facts.push({ id: factId, audience: 'internal', kind: 'details', value: outcome.data.details })
+      const groups = productDetailFieldGroups(outcome.data.details)
+      const fields = (Object.keys(groups) as ProductDetailField[]).map((group) => {
+        const value = groups[group]!
+        const clientEligible = isClientEligibleField(group)
+        const id = `details:${input.productId}:${input.presentationId}:${group}`
+        facts.push({ id, audience: 'internal', kind: 'details', clientEligible, group, value })
+        return { group, factId: id, clientEligible }
+      })
       const clientShareableProtocols = outcome.data.shareable.map((protocol) => {
         const id = protocolId(input.productId, input.presentationId, protocol.id)
-        facts.push({ id, audience: 'client', kind: 'protocol', value: protocol })
+        facts.push({ id, audience: 'client', kind: 'protocol', clientEligible: true, value: protocol })
         return { protocolId: protocol.id, factId: id }
       })
-      return { ok: true, data: { factId, details: outcome.data.details, clientShareableProtocols } }
+      return { ok: true, data: { details: outcome.data.details, fields, clientShareableProtocols } }
     },
   }
 

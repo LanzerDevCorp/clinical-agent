@@ -52,6 +52,7 @@ type AiSdkGatewayDependencies = {
 
 const artifactSchema = z.object({
   clientFactIds: z.array(z.string()),
+  internalFactIds: z.array(z.string()).optional(),
 })
 
 const productIdSchema = z.union([z.string().min(1), z.number()])
@@ -68,8 +69,11 @@ function createAiSdkTools(tools: ClinicalToolset) {
     }),
     getProductDetails: tool({
       description:
-        'Load approved details for one explicit product presentation. Returns `factId` for the details, and'
-        + ' `clientShareableProtocols` listing every protocol authorized for sharing with its own `factId`.',
+        'Load approved details for one explicit product presentation. Returns `fields`: one entry per'
+        + ' field group actually present on the sheet (identity, clinicalIndications, presentationInfo,'
+        + ' contraindications, adverseEffects, postCareNotes, safetyWarnings, reconstitution, protocols),'
+        + ' each with its own `factId` and `clientEligible`. Also returns `clientShareableProtocols` listing'
+        + ' every protocol authorized for sharing with its own `factId`.',
       inputSchema: z.object({ productId: productIdSchema, presentationId: z.string().min(1) }),
       execute: ({ productId, presentationId }) => tools.getProductDetails({ productId, presentationId }),
     }),
@@ -107,10 +111,14 @@ export function createAiSdkClinicalGateway(dependencies = defaultAiSdkGatewayDep
             ...createAiSdkTools(request.tools),
             [SUBMIT_ARTIFACT_TOOL]: tool({
               description:
-                'Deliver the final answer. Call this exactly once, last. Pass clientFactIds:'
-                + ' the factId values from clientShareableProtocols that are safe to show the'
-                + ' patient, or an empty array if none are. Everything you looked up is recorded'
-                + ' automatically. This ends the task.',
+                'Deliver the final answer. Call this exactly once, last.'
+                + ' clientFactIds: factId values that are safe to show the patient — from'
+                + ' clientShareableProtocols, or from any `fields` entry with clientEligible: true,'
+                + ' or a listing-question search factId. Empty array if none apply. Copy ids verbatim,'
+                + ' never invent one.'
+                + ' internalFactIds: leave unset for a broad/generic question — everything you looked up'
+                + ' is then shown automatically. Set it only when the question named one or a few specific'
+                + ' fields, to exactly those factId values, so the vendor sees only what was asked.',
               inputSchema: artifactSchema,
               execute: async (input) => {
                 submitted = input
