@@ -43,7 +43,11 @@ beforeAll(async () => {
 }, 30_000)
 
 afterAll(async () => {
+  // down() then up() so this suite leaves the shared local Postgres exactly as
+  // it found it — down() alone was dropping the admission tables for good,
+  // breaking the real /agent chat locally until the next full db reset.
   await admissionMigration.down(migrationArgs())
+  await admissionMigration.up(migrationArgs())
 }, 30_000)
 
 describe('clinical agent Postgres admission', () => {
